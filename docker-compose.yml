@@ -1,0 +1,100 @@
+services:
+  mongodb:
+    container_name: stressOff-db
+    image: mongo:latest
+    restart: always
+    ports:
+      - '${MONGO_PORT}:${MONGO_PORT}'
+    environment:
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    healthcheck:
+      test: echo 'db.runCommand({serverStatus:1}).ok' | mongo admin -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --quiet | grep 1
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    networks:
+      - stressoff-back
+
+  mongo-express:
+    container_name: stressOff-mongo-express
+    image: mongo-express
+    depends_on:
+      - mongodb
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=${CONFIG_MONGODB_SERVER}
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${CONFIG_MONGODB_ADMINUSERNAME}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${CONFIG_MONGODB_ADMINPASSWORD}
+    volumes:
+      - mongo_express_volume:/data/db
+    networks:
+      - stressoff-back
+
+  server:
+    container_name: stressOff-server
+    image: stressOff-server
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+      args:
+        SERVER_PORT: ${SERVER_PORT}
+    restart: always
+    ports:
+      - '${SERVER_PORT}:${SERVER_PORT}'
+    environment:
+      CLIENT_PORT: ${CLIENT_PORT}
+      SERVER_PORT: ${SERVER_PORT}
+      SERVER_HOST: ${SERVER_HOST}
+      POSTGRES_PASSWORD: ${MONGO_PASSWORD}
+      POSTGRES_USER: ${MONGO_USER}
+      POSTGRES_DB: ${MONGO_DB}
+      POSTGRES_PORT: ${MONGO_PORT}
+      POSTGRES_HOST: ${MONGO_HOST}
+      CONFIG_MONGODB_SERVER: ${CONFIG_MONGODB_SERVER}
+      CONFIG_MONGODB_ADMINUSERNAME: ${CONFIG_MONGODB_ADMINUSERNAME}
+      CONFIG_MONGODB_ADMINPASSWORD: ${CONFIG_MONGODB_ADMINPASSWORD}
+      SECRET_KEY: ${SECRET_KEY}
+      FILE_PATH: ${FILE_PATH}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+    depends_on:
+      - mongodb
+    volumes:
+      - ./packages/server/Files:/${FILE_PATH}
+    networks:
+      - stressoff-back
+
+  nginx:
+    container_name: stressOff-nginx
+    image: nginx:latest
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./etc/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - server
+      - mongo-express
+    networks:
+      - stressoff-back
+
+volumes:
+  mongo-express:
+  mongodb:
+  Files:
+
+networks:
+  stressoff-back:
+    driver: bridge

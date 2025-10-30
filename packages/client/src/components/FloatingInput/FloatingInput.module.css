@@ -1,0 +1,123 @@
+.inputGroup {
+  position: relative;
+  height: 50px;
+  width: 60%;
+}
+
+.input {
+  font-size: calc(0.5rem + 1.2vh);
+  padding: 10px 10px 10px 10px;
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(21, 165, 34, 1);
+  background: #3b555d;
+  color: white;
+}
+
+.input:focus {
+  outline: none;
+}
+
+.label {
+  color: #999;
+  font-size: calc(0.5rem + 1.2vh);
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  left: 15px;
+  top: 13px;
+  transition: 0.5s ease all;
+  -moz-transition: 0.5s ease all;
+  -webkit-transition: 0.5s ease all;
+}
+
+.input:focus ~ label,
+.input:valid ~ label {
+  top: -20px;
+  font-size: calc(0.3rem + 1.2vh);
+  color: #fff;
+}
+
+.bar {
+  position: relative;
+  display: block;
+  width: 95%;
+  height: 0px;
+  margin-top: -10px;
+  margin-left: 10px;
+}
+
+.bar:before,
+.bar:after {
+  content: '';
+  height: 1px;
+  width: 0;
+  bottom: 1px;
+  position: absolute;
+  background: rgba(21, 165, 34, 1);
+  transition: 0.5s ease all;
+  -moz-transition: 0.5s ease all;
+  -webkit-transition: 0.5s ease all;
+}
+
+.bar:before {
+  left: 50%;
+}
+
+.bar:after {
+  right: 50%;
+}
+
+.input:focus ~ .bar:before,
+.input:focus ~ .bar:after {
+  width: 50%;
+}
+
+.highlight {
+  position: absolute;
+  height: 60%;
+  width: 100px;
+  top: 25%;
+  left: 0;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.input:focus ~ .highlight {
+  -webkit-animation: inputHighlighter 0.5s ease;
+  -moz-animation: inputHighlighter 0.5s ease;
+  animation: inputHighlighter 0.5s ease;
+}
+
+/* animations */
+@-webkit-keyframes inputHighlighter {
+  from {
+    background: rgba(21, 165, 34, 1);
+  }
+  to {
+    width: 0;
+    background: transparent;
+  }
+}
+@-moz-keyframes inputHighlighter {
+  from {
+    background: rgba(21, 165, 34, 1);
+  }
+  to {
+    width: 0;
+    background: transparent;
+  }
+}
+@keyframes inputHighlighter {
+  from {
+    background: rgba(21, 165, 34, 1);
+  }
+  to {
+    width: 0;
+    background: transparent;
+  }
+}

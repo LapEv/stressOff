@@ -1,0 +1,62 @@
+.message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.title {
+  width: 100%;
+  min-height: 50px;
+  border-bottom: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: rgba(21, 165, 34, 1);
+  box-shadow: 0 5px 15px -3px #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.description {
+  padding: 20px;
+  width: 100%;
+  min-height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  word-break: normal;
+}
+
+.messageSlide {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  color: white;
+  padding: 10px;
+}
+
+.titleSlide {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.descriptionSlide {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 10px;
+}
+
+.buttonsContainer {
+  display: flex;
+  width: 80%;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: 20px;
+}

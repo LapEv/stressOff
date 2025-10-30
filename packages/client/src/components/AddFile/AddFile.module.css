@@ -1,0 +1,59 @@
+.addFileContainer {
+  padding: 0px 30px;
+  color: white;
+  font-size: calc(0.5rem + 1.2vh);
+  font-family: 'Mochiy Pop P one', sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.chooseContainer {
+  height: auto;
+  width: 100%;
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 10px;
+}
+
+.label {
+  cursor: pointer;
+  width: 130px;
+  height: calc(1rem + 2.5vh);
+  border-radius: 5px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(21, 165, 34, 1);
+  background: #3b555d;
+  color: white;
+  cursor: pointer;
+  font-size: calc(0.3rem + 1.2vh);
+  font-family: 'Mochiy Pop P one', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.label:hover {
+  border-color: rgb(10, 238, 29);
+}
+
+.fileText {
+  font-size: calc(0.3rem + 1.2vh);
+  font-family: 'Mochiy Pop P one', sans-serif;
+  padding: 10px 10px 10px 10px;
+  display: block;
+  width: 100%;
+  height: calc(1rem + 2.5vh);
+  border-radius: 5px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(21, 165, 34, 1);
+  background: #3b555d;
+  color: white;
+  margin-left: 20px;
+  overflow: hidden;
+}

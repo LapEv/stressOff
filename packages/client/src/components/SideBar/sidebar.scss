@@ -1,0 +1,122 @@
+.scrollbar {
+  background: #233237;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 1);
+  min-width: 250px;
+  max-width: 300px;
+  z-index: 99;
+}
+
+.unread {
+  font-weight: 700;
+  font-family: 'Mochiy Pop P one', sans-serif;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  right: 25px;
+  margin-top: 5px;
+  width: 20px;
+  height: 20px;
+  font-size: calc(0.4rem + 1vmin);
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  border-radius: 25px;
+  color: white;
+  z-index: 99;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 99;
+
+  &__logo {
+    display: grid;
+    place-items: center;
+    height: 160px;
+    font-size: calc(1.2rem + 1vmin);
+    font-weight: 700;
+    font-family: 'Mochiy Pop P one', sans-serif;
+    color: white;
+  }
+
+  &__menu {
+    position: relative;
+    a {
+      text-decoration: none;
+    }
+
+    &__item {
+      display: flex;
+      align-items: center;
+      place-content: flex-start;
+      padding: 1rem 3rem;
+      font-size: calc(0.8rem + 1vmin);
+      font-weight: 500;
+      color: #6c8b88;
+      transition: color 0.3s ease-in-out;
+      height: 60px;
+      cursor: pointer;
+
+      &.active {
+        color: #fff;
+        z-index: 99;
+      }
+
+      &__icon {
+        margin-right: 1rem;
+        width: 30px;
+        height: 30px;
+        z-index: 99;
+        filter: invert(0.6);
+        transition: filter 0.3s ease-in-out;
+
+        &.active {
+          filter: invert(1);
+        }
+      }
+
+      &__text {
+        z-index: 99;
+      }
+    }
+
+    &__indicator {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: calc(100% - 40px);
+      height: 40px;
+      border-radius: 10px;
+      background-color: rgba(21, 165, 34, 1);
+      z-index: 1;
+      transform: translateX(8%);
+      transition: 0.3s ease-in-out;
+    }
+  }
+}
+
+@media only screen and (min-width: 1000px) {
+  .sidebar {
+    // width: 280px;
+    font-size: calc(1rem + 1vmin);
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .sidebar {
+    font-size: calc(1.2rem + 1vmin);
+    // width: 320px;
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .sidebar {
+    font-size: calc(1.2rem + 1vmin);
+    // width: 350px;
+  }
+}

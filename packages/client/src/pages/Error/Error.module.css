@@ -1,0 +1,17 @@
+.errorContainer {
+  height: 100%;
+  background: linear-gradient(#3b555d, #233237, #204d48, #233237, #3b555d);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.errorh1 {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}

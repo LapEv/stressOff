@@ -1,0 +1,39 @@
+.modal {
+  width: 350px;
+  height: 70px;
+  position: fixed;
+  top: 30px;
+  right: -400px;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(21, 165, 34, 1);
+  background: #3b555d;
+  z-index: 999;
+  opacity: 0.9;
+  pointer-events: none;
+  transition: 0.5s;
+  cursor: pointer;
+}
+
+.modalContent {
+  height: 100%;
+  width: 100%;
+  opacity: 0.9;
+  transform: scale(0.5);
+  transition: 0.4s all;
+}
+
+.modal.active {
+  opacity: 0.9;
+  pointer-events: all;
+  right: 50px;
+}
+
+.modalContent.active {
+  transform: scale(1);
+}

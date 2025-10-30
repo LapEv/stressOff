@@ -1,0 +1,14 @@
+.nameSection {
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  font-size: calc(0.6rem + 1.2vh);
+  font-weight: 700;
+  font-family: 'Mochiy Pop P one', sans-serif;
+  padding: 0px 30px;
+  text-align: center;
+  vertical-align: middle;
+}

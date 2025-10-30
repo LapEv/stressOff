@@ -1,0 +1,32 @@
+ARG NODE_VERSION=16
+ARG SERVER_PORT=3000
+
+FROM node:$NODE_VERSION-bookworm as base
+RUN apt-get update && apt-get install -y nodejs && apt-get install -y npm
+WORKDIR /app
+
+FROM base as builder
+
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+COPY . .
+
+RUN yarn lerna bootstrap
+RUN rm -rf /app/packages/server/dist/ && rm -rf /app/packages/client/dist-ssr/ && rm -rf /app/packages/client/dist/ && yarn build
+
+
+FROM node:$NODE_VERSION-bookworm-slim as production
+WORKDIR /app
+
+COPY --from=builder /app/packages/server/dist /app/server
+COPY --from=builder /app/packages/client/dist /app/client/dist
+COPY --from=builder /app/packages/client/dist-ssr /app/client/dist-ssr
+COPY --from=builder /app/packages/server/package.json /app/package.json
+COPY --from=builder /app/nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder /app/etc /etc
+RUN apt-get update -y && apt-get install -y openssl
+RUN yarn install --production=true
+
+EXPOSE $SERVER_PORT
+CMD [ "node", "/app/server/index.js" ]

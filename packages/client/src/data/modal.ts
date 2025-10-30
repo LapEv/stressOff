@@ -1,0 +1,36 @@
+export const MODAL = {
+  modalMessageTitle: {
+    error: 'Ошибка!',
+    attention: 'Внимание!',
+    history: 'История обращения № ',
+  },
+  modalMessages: {
+    save: 'Вы действительно хотите сохранить изменения?',
+    saveFile: 'Вы действительно хотите сохранить файл ',
+    saveFileFolder: 'в папку',
+    createFolder: 'Введите название папки. Корневая папка: ',
+    folderError: 'Не выбрана папка!',
+    createFolderError: 'Не выбрана ни одна корневая папка!',
+    deleteCategory: 'Вы действительно хотите удалить категорию',
+    deleteSound: 'Вы действительно хотите удалить звук',
+    deleteMusic: 'Вы действительно хотите удалить музыку',
+    deleteNotification: 'Вы действительно хотите удалить уведомление',
+    sendNotification: 'Вы действительно хотите отправить повторно уведомление',
+    sendPush: 'Вы действительно хотите отправить Push уведомление',
+    maxSizeForFileUpload: 'Файл не может превышать 150Mb. Текущий файл: ',
+    exit: 'Вы действительно хотите выйти из приложения?',
+    registration:
+      'Вы действительно хотите зарегистрировать нового пользователя?',
+  },
+  modalType: {
+    save: 'Save',
+    createFolder: 'createFolder',
+    saveFile: 'saveFile',
+    delete: 'Delete',
+    saveNotification: 'saveNotification',
+    sendNotification: 'sendNotification',
+    saveRequest: 'saveRequest',
+    saveUser: 'saveUser',
+    exit: 'exit',
+  },
+}

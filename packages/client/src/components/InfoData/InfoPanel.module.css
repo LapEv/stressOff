@@ -1,0 +1,65 @@
+.general {
+  width: 70%;
+  max-height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: calc(0.3rem + 1.2vh);
+  font-family: 'Mochiy Pop P one', sans-serif;
+  color: #fff;
+  padding: 15px 20px;
+  margin: 30px;
+  margin-left: 45px;
+  margin-top: 10px;
+  box-shadow: 0 0 30px rgb(0 0 0);
+  opacity: 1;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+}
+
+.activeGeneral {
+  max-height: 0px;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  margin-left: 45px;
+  opacity: 0;
+}
+
+.container {
+  width: 100%;
+  height: auto;
+  padding-bottom: 5px;
+}
+
+.data {
+  width: 99%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px 5px;
+  padding: 7px 10px;
+  border-radius: 5px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(21, 165, 34, 0.3);
+  background-color: rgba(59, 85, 93, 0.3);
+  font-size: calc(0.4rem + 1vh);
+  font-family: 'Mochiy Pop P one', sans-serif;
+}
+
+.labels {
+  width: 75%;
+}
+
+.info {
+  width: 25%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
