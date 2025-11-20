@@ -15,6 +15,7 @@ export const MODAL = {
     deleteSound: 'Вы действительно хотите удалить звук',
     deleteMusic: 'Вы действительно хотите удалить музыку',
     deleteNotification: 'Вы действительно хотите удалить уведомление',
+    deleteUser: 'Вы действительно хотите удалить пользователя',
     sendNotification: 'Вы действительно хотите отправить повторно уведомление',
     sendPush: 'Вы действительно хотите отправить Push уведомление',
     maxSizeForFileUpload: 'Файл не может превышать 150Mb. Текущий файл: ',
@@ -32,5 +33,8 @@ export const MODAL = {
     saveRequest: 'saveRequest',
     saveUser: 'saveUser',
     exit: 'exit',
+  },
+  modalErrors: {
+    validate: 'Ошибка валидации!',
   },
 }

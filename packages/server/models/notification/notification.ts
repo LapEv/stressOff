@@ -6,7 +6,7 @@ export interface INotifications {
     RUS: string
     ENG: string
   }
-  date: string
+  date: Date
   id: string
   img: string
   name: string
@@ -28,7 +28,7 @@ const Notifications = new Schema<INotifications, NotificationsModel>({
     RUS: { type: String, reqiured: true },
     ENG: { type: String, reqiured: true },
   },
-  date: { type: String, required: true },
+  date: { type: Date, required: true },
   id: { type: String, unique: true, reqiured: true },
   img: { type: String },
   name: { type: String, required: true },

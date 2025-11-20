@@ -33,6 +33,14 @@ export const serverData = {
         ENG: 'Error getting the list of users',
         RUS: 'Ошибка получения списка пользователей',
       },
+      deleteUser: {
+        ENG: 'The user has been deleted',
+        RUS: 'Пользователь удален',
+      },
+      deleteUserError: {
+        ENG: 'User deletion error',
+        RUS: 'Ошибка удаления пользователя',
+      },
       getRoles: {
         ENG: 'Error getting the list of roles',
         RUS: 'Ошибка получения списка ролей',

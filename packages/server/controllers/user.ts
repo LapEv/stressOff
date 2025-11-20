@@ -10,7 +10,7 @@ import { MusicCategory } from '../models/data/musicCategories'
 import { DataSound } from '../models/data/dataSounds'
 import { DataMusic } from '../models/data/dataMusics'
 import { IRequests } from '../models/request/request'
-const getIndexString = require('../utils/getIndexString')
+import { getIndexString } from '../utils/getIndexString'
 
 type IPrepareDataUser = {
   username: string
@@ -52,8 +52,8 @@ const prepareDataForUser = async ({
 
   const dataSoundCat = await SoundCategory.find()
   const sound_categories = dataSoundCat.map(value => {
-    const { id, category, img, img_lt } = value
-    return { id, category, img, img_lt }
+    const { id, category, img, img_lt, imgStorage, imgStorage_lt } = value
+    return { id, category, img, img_lt, imgStorage, imgStorage_lt }
   })
   const dataMusicCat = await MusicCategory.find()
   const music_categories = dataMusicCat.map(value => {
@@ -62,13 +62,15 @@ const prepareDataForUser = async ({
   })
   const data_sound = await DataSound.find()
   const sounds = data_sound.map(value => {
-    const { id, name, img, sound, location, booked } = value
-    return { id, name, img, sound, location, booked }
+    const { id, name, img, imgStorage, sound, storage, location, booked } =
+      value
+    return { id, name, img, imgStorage, sound, storage, location, booked }
   })
   const data_music = await DataMusic.find()
   const musics = data_music.map(value => {
-    const { id, name, img, sound, location, booked } = value
-    return { id, name, img, sound, location, booked }
+    const { id, name, img, imgStorage, sound, storage, location, booked } =
+      value
+    return { id, name, img, imgStorage, sound, storage, location, booked }
   })
 
   return {
@@ -86,6 +88,11 @@ const prepareDataForUser = async ({
     appData: {
       language: language ?? 'RUS',
       theme: theme ?? 'MAIN_THEME',
+      notificationsByEmail: {
+        news: true,
+        newSounds: true,
+        requestStatuses: true,
+      },
     },
     Notification: serverData.welcomeNotification,
     SOUNDS_Categories: sound_categories,
@@ -207,6 +214,20 @@ export class userController {
     } catch (e) {
       return res.status(400).json({
         message: `${serverData.APInotifications.auth.getUsers}: ${(e as Error).message}`,
+      })
+    }
+  }
+
+  deleteUser = async (req: Request, res: Response) => {
+    try {
+      const result = await User.findOneAndDelete({ _id: req.body._id })
+      return res.json({
+        message: serverData.APInotifications.auth.deleteUser,
+        object: result,
+      })
+    } catch (e) {
+      return res.status(400).json({
+        message: `${serverData.APInotifications.auth.deleteUser}: ${(e as Error).message}`,
       })
     }
   }

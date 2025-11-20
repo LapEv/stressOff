@@ -90,6 +90,7 @@ export class ModalStore implements IModalStore {
     this._isVisible = true
     this._buttons = true
   }
+
   setShowQuestionInputModal({
     title,
     description,

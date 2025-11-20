@@ -3,17 +3,22 @@ import { appData } from 'data/app'
 import { isEmptyObjField } from 'utils/isEmptyObjField'
 import { isEqualObj } from 'utils/isEqualObj'
 import {
+  IActiveCategoryObj,
   IActiveObj,
+  ICurrentCategoryObj,
   ICurrentObj,
   IData,
   IMESSAGES,
   IMUSICCategories,
   IMUSICS,
   INewFile,
+  INotificationObj,
   INOTIFICATIONS,
   IREQUESTS,
+  IRoles,
   ISOUNDCategories,
   ISOUNDS,
+  IUserObj,
   IUSERS,
 } from './interfaces'
 import {
@@ -29,6 +34,13 @@ import {
   emptyUsers,
   emptyNewFile,
   emptyFile,
+  emptyActiveCategoryObj,
+  emptyCurrentCategoryObj,
+  emptyCurrentRequest,
+  emptyRoles,
+  emptyCurrentUserLP,
+  emptyNotificationObj,
+  emptyCurrentMessage,
 } from '../data'
 import { IActiveParams } from 'components/Menu/interfaces'
 
@@ -44,25 +56,42 @@ export class DataStore {
   _users: IUSERS[]
   _usersSort: string
   _findUser: string
-  _roles: string[]
+  _roles: IRoles[]
   _listFiles: string[]
   _sizeImages: number
   _sizeSounds: number
   _imgFile: {}
   _img_ltFile: {}
-  _file: File
+  _file: any
   _newFile: INewFile
   _soundFile: {}
   _clearFile: boolean
   _activeObj: IActiveObj
   _currentObj: ICurrentObj
+  _activeCategoryObj: IActiveCategoryObj
+  _currentCategoryObj: ICurrentCategoryObj
+  _activeUserObj: IUserObj
+  _currentUserObj: IUserObj
+  _activeNotificationObj: INotificationObj
+  _currentNotificationObj: INotificationObj
+  _activeRequestObj: IREQUESTS
+  _currentRequestObj: IREQUESTS
+  _activeMessageObj: IMESSAGES
+  _currentMessageObj: IMESSAGES
   _showLoading: boolean
   _showImgLoading: boolean
   _showSoundLoading: boolean
   _nullIndex: string
   _newBarIndex: string
   _isEqual: boolean
+  _isEqualCategory: boolean
+  _isEqualUser: boolean
+  _isEqualNotification: boolean
+  _isEqualRequest: boolean
+  _isEqualMessage: boolean
   _filePath: string
+  _activeWindow: string
+  _deleteIndex: boolean
 
   constructor() {
     this._sounds = emptySound
@@ -76,7 +105,7 @@ export class DataStore {
     this._users = emptyUsers
     this._usersSort = 'Все'
     this._findUser = ''
-    this._roles = ['']
+    this._roles = emptyRoles
     this._listFiles = ['']
     this._sizeImages = 0
     this._sizeSounds = 0
@@ -88,13 +117,30 @@ export class DataStore {
     this._clearFile = false
     this._activeObj = emptyActiveObj
     this._currentObj = emptyCurrentObj
+    this._activeCategoryObj = emptyActiveCategoryObj
+    this._currentCategoryObj = emptyCurrentCategoryObj
+    this._activeUserObj = emptyCurrentUserLP
+    this._currentUserObj = emptyCurrentUserLP
+    this._activeNotificationObj = emptyNotificationObj
+    this._currentNotificationObj = emptyNotificationObj
+    this._activeRequestObj = emptyCurrentRequest
+    this._currentRequestObj = emptyCurrentRequest
+    this._activeMessageObj = emptyCurrentMessage
+    this._currentMessageObj = emptyCurrentMessage
     this._showLoading = false
     this._showImgLoading = false
     this._showSoundLoading = false
     this._nullIndex = ''
     this._newBarIndex = ''
     this._isEqual = false
+    this._isEqualCategory = false
+    this._isEqualUser = false
+    this._isEqualNotification = false
+    this._isEqualRequest = false
+    this._isEqualMessage = false
     this._filePath = ''
+    this._activeWindow = ''
+    this._deleteIndex = false
     makeAutoObservable(this)
   }
 
@@ -129,19 +175,52 @@ export class DataStore {
   setStatusClear(bool: boolean) {
     this._clearFile = bool
   }
-  setEqual() {
+  setEqualObj() {
     this._isEqual =
       isEqualObj(this._activeObj, this._currentObj) ||
       isEmptyObjField(this._currentObj, [
+        '_id',
+        'id',
         'img',
-        'img_lt',
         'sound',
         'description',
-        'solution',
+        '__v',
       ])
   }
+
+  setEqualCategory() {
+    this._isEqualCategory = isEqualObj(
+      this._activeCategoryObj,
+      this._currentCategoryObj,
+    )
+  }
+
+  setEqualUser() {
+    this._isEqualUser = isEqualObj(this._activeUserObj, this._currentUserObj)
+  }
+
+  setEqualNotification() {
+    this._isEqualNotification = isEqualObj(
+      this._activeNotificationObj,
+      this._currentNotificationObj,
+    )
+  }
+
+  setEqualRequest() {
+    this._isEqualNotification = isEqualObj(
+      this._activeRequestObj,
+      this._currentRequestObj,
+    )
+  }
+
+  setEqualMessage() {
+    this._isEqualMessage = isEqualObj(
+      this._activeMessageObj,
+      this._currentMessageObj,
+    )
+  }
+
   setActiveObjById({ _id }: IActiveParams) {
-    console.log('_id = ', _id)
     const findElement = [
       ...this._sounds,
       ...this._musics,
@@ -152,15 +231,96 @@ export class DataStore {
       ...this._messages,
       ...this._users,
     ].find(value => value._id === _id) as ISOUNDS
-    console.log('findElement = ', findElement)
     const newActiveObj = {
       ...this._activeObj,
       ...findElement,
     }
-    console.log('newActiveObj = ', newActiveObj)
     this._activeObj = newActiveObj
     this._isEqual = false
   }
+
+  setActiveObjSoundById({ _id }: IActiveParams) {
+    const findElement = [...this._sounds].find(
+      value => value._id === _id,
+    ) as ISOUNDS
+    const newActiveObj = {
+      ...this._activeObj,
+      ...findElement,
+    }
+    this._activeObj = newActiveObj
+    this._isEqual = false
+  }
+
+  setActiveObjMusicById({ _id }: IActiveParams) {
+    const findElement = [...this._musics].find(
+      value => value._id === _id,
+    ) as IMUSICS
+    const newActiveObj = {
+      ...this._activeObj,
+      ...findElement,
+    }
+    this._activeObj = newActiveObj
+    this._isEqual = false
+  }
+
+  setActiveCategoryObjById({ _id }: IActiveParams) {
+    const findElement = [
+      ...this._soundCategories,
+      ...this._musicCategories,
+    ].find(value => value._id === _id)
+    const newActiveObj = {
+      ...this._activeCategoryObj,
+      ...findElement,
+    }
+    this._activeCategoryObj = newActiveObj
+    this._currentCategoryObj = newActiveObj
+    this._isEqualCategory = false
+  }
+
+  setActiveObjUsersById({ _id }: IActiveParams) {
+    const findElement = this._users.find(value => value._id === _id)
+    const newActiveObj = {
+      ...this._activeUserObj,
+      ...findElement,
+    }
+    this._activeUserObj = newActiveObj
+    this._currentUserObj = newActiveObj
+    this._isEqualUser = false
+  }
+
+  setActiveObjNotificationById({ _id }: IActiveParams) {
+    const findElement = this._notifications.find(value => value._id === _id)
+    const newActiveObj = {
+      ...this._activeNotificationObj,
+      ...findElement,
+    }
+    this._activeNotificationObj = newActiveObj
+    this._currentNotificationObj = newActiveObj
+    this._isEqualNotification = false
+  }
+
+  setActiveObjRequestById({ _id }: IActiveParams) {
+    const findElement = this._requests.find(value => value._id === _id)
+    const newActiveObj = {
+      ...this._activeRequestObj,
+      ...findElement,
+    }
+    this._activeRequestObj = newActiveObj
+    this._currentRequestObj = newActiveObj
+    this._isEqualRequest = false
+  }
+
+  setActiveObjMessageById({ _id }: IActiveParams) {
+    const findElement = this._messages.find(value => value._id === _id)
+    const newActiveObj = {
+      ...this._activeMessageObj,
+      ...findElement,
+    }
+    this._activeMessageObj = newActiveObj
+    this._currentMessageObj = newActiveObj
+    this._isEqualMessage = false
+  }
+
   setActiveObj(data: IActiveObj) {
     this._activeObj = data
     this._isEqual = false
@@ -168,34 +328,99 @@ export class DataStore {
 
   setCurrentObj(data: ICurrentObj) {
     this._currentObj = data
-    this.setEqual()
+    this.setEqualObj()
   }
+
+  setActiveCategoryObj(data: IActiveCategoryObj) {
+    this._activeCategoryObj = data
+    this._isEqualCategory = false
+  }
+
+  setCurrentCategoryObj(data: ICurrentCategoryObj) {
+    this._currentCategoryObj = data
+    this.setEqualCategory()
+  }
+
+  setActiveUserObj(data: IUserObj) {
+    this._activeUserObj = data
+    this._isEqualUser = false
+  }
+
+  setCurrentUserObj(data: IUserObj) {
+    this._currentUserObj = data
+    this.setEqualUser()
+  }
+
+  setActiveNotificationObj(data: INotificationObj) {
+    this._activeNotificationObj = data
+    this._isEqualNotification = false
+  }
+
+  setCurrentNotificationObj(data: INotificationObj) {
+    this._currentNotificationObj = data
+    this.setEqualNotification()
+  }
+
+  setActiveRequestObj(data: IREQUESTS) {
+    this._activeRequestObj = data
+    this._isEqualRequest = false
+  }
+
+  setCurrentRequestObj(data: IREQUESTS) {
+    this._currentRequestObj = data
+    this.setEqualRequest()
+  }
+
+  setActiveMessageObj(data: IMESSAGES) {
+    this._activeMessageObj = data
+    this._isEqualMessage = false
+  }
+
+  setCurrentMessageObj(data: IMESSAGES) {
+    this._currentMessageObj = data
+    this.setEqualMessage()
+  }
+
   setCategory(data: ISOUNDCategories[], value: string) {
     const findElement = data.find(
-      item => item.title?.RUS === value,
-    ) as ISOUNDCategories
-    this._currentObj = {
-      ...this._currentObj,
+      item => item.title.RUS === value,
+    ) as ICurrentCategoryObj
+    if (!findElement) return
+    this._currentCategoryObj = {
+      ...this._currentCategoryObj,
       category: findElement.category,
     }
-    this.setEqual()
+    this.setEqualObj()
   }
-  setLanguageOfUser(value: string) {
-    const findElement = appData.languageArr.find(item => item.name === value)
+
+  setCategoryForSound(data: ISOUNDCategories[], value: string) {
+    const findElement = data.find(
+      item => item.title.RUS === value,
+    ) as ICurrentCategoryObj
+    if (!findElement) return
     this._currentObj = {
       ...this._currentObj,
+      category: findElement.title,
+    }
+    this.setEqualObj()
+  }
+
+  setLanguageOfUser(value: string) {
+    const findElement = appData.languageArr.find(item => item.name === value)
+    this._currentUserObj = {
+      ...this._currentUserObj,
       appData: {
-        ...this._currentObj.appData,
+        ...this._currentUserObj.appData,
         language: findElement?.value as string,
       },
     }
   }
   setThemeOfUser(value: string) {
     const findElement = appData.themeArr.find(item => item.name === value)
-    this._currentObj = {
-      ...this._currentObj,
+    this._currentUserObj = {
+      ...this._currentUserObj,
       appData: {
-        ...this._currentObj.appData,
+        ...this._currentUserObj.appData,
         theme: findElement?.value as string,
       },
     }
@@ -204,8 +429,8 @@ export class DataStore {
     const findElement = appData.statusRequestArr.find(
       item => item.name === value,
     )
-    this._currentObj = {
-      ...this._currentObj,
+    this._currentRequestObj = {
+      ...this._currentRequestObj,
       status: findElement?.value as string,
     }
   }
@@ -224,6 +449,10 @@ export class DataStore {
   setNewBarIndex(id: string) {
     this._newBarIndex = id
   }
+  setDeleteIndex(data: boolean) {
+    this._deleteIndex = data
+  }
+
   setAllData(data: IData) {
     this._sounds = data.soundDB
     this._musics = data.musicDB
@@ -262,8 +491,11 @@ export class DataStore {
       this._showLoading = bool
     }
   }
+  setActiveWindow(data: string) {
+    this._activeWindow = data
+  }
   addSound(data: ISOUNDS) {
-    this._sounds = [...[this._sounds], { ...data }] as ISOUNDS[]
+    this._sounds = [...this._sounds, { ...data }]
   }
   addMusic(data: IMUSICS) {
     this._musics = [...this._musics, { ...data }]
@@ -306,6 +538,8 @@ export class DataStore {
       }
       return value
     })
+    this.setActiveObj(data)
+    this.setCurrentObj(data)
   }
   updateMusic(data: IMUSICS) {
     this._musics = this._musics.map(value => {
@@ -314,6 +548,8 @@ export class DataStore {
       }
       return value
     })
+    this.setActiveObj(data)
+    this.setCurrentObj(data)
   }
   updateSoundCategory(data: ISOUNDCategories) {
     this._soundCategories = this._soundCategories.map(value => {
@@ -322,6 +558,8 @@ export class DataStore {
       }
       return value
     })
+    this.setActiveCategoryObj(data)
+    this.setCurrentCategoryObj(data)
   }
   updateMusicCategory(data: IMUSICCategories) {
     this._musicCategories = this._musicCategories.map(value => {
@@ -330,6 +568,8 @@ export class DataStore {
       }
       return value
     })
+    this.setActiveCategoryObj(data)
+    this.setCurrentCategoryObj(data)
   }
   updateNotification(data: INOTIFICATIONS) {
     this._notifications = this._notifications.map(value => {
@@ -338,6 +578,7 @@ export class DataStore {
       }
       return value
     })
+    // this.setActiveNotificationObj(data)
   }
   updateRequest(data: IREQUESTS) {
     this._requests = this._requests.map(value => {
@@ -346,6 +587,7 @@ export class DataStore {
       }
       return value
     })
+    // this.setActiveRequestObj(data)
   }
   updateMessages(data: IMESSAGES) {
     this._messages = this._messages.map(value => {
@@ -354,6 +596,7 @@ export class DataStore {
       }
       return value
     })
+    // this.setActiveMessageObj(data)
   }
 
   updateUser(data: IUSERS) {
@@ -363,6 +606,7 @@ export class DataStore {
       }
       return value
     })
+    // this.setActiveUserObj(data)
   }
   deleteSound(id: string) {
     this._sounds = this._sounds.filter(value => value._id !== id)
@@ -380,6 +624,10 @@ export class DataStore {
       value => value._id !== id,
     )
   }
+  deleteUser(id: string) {
+    this._users = this._users.filter(value => value._id !== id)
+  }
+
   deleteNotification(id: string) {
     this._notifications = this._notifications.filter(value => value._id !== id)
   }
@@ -444,6 +692,36 @@ export class DataStore {
   get CurrentObj() {
     return this._currentObj
   }
+  get ActiveCategoryObj() {
+    return this._activeCategoryObj
+  }
+  get CurrentCategoryObj() {
+    return this._currentCategoryObj
+  }
+  get ActiveUserObj() {
+    return this._activeUserObj
+  }
+  get CurrentUserObj() {
+    return this._currentUserObj
+  }
+  get ActiveNotificationObj() {
+    return this._activeNotificationObj
+  }
+  get CurrentNotificationObj() {
+    return this._currentNotificationObj
+  }
+  get ActiveRequestObj() {
+    return this._activeRequestObj
+  }
+  get CurrentRequestObj() {
+    return this._currentRequestObj
+  }
+  get ActiveMessageObj() {
+    return this._activeMessageObj
+  }
+  get CurrentMessageObj() {
+    return this._currentMessageObj
+  }
   get showLoading() {
     return this._showLoading
   }
@@ -459,13 +737,34 @@ export class DataStore {
   get NewBarIndex() {
     return this._newBarIndex
   }
+  get DeleteIndex() {
+    return this._deleteIndex
+  }
   get IsEqual() {
     return this._isEqual
+  }
+  get IsEqualCategory() {
+    return this._isEqualCategory
+  }
+  get IsEqualUser() {
+    return this._isEqualUser
+  }
+  get IsEqualNotification() {
+    return this._isEqualNotification
+  }
+  get IsEqualRequest() {
+    return this._isEqualRequest
+  }
+  get IsEqualMessage() {
+    return this._isEqualMessage
   }
   get FilePath() {
     return this._filePath
   }
   get NewFile() {
     return this._newFile
+  }
+  get ActiveWindow() {
+    return this._activeWindow
   }
 }

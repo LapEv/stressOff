@@ -82,6 +82,7 @@ export const DropDownGroup = ({
       scrollRef.current?.scrollTo(0, (index - 2) * 35)
     }
     if (key === 'Enter') {
+      if (index < 0) return
       onChange(listRef.current?.children[index].textContent as string)
       setActiveList()
     }
@@ -89,7 +90,7 @@ export const DropDownGroup = ({
 
   return (
     <div className="dropDown" onBlur={inputBlur} style={containerwidth}>
-      {inputProps.label}
+      {inputProps?.label}
       <div className={'dropDown__inputGroup'}>
         <div
           ref={inputGroupRef}

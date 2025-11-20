@@ -50,6 +50,7 @@ export class fileController {
         res.status(400).json({
           message: serverData.APInotifications.file.errorFileExists,
         })
+        return
       }
       const file = files as UploadedFile
       file.mv(filePath)

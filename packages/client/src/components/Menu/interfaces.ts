@@ -7,11 +7,13 @@ export interface IMenu {
     item: string
     _id: string
   }[]
+  type: string
 }
 
 export interface IActiveParams {
   _id: string
   position: number
+  category: string
 }
 
 export interface IMenuSection {

@@ -2,7 +2,7 @@ import { Model, Schema, model } from 'mongoose'
 
 export interface IRequests {
   description: string
-  date: string
+  date: Date
   lastModifiedDate: string
   number: string
   email: string
@@ -14,7 +14,7 @@ export interface IRequests {
   userID: string
   globalCategory: string
   history: {
-    date: string
+    date: Date
     status: string
     userID: string
     username: string
@@ -26,7 +26,7 @@ export type RequestsModel = Model<IRequests>
 
 const Request = new Schema<IRequests, RequestsModel>({
   description: { type: String, required: true },
-  date: { type: String, required: true },
+  date: { type: Date, required: true },
   lastModifiedDate: { type: String, required: true },
   number: { type: String, unique: true, reqiured: true },
   email: { type: String, required: true },
@@ -39,7 +39,7 @@ const Request = new Schema<IRequests, RequestsModel>({
   globalCategory: { type: String, required: true },
   history: [
     {
-      date: { type: String, required: true },
+      date: { type: Date, required: true },
       status: { type: String, required: true },
       userID: { type: String, required: true },
       username: { type: String, required: true },

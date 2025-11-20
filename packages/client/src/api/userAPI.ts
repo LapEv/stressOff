@@ -34,3 +34,8 @@ export const getUsers = async () => {
   const { data } = await authhost.get(api.GetUsers)
   return data
 }
+
+export const deleteUser = async (API: string, object: { _id: string }) => {
+  const { data } = await authhost.delete(API, { data: object })
+  return data
+}

@@ -1,12 +1,17 @@
 import { saveData, uploadFile } from '../api/dataAPI'
 import { addUser } from '../api/userAPI'
 import {
+  IActiveCategoryObj,
   IActiveObj,
+  ICurrentCategoryObj,
   IMUSICCategories,
   IMUSICS,
   INOTIFICATIONS,
   ISOUNDCategories,
   ISOUNDS,
+  IUSERS,
+  IUserToSave,
+  INotificationToSave,
 } from 'store/Data/interfaces'
 import { DataStore, ModalStore } from 'store'
 import { appData } from 'data/app'
@@ -19,7 +24,13 @@ import { AxiosError } from 'axios'
 
 export const saveItem = async (
   request: string,
-  object: IActiveObj,
+  object:
+    | IActiveObj
+    | IActiveCategoryObj
+    | IUSERS
+    | ICurrentCategoryObj
+    | IUserToSave
+    | INotificationToSave,
   data: DataStore,
   modal: ModalStore,
 ) => {
@@ -59,14 +70,14 @@ export const saveItem = async (
             return await uploadFile(api.UPLOAD_FILE, img, {
               type: 'img',
               category: 'Sounds',
-              directory: this.object.category.ENG,
+              directory: (this.object as IActiveObj).category.ENG,
             })
           },
           uploadSound: function (snd: File) {
             return uploadFile(api.UPLOAD_FILE, snd, {
               type: 'sounds',
               category: 'Sounds',
-              directory: this.object.category.ENG,
+              directory: (this.object as IActiveObj).category.ENG,
             })
           },
         }
@@ -84,14 +95,14 @@ export const saveItem = async (
             return await uploadFile(api.UPLOAD_FILE, img, {
               type: 'img',
               category: 'Musics',
-              directory: this.object.category.ENG,
+              directory: (this.object as IActiveObj).category.ENG,
             })
           },
           uploadSound: function (snd: File) {
             return uploadFile(api.UPLOAD_FILE, snd, {
               type: 'sounds',
               category: 'Music',
-              directory: this.object.category.ENG,
+              directory: (this.object as IActiveObj).category.ENG,
             })
           },
         }
@@ -105,7 +116,14 @@ export const saveItem = async (
           addData: function (newObject: ISOUNDCategories) {
             return data.addSoundCategory(newObject)
           },
-          uploadImage: async function (img: File) {
+          uploadImageStorage: async function (img: File) {
+            return await uploadFile(api.UPLOAD_FILE, img, {
+              type: 'img',
+              category: 'Categories',
+              directory: 'Sounds',
+            })
+          },
+          uploadImageStorage_lt: async function (img: File) {
             return await uploadFile(api.UPLOAD_FILE, img, {
               type: 'img',
               category: 'Categories',
@@ -123,13 +141,25 @@ export const saveItem = async (
           addData: function (newObject: IMUSICCategories) {
             return data.addMusicCategory(newObject)
           },
-          uploadImage: async function (img: File) {
+          uploadImageStorage: async function (img: File) {
             return await uploadFile(api.UPLOAD_FILE, img, {
               type: 'img',
               category: 'Categories',
               directory: 'Musics',
             })
           },
+          uploadImageStorage_lt: async function (img: File) {
+            return await uploadFile(api.UPLOAD_FILE, img, {
+              type: 'img',
+              category: 'Categories',
+              directory: 'Musics',
+            })
+          },
+        }
+      case appData.globalCategory.USERS:
+        return {
+          api: api.ADD_NOTIFICATION,
+          object,
         }
       case appData.globalCategory.NOTIFICATIONS:
         return {
@@ -150,24 +180,33 @@ export const saveItem = async (
   data.setShowLoading(true)
   try {
     const prepareData = prepareDataRecord(request) as IPrepareDataSave
+    if (prepareData?.uploadImageStorage) {
+      await prepareData.uploadImageStorage(data.File.imgStorage.data.info)
+    }
+    if (prepareData?.uploadImageStorage_lt) {
+      await prepareData.uploadImageStorage_lt(data.File.imgStorage_lt.data.info)
+    }
     if (prepareData?.uploadImage) {
-      prepareData.uploadImage(data.File.imgStorage.info)
+      await prepareData.uploadImage(data.File.imgStorage.data.info)
     }
     const isSound =
       request === appData.globalCategory.DATA_SOUNDS ||
       request === appData.globalCategory.DATA_MUSICS
         ? true
         : false
+
     if (isSound && prepareData?.uploadSound) {
-      await prepareData.uploadSound(data.File.storage.info)
+      await prepareData.uploadSound(data.File.storage.data.info)
     }
     if (!isSound && prepareData?.uploadImage) {
-      prepareData.uploadImage(data.File.imgStorage_lt.info)
+      await prepareData.uploadImage(data.File.imgStorage_lt.info)
     }
+    const { _id, ...obj } = prepareData.object
     const response =
       request !== appData.globalCategory.USERS
-        ? await saveData(prepareData.api, prepareData.object)
-        : await addUser(object as any)
+        ? await saveData(prepareData.api, obj)
+        : await addUser(object as IUSERS)
+    console.log('response = ', response)
     data.setShowLoading(false)
     modal.setShowModal(MODAL.modalMessageTitle.attention, response.message.RUS)
     if (request === appData.globalCategory.USERS) {
@@ -188,8 +227,13 @@ export const saveItem = async (
       })
     }
   } catch (err) {
-    const error = errorHandler(err as AxiosError) as string
+    const error = errorHandler(err as AxiosError)
+    const language = data.CurrentUserObj.appData.language
+    const newError =
+      error instanceof Object
+        ? error.message[language as keyof typeof error.message]
+        : error
     data.setShowLoading(false)
-    modal.setShowModal(MODAL.modalMessageTitle.error, error)
+    modal.setShowModal(MODAL.modalMessageTitle.error, newError)
   }
 }

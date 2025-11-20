@@ -13,3 +13,7 @@ export interface IObjectFile {
   category: string
   directory: string
 }
+
+export interface IObject_ {
+  path: string
+}

@@ -2,7 +2,7 @@ import { Model, Schema, model } from 'mongoose'
 
 export interface IMessages {
   body: string
-  date: string
+  date: Date
   id: string
   title: string
   unread: boolean
@@ -13,7 +13,7 @@ export type MessagesModel = Model<IMessages>
 
 const Messages = new Schema<IMessages, MessagesModel>({
   body: { type: String, reqiured: true },
-  date: { type: String, required: true },
+  date: { type: Date, required: true },
   id: { type: String, unique: true, reqiured: true },
   title: { type: String, reqiured: true },
   unread: { type: Boolean, required: true },

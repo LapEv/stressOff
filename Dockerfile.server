@@ -1,7 +1,9 @@
 ARG NODE_VERSION=16
 ARG SERVER_PORT=3000
 
-FROM node:$NODE_VERSION-bookworm as base
+# FROM node:$NODE_VERSION-bookworm as base
+
+FROM node:$NODE_VERSION-buster as base
 RUN apt-get update && apt-get install -y nodejs && apt-get install -y npm
 WORKDIR /app
 
@@ -16,7 +18,8 @@ RUN yarn lerna bootstrap
 RUN rm -rf /app/packages/server/dist/ && rm -rf /app/packages/client/dist-ssr/ && rm -rf /app/packages/client/dist/ && yarn build
 
 
-FROM node:$NODE_VERSION-bookworm-slim as production
+# FROM node:$NODE_VERSION-bookworm-slim as production
+FROM node:$NODE_VERSION-buster-slim as production
 WORKDIR /app
 
 COPY --from=builder /app/packages/server/dist /app/server

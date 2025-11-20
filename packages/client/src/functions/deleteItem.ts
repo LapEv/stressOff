@@ -5,19 +5,44 @@ import {
   emptyActiveObj,
   emptyCategoryMusic,
   emptyCategorySound,
+  emptyCurrentUserLP,
   emptyMusic,
   emptySound,
 } from 'store/data'
 import { MODAL } from 'data/modal'
-import { DataStore, ModalStore } from 'store'
-import { IActiveObj } from 'store/Data/interfaces'
+import { DataStore, ModalStore, UserStore } from 'store'
+import {
+  IActiveObj,
+  IMESSAGES,
+  IMUSICCategories,
+  IMUSICS,
+  INOTIFICATIONS,
+  IREQUESTS,
+  ISOUNDCategories,
+  ISOUNDS,
+  IUSERS,
+  ICurrentObj,
+  ICurrentCategoryObj,
+} from 'store/Data/interfaces'
 import { errorHandler } from 'utils/errorHandler'
 import { IPrepareDataDelete } from './interfaces'
 import { AxiosError } from 'axios'
+import { deleteUser } from 'api/userAPI'
 
 export const deleteItem = async (
   request: string,
-  object: IActiveObj,
+  object:
+    | ISOUNDS
+    | IMUSICS
+    | ISOUNDCategories
+    | IMUSICCategories
+    | INOTIFICATIONS
+    | IREQUESTS
+    | IUSERS
+    | IMESSAGES
+    | IActiveObj
+    | ICurrentObj
+    | ICurrentCategoryObj,
   data: DataStore,
   modal: ModalStore,
 ) => {
@@ -64,22 +89,33 @@ export const deleteItem = async (
             return emptyActiveObj
           },
         }
+      case appData.globalCategory.USERS:
+        return {
+          api: api.DELETE_USER,
+          emptyObject: emptyCurrentUserLP,
+          deleteData: function () {
+            return data.deleteUser(id)
+          },
+        }
 
       default:
         break
     }
   }
 
-  const { id } = object
-  if (!id) return
+  const { _id } = object
+  if (!_id) return
   data.setShowLoading(true)
   try {
-    const prepareData = prepareDataDelete(request, id) as IPrepareDataDelete
-    const response = await deleteData(prepareData?.api as string, { id })
+    const prepareData = prepareDataDelete(request, _id) as IPrepareDataDelete
+    const response =
+      request === appData.globalCategory.USERS
+        ? await deleteUser(prepareData?.api, object)
+        : await deleteData(prepareData?.api, object)
     data.setShowLoading(false)
     modal.setShowModal(MODAL.modalMessageTitle.attention, response.message.RUS)
-    prepareData.deleteData() as void
-    data.setNullIndex(prepareData?.emptyObject._id)
+    prepareData.deleteData()
+    data.setDeleteIndex(true)
   } catch (err) {
     const error = errorHandler(err as AxiosError) as string
     data.setShowLoading(false)

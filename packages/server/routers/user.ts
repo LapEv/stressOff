@@ -39,6 +39,12 @@ export const userRouter = (apiRouter: Router) => {
     roleMiddleware(['ADMIN', 'SUPERADMIN']),
     service.getUsers,
   )
+  router.delete(
+    '/deleteUser',
+    roleMiddleware(['ADMIN', 'SUPERADMIN']),
+    service.deleteUser,
+  )
+
   router.get('/getRoles', roleMiddleware(['SUPERADMIN']), service.getRoles)
   router.post('/newRole', roleMiddleware(['SUPERADMIN']), service.setNewRole)
   router.delete(

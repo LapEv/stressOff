@@ -11,6 +11,8 @@ import {
   ISOUNDS,
   IUSERS,
   ICurrentObj,
+  ICurrentCategoryObj,
+  IData,
 } from 'store/Data/interfaces'
 import { DataStore, ModalStore } from 'store'
 import { IPrepareDatUpdate } from './interfaces'
@@ -21,16 +23,18 @@ import { AxiosError } from 'axios'
 
 export const updateItem = async (
   request: string,
-  object: ISOUNDS &
-    IMUSICS &
-    ISOUNDCategories &
-    IMUSICCategories &
-    INOTIFICATIONS &
-    IREQUESTS &
-    IUSERS &
-    IMESSAGES &
-    IActiveObj &
-    ICurrentObj,
+  object:
+    | ISOUNDS
+    | IMUSICS
+    | ISOUNDCategories
+    | IMUSICCategories
+    | INOTIFICATIONS
+    | IREQUESTS
+    | IUSERS
+    | IMESSAGES
+    | IActiveObj
+    | ICurrentObj
+    | ICurrentCategoryObj,
   data: DataStore,
   modal: ModalStore,
 ) => {
@@ -40,56 +44,56 @@ export const updateItem = async (
         return {
           api: api.UPDATE_SOUND,
           updateData: function () {
-            return data.updateSound(object)
+            return data.updateSound(object as ISOUNDS)
           },
         }
       case appData.globalCategory.DATA_MUSICS:
         return {
           api: api.UPDATE_MUSIC,
           updateData: function () {
-            return data.updateMusic(object)
+            return data.updateMusic(object as IMUSICS)
           },
         }
       case appData.globalCategory.SOUNDS_Categories:
         return {
           api: api.UPDATE_SOUNDCATEGORY,
           updateData: function () {
-            return data.updateSoundCategory(object)
+            return data.updateSoundCategory(object as ISOUNDCategories)
           },
         }
       case appData.globalCategory.MUSICS_Categories:
         return {
           api: api.UPDATE_MUSICCATEGORY,
           updateData: function () {
-            return data.updateMusicCategory(object)
+            return data.updateMusicCategory(object as IMUSICCategories)
           },
         }
       case appData.globalCategory.NOTIFICATIONS:
         return {
           api: api.UPDATE_NOTIFICATION,
           updateData: function () {
-            return data.updateNotification(object)
+            return data.updateNotification(object as INOTIFICATIONS)
           },
         }
       case appData.globalCategory.REQUESTS:
         return {
           api: api.UPDATE_REQUEST,
           updateData: function () {
-            return data.updateRequest(object)
+            return data.updateRequest(object as IREQUESTS)
           },
         }
       case appData.globalCategory.USERS:
         return {
           api: api.UPDATE_USER,
           updateData: function () {
-            return data.updateUser(object)
+            return data.updateUser(object as IUSERS)
           },
         }
       case appData.updateUnreadInMessage:
         return {
           api: api.UPDATE_UNREAD_IN_MESSAGE,
           updateData: function () {
-            return data.updateMessages(object)
+            return data.updateMessages(object as IMESSAGES)
           },
         }
 
@@ -97,10 +101,9 @@ export const updateItem = async (
         return {
           api: api.UPDATE_UNREAD_IN_REQUEST,
           updateData: function () {
-            return data.updateRequest(object)
+            return data.updateRequest(object as IREQUESTS)
           },
         }
-
       default:
         break
     }
@@ -110,8 +113,9 @@ export const updateItem = async (
   try {
     const prepareData = prepareDataRecord(request) as IPrepareDatUpdate
     const response = await updateData(prepareData.api, object)
+
     prepareData.updateData()
-    data.setActiveObj(object)
+    data.setActiveObj(object as IActiveObj)
     data.setShowLoading(false)
     if (
       request === appData.updateUnreadInRequest ||
@@ -119,7 +123,7 @@ export const updateItem = async (
     )
       return
     modal.setShowModal(MODAL.modalMessageTitle.attention, response.message.RUS)
-    if (object?.push) {
+    if ((object as INOTIFICATIONS).push) {
       modal.setShowQuestionModal({
         title: MODAL.modalMessageTitle.attention,
         description: `${MODAL.modalMessages.sendNotification} "${data.CurrentObj.title?.RUS}"?`,

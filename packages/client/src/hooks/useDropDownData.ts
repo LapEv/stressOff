@@ -23,7 +23,7 @@ const newObjCat = (
   specialKey: string,
   index: number,
 ) => {
-  const obj = { [key]: value[newValue as keyof typeof value] }
+  const obj = value[newValue as keyof typeof value]
   return {
     [key]: obj[specialKey as keyof typeof obj],
     id: index,

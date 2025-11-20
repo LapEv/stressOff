@@ -21,19 +21,15 @@ import {
   Sidebar,
 } from 'components'
 import { AppRouter } from './AppRouter'
-import { MESSAGES_ROUTE, REQUESTS_ROUTE } from 'data/sidebar'
+// import { MESSAGES_ROUTE, REQUESTS_ROUTE } from 'data/sidebar'
 
 export const App = observer(() => {
   const { modal, data, user } = useContext(Context)
   const [startLoading, setStartLoading] = useState(true)
   // const [loading, setLoading] = useState(false)
-  const [value, setValue] = useState('')
 
   const setVisible = (bool: boolean) => {
     modal.setIsVisible(bool)
-    if (!bool) {
-      setValue('')
-    }
   }
 
   const setSlideVisible = (bool: boolean) => {
@@ -41,15 +37,12 @@ export const App = observer(() => {
   }
 
   const Start = async () => {
-    console.log('Start')
     return new Promise(async (resolve, reject) => {
       try {
         const response = (await check()) as IUser
         user.setUser(response)
         user.setIsAuth(true)
         const db = await LoadData()
-        // console.log('db = ', db)
-        // console.log('user = ', user)
         resolve(db)
       } catch (e) {
         reject(e)
@@ -141,16 +134,10 @@ export const App = observer(() => {
     }
   }
 
-  const responseText = (value: string) => {
-    setValue(value)
-    modal.setInputText(value)
-  }
-
   if (startLoading) {
     return <AppLoading />
   }
 
-  console.log('App user = ', user)
   return (
     <ErrorBoundary>
       <Modal visible={modal._isVisible} setVisible={setVisible}>
@@ -161,8 +148,8 @@ export const App = observer(() => {
           buttons={modal.buttons}
           response={responseModal}
           input={modal.input}
-          value={value}
-          responseText={responseText}
+          // value={value}
+          // responseText={responseText}
         />
       </Modal>
       <ModalSlide

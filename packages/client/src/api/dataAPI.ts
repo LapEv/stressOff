@@ -1,14 +1,17 @@
 import {
   emptyCategoryMusic,
   emptyCategorySound,
+  emptyMessages,
   emptyMusic,
   emptyNotification,
+  emptyRequests,
   emptyUsers,
 } from './../store/data'
-import { authhost } from 'api'
+import { authFileHost, authhost } from 'api'
 import { api } from './api'
 import { emptySound } from 'store/data'
-import { IListFiles, IObject, IObjectFile } from './interfaces'
+import { IListFiles, IObject, IObject_, IObjectFile } from './interfaces'
+import { ICurrentCategoryObjSave, ICurrentObjSave } from 'store/Data/interfaces'
 
 export const getData = async (API: string) => {
   const { data } = await authhost.get(API)
@@ -29,7 +32,9 @@ export const LoadData = async () => {
       const notificationDB = await getData(api.GET_DATA_NOTIFICATIONS)
       notificationDB.unshift(emptyNotification[0])
       const requestDB = await getData(api.GET_DATA_REQUESTS)
+      requestDB.unshift(emptyRequests[0])
       const messagesDB = await getData(api.GET_DATA_MESSAGES)
+      messagesDB.unshift(emptyMessages[0])
       const usersDB = await getData(api.GET_DATA_USERS)
       usersDB.unshift(emptyUsers[0])
 
@@ -69,17 +74,20 @@ export const LoadData = async () => {
   })
 }
 
-export const saveData = async (API: string, object: { id: string }) => {
+export const saveData = async (
+  API: string,
+  object: ICurrentObjSave | ICurrentCategoryObjSave,
+) => {
   const { data } = await authhost.post(API, object)
   return data
 }
 
-export const updateData = async (API: string, object: { id: string }) => {
+export const updateData = async (API: string, object: { _id: string }) => {
   const { data } = await authhost.post(API, object)
   return data
 }
 
-export const deleteData = async (API: string, object: { id: string }) => {
+export const deleteData = async (API: string, object: { _id: string }) => {
   const { data } = await authhost.delete(API, { data: object })
   return data
 }
@@ -90,13 +98,13 @@ export const uploadFile = async (
   object: IObjectFile,
 ) => {
   const formData = new FormData()
-  formData.append('file', file)
+  formData.append('files', file, file.name)
   formData.append('name', file.name)
   formData.append('path', object.path as string)
   formData.append('type', object.type)
   formData.append('category', object.category)
   formData.append('directory', object.directory)
-  const { data } = await authhost.post(API, formData)
+  const { data } = await authFileHost.post(API, formData)
   return data
 }
 
@@ -115,7 +123,7 @@ export const getListFiles = async () => {
   return response
 }
 
-// export const createNewFolder = async (object) => {
-//   const { data } = await authhost.post(api.CREATE_FOLDER, object);
-//   return data;
-// };
+export const createNewFolder = async (object: IObject_) => {
+  const { data } = await authhost.post(api.CREATE_FOLDER, object)
+  return data
+}

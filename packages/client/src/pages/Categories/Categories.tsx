@@ -1,9 +1,10 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 import cl from '../General.module.css'
 import { Context } from '../../main'
 import { usePrepareMenuCategoriesData } from 'hooks'
-import { CategoriesModule, MenuBar } from 'components'
+import { MenuBar } from 'components'
+import { CategoriesModule } from './CategoriesData/CategoriesModule'
 
 export const Categories = observer(() => {
   const { data } = useContext(Context)
@@ -12,9 +13,13 @@ export const Categories = observer(() => {
     ...data.MusicCategories,
   ])
 
+  useEffect(() => {
+    data.setActiveWindow('Categories')
+  }, [])
+
   return (
     <div className={cl.general}>
-      <MenuBar items={items} />
+      <MenuBar items={items} type={'category'} />
       <CategoriesModule />
     </div>
   )

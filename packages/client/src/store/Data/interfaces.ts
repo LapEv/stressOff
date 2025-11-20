@@ -10,7 +10,7 @@ export interface IDataStore {
   _users: IUSERS[]
   _usersSort: string
   _findUser: string
-  _roles: string[]
+  _roles: IRoles[]
   _listFiles: string[]
   _sizeImages: number
   _sizeSounds: number
@@ -22,12 +22,18 @@ export interface IDataStore {
   _clearFile: boolean
   _activeObj: IActiveObj
   _currentObj: ICurrentObj
+  _activeCategoryObj: IActiveCategoryObj
+  _currentCategoryObj: ICurrentCategoryObj
+  _activeUserObj: IActiveUserObj
+  _currentUserObj: ICurrentUserObj
+  _currentRequests: IREQUESTS
   _showLoading: boolean
   _showImgLoading: boolean
   _showSoundLoading: boolean
   _nullIndex: string
   _newBarIndex: string
   _isEqual: boolean
+  _isEqualCategory: boolean
   _filePath: string
 }
 
@@ -43,7 +49,7 @@ export interface IData {
   listFiles: string[]
   sizeImages: number
   sizeSounds: number
-  rolesDB: string[]
+  rolesDB: IRoles[]
 }
 
 export interface ISOUNDS {
@@ -131,7 +137,7 @@ export interface IMUSICCategories {
 export interface IREQUESTS {
   _id: string
   description: string
-  date: string
+  date: Date
   number: string
   email: string
   name: string
@@ -145,7 +151,7 @@ export interface IREQUESTS {
 }
 
 export interface IHistoryRequests {
-  date: string
+  date: Date
   status: string
   userID: string
   username: string
@@ -159,7 +165,7 @@ export interface INOTIFICATIONS {
     RUS: string
     ENG: string
   }
-  date: string
+  date: Date
   id: string
   img: string
   name: string
@@ -176,7 +182,7 @@ export interface INOTIFICATIONS {
 export interface IMESSAGES {
   _id: string
   body: string
-  date: string
+  date: Date
   id: string
   title: string
   unread: boolean
@@ -186,64 +192,218 @@ export interface IMESSAGES {
 export interface IUSERS {
   _id: string
   globalCategory: string
-  appData: {
-    language: string
-    theme: string
-  }
-  personalData: {
-    createdAt: string
-    email: string
-    name: string
-    password: string
-    roles: string[]
-    token: string
-    type: string
-    username: string
-  }
-}
-
-export interface IActiveObj {
-  _id: string
-  id: string
-  title: ITitle
   appData: IAppData
-  category: string
-  status: string
-  storage: string
-  globalCategory: string
-  location: string
-  payment: boolean
-  push?: boolean
-  name: string
-  imgStorage: string
-  imgStorage_lt: string
+  personalData: IPersonalData
 }
 
-export interface ICurrentObj {
+export interface IUserToSave {
+  username: string
+  password: string
+  type: string
+  roles: string[]
+  language: string
+  theme: string
+}
+
+export interface INotificationToSave {}
+
+export interface IRoles {
+  value: string
   _id: string
-  id: string
-  title: ITitle
-  appData: IAppData
-  category: string
-  status: string
-  storage: string
-  globalCategory: string
-  location: string
-  payment: boolean
-  name: string
-  imgStorage: string
-  imgStorage_lt: string
 }
-
-export interface ITitle {
-  RUS: string
-  ENG: string
+export interface IPersonalData {
+  createdAt: string
+  email: string
+  name: string
+  password: string
+  roles: string[]
+  token: string
+  type: string
+  username: string
 }
 
 export interface IAppData {
   language: string
   theme: string
-  notificationsByEmail: INotificationsByEmail
+}
+export interface IActiveCategoryObj {
+  _id: string
+  id: string
+  globalCategory: string
+  title: {
+    RUS: string
+    ENG: string
+  }
+  img: string
+  imgStorage: string
+  img_lt: string
+  imgStorage_lt: string
+  category: string
+}
+
+export interface IActiveCategoryObjSave {
+  id: string
+  globalCategory: string
+  title: {
+    RUS: string
+    ENG: string
+  }
+  img: string
+  imgStorage: string
+  img_lt: string
+  imgStorage_lt: string
+  category: string
+}
+
+export interface IActiveObj {
+  _id: string
+  id: string
+  name: string
+  globalCategory: string
+  booked: boolean
+  sound: string
+  storage: string
+  img: string
+  imgStorage: string
+  location: string
+  payment: boolean
+  category: ITitle
+  title: ITitle
+  description: ITitle
+  push?: boolean
+}
+
+export interface IActiveObjSave {
+  id: string
+  name: string
+  globalCategory: string
+  booked: boolean
+  sound: string
+  storage: string
+  img: string
+  imgStorage: string
+  location: string
+  payment: boolean
+  category: ITitle
+  title: ITitle
+  description: ITitle
+  push?: boolean
+}
+
+export interface ICurrentCategoryObj {
+  _id: string
+  id: string
+  globalCategory: string
+  title: {
+    RUS: string
+    ENG: string
+  }
+  img: string
+  imgStorage: string
+  img_lt: string
+  imgStorage_lt: string
+  category: string
+}
+
+export interface ICurrentCategoryObjSave {
+  id: string
+  globalCategory: string
+  title: {
+    RUS: string
+    ENG: string
+  }
+  img: string
+  imgStorage: string
+  img_lt: string
+  imgStorage_lt: string
+  category: string
+}
+
+export interface ICurrentObj {
+  _id: string
+  id: string
+  name: string
+  globalCategory: string
+  booked: boolean
+  sound: string
+  storage: string
+  img: string
+  imgStorage: string
+  location: string
+  payment: boolean
+  category: ITitle
+  title: ITitle
+  description: ITitle
+  push?: boolean
+}
+
+export interface ICurrentObjSave {
+  id: string
+  name: string
+  globalCategory: string
+  booked: boolean
+  sound: string
+  storage: string
+  img: string
+  imgStorage: string
+  location: string
+  payment: boolean
+  category: ITitle
+  title: ITitle
+  description: ITitle
+}
+
+export interface IActiveUserObj {
+  _id: string
+  globalCategory: string
+  appData: IAppData
+  personalData: IPersonalData
+  SOUNDS_Categories?: ISOUNDCategories[]
+  MUSICS_Categories?: IMUSICCategories[]
+  DATA_SOUNDS?: ISOUNDS[]
+  DATA_MUSICS?: IMUSICS[]
+}
+
+export interface ICurrentUserObj {
+  _id: string
+  globalCategory: string
+  appData: IAppData
+  personalData: IPersonalData
+  SOUNDS_Categories?: ISOUNDCategories[]
+  MUSICS_Categories?: IMUSICCategories[]
+  DATA_SOUNDS?: ISOUNDS[]
+  DATA_MUSICS?: IMUSICS[]
+}
+
+export interface IUserObj extends ICurrentUserObj {
+  login: string
+  password: string
+}
+
+export interface INotificationObj {
+  _id: string
+  anonymousUsers: boolean
+  body: {
+    RUS: string
+    ENG: string
+  }
+  date: Date
+  id: string
+  img: string
+  name: string
+  push: boolean
+  title: {
+    RUS: string
+    ENG: string
+  }
+  unread: boolean
+  premiumUsers: boolean
+  globalCategory: string
+}
+
+export interface ITitle {
+  RUS: string
+  ENG: string
 }
 
 export interface ILanguage {

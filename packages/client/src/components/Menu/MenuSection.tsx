@@ -29,8 +29,14 @@ export const MenuSection = memo(
     const setActive = () => {
       setActiveList(prev => !prev)
       const findActive = items.find(value => value._id === activeItem._id)
+      console.log('activeItem = ', activeItem)
+      console.log('findActive = ', findActive)
       if (findActive) {
-        setActiveItem({ ...activeItem, _id: items[0]._id })
+        setActiveItem({
+          ...activeItem,
+          _id: items[0]._id,
+          category: items[0].category,
+        })
       } else {
         changeState(!state)
       }

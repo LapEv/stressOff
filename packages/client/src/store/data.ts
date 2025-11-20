@@ -67,7 +67,7 @@ export const emptyCategorySound = [
       RUS: 'Добавить категорию',
       ENG: '',
     },
-    _id: '',
+    _id: '01',
   },
 ]
 
@@ -84,7 +84,7 @@ export const emptyCategoryMusic = [
       RUS: 'Добавить категорию',
       ENG: '',
     },
-    _id: '',
+    _id: '02',
   },
 ]
 
@@ -100,7 +100,7 @@ export const emptyNotification = [
       RUS: '',
       ENG: '',
     },
-    date: '',
+    date: new Date(),
     name: 'Новое уведомление',
     unread: true,
     push: false,
@@ -113,9 +113,9 @@ export const emptyNotification = [
 
 export const emptyRequests = [
   {
-    _id: '',
+    _id: '0',
     description: '',
-    date: '',
+    date: new Date(),
     number: '',
     email: '',
     name: '',
@@ -124,10 +124,10 @@ export const emptyRequests = [
     status: '',
     solution: '',
     userID: '',
-    globalCategory: '',
+    globalCategory: 'REQUESTS',
     history: [
       {
-        date: '',
+        date: new Date(),
         status: '',
         userID: '',
         username: '',
@@ -139,6 +139,8 @@ export const emptyRequests = [
 
 export const emptyUsers = [
   {
+    _id: '',
+    globalCategory: 'USERS',
     appData: {
       language: 'RUS',
       theme: 'MAIN_THEME',
@@ -153,7 +155,54 @@ export const emptyUsers = [
       type: 'isAnonymous',
       username: 'Новый пользователь',
     },
-    globalCategory: 'USERS',
+  },
+]
+
+export const emptyCurrentUserLP = {
+  _id: '',
+  globalCategory: 'USERS',
+  login: '',
+  password: '',
+  appData: {
+    language: 'RUS',
+    theme: 'MAIN_THEME',
+  },
+  personalData: {
+    createdAt: '',
+    email: '',
+    name: '',
+    password: '',
+    roles: ['USER'],
+    token: '',
+    type: 'isAnonymous',
+    username: 'Новый пользователь',
+  },
+}
+
+export const emptyNotificationObj = {
+  id: '0',
+  img: '',
+  title: {
+    RUS: 'Новое уведомление',
+    ENG: '',
+  },
+  body: {
+    RUS: '',
+    ENG: '',
+  },
+  date: new Date(),
+  name: 'Новое уведомление',
+  unread: true,
+  push: false,
+  anonymousUsers: false,
+  premiumUsers: false,
+  globalCategory: 'NOTIFICATIONS',
+  _id: '',
+}
+
+export const emptyRoles = [
+  {
+    value: '',
     _id: '',
   },
 ]
@@ -162,72 +211,129 @@ export const emptyMessages = [
   {
     _id: '',
     body: '',
-    date: '',
-    id: '',
+    date: new Date(),
+    id: '0',
     title: '',
     unread: false,
-    globalCategory: '',
+    globalCategory: 'MESSAGES',
   },
 ]
 
-export const emptyUsersObj = [
-  {
-    _id: '',
+export const emptyCurrentUser = {
+  _id: '',
+  globalCategory: 'USERS',
+  appData: {
+    language: 'RUS',
+    theme: 'MAIN_THEME',
   },
-]
+  personalData: {
+    createdAt: '',
+    email: '',
+    name: '',
+    password: '',
+    roles: ['USER'],
+    token: '',
+    type: 'isAnonymous',
+    username: 'Новый пользователь',
+  },
+}
 
 export const emptyCurrentObj = {
   _id: '',
   id: '',
-  category: '',
-  appData: {
-    language: '',
-    theme: '',
-    notificationsByEmail: {
-      news: false,
-      newSounds: false,
-      requestStatuses: false,
-    },
-  },
-  status: '',
-  storage: '',
-  title: {
-    ENG: '',
-    RUS: '',
-  },
+  name: '',
   globalCategory: '',
+  booked: false,
+  sound: '',
+  storage: '',
+  img: '',
+  imgStorage: '',
   location: '',
   payment: false,
-  name: '',
-  imgStorage: '',
-  imgStorage_lt: '',
+  category: { ENG: '', RUS: '' },
+  title: { ENG: '', RUS: '' },
+  description: { ENG: '', RUS: '' },
 }
 
 export const emptyActiveObj = {
   _id: '',
   id: '',
-  category: '',
-  appData: {
-    language: '',
-    theme: '',
-    notificationsByEmail: {
-      news: false,
-      newSounds: false,
-      requestStatuses: false,
-    },
-  },
-  status: '',
-  storage: '',
-  title: {
-    ENG: '',
-    RUS: '',
-  },
+  name: '',
   globalCategory: '',
+  booked: false,
+  sound: '',
+  storage: '',
+  img: '',
+  imgStorage: '',
   location: '',
   payment: false,
-  name: '',
+  category: { ENG: '', RUS: '' },
+  title: { ENG: '', RUS: '' },
+  description: { ENG: '', RUS: '' },
+}
+
+export const emptyActiveCategoryObj = {
+  _id: '',
+  id: '',
+  category: '',
+  globalCategory: '',
+  title: {
+    RUS: '',
+    ENG: '',
+  },
+  img: '',
   imgStorage: '',
+  img_lt: '',
   imgStorage_lt: '',
+}
+
+export const emptyCurrentCategoryObj = {
+  _id: '',
+  id: '',
+  category: '',
+  globalCategory: '',
+  title: {
+    RUS: '',
+    ENG: '',
+  },
+  img: '',
+  imgStorage: '',
+  img_lt: '',
+  imgStorage_lt: '',
+}
+
+export const emptyCurrentRequest = {
+  _id: '',
+  description: '',
+  date: new Date(),
+  number: '',
+  email: '',
+  name: '',
+  topic: '',
+  unread: false,
+  status: '',
+  solution: '',
+  userID: '',
+  globalCategory: 'REQUESTS',
+  history: [
+    {
+      date: new Date(),
+      status: '',
+      userID: '',
+      username: '',
+      solution: '',
+    },
+  ],
+}
+
+export const emptyCurrentMessage = {
+  _id: '',
+  body: '',
+  date: new Date(),
+  id: '0',
+  title: '',
+  unread: false,
+  globalCategory: 'MESSAGES',
 }
 
 export const emptyNewFile = {
@@ -238,14 +344,11 @@ export const emptyNewFile = {
 }
 
 export const emptyFile = {
-  lastModified: 0,
-  name: '',
-  webkitRelativePath: '',
-  size: 0,
-  type: '',
-  // arrayBuffer: ,
-  bytes: '',
-  slice: '',
-  stream: '',
-  text: '',
+  data: '',
+  info: {
+    type: '',
+  },
+  imgStorage: '',
+  imgStorage_lt: '',
+  storage: '',
 }

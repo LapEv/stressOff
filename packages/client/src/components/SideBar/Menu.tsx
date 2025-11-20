@@ -13,11 +13,12 @@ export const Menu = memo(
     unreadMessages,
   }: IMenu) => {
     const Exit = () => {
-      modal.setShowQuestionModal(
-        MODAL.modalMessageTitle.attention,
-        MODAL.modalMessages.exit,
-        MODAL.modalType.exit,
-      )
+      modal.setShowQuestionModal({
+        title: MODAL.modalMessageTitle.attention,
+        description: MODAL.modalMessages.exit,
+        type: MODAL.modalType.exit,
+        request: 'exit',
+      })
     }
 
     return sidebarNavItems.map((item, index) => {

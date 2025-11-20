@@ -1,5 +1,3 @@
-import { DataStore } from 'store'
-
 export interface InputProps {
   main: string
   tabIndex?: number
@@ -10,7 +8,9 @@ export interface InputProps {
   changetext?: (value: string) => void
   value: string
   label?: string
-  data: DataStore
   autoFocus?: boolean
   placeholder?: string
+  type: string
+  id: string
+  disabled?: boolean
 }

@@ -32,6 +32,7 @@ export const api = {
   DELETE_SOUNDCATEGORY: '/data/deleteSoundCategoriesById',
   DELETE_MUSICCATEGORY: '/data/deleteMusicCategoriesById',
   DELETE_NOTIFICATION: '/data/deleteNotificationById',
+  DELETE_USER: '/users/deleteUser',
   UPLOAD_FILE: '/files/uploadFile',
   GET_LISTFILE: '/files/getListFiles',
   GET_FILE: '/files/getFile',

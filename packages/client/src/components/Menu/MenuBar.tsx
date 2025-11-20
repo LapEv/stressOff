@@ -6,12 +6,13 @@ import { IActiveParams, IMenu } from './interfaces'
 import { Context } from '../../main'
 import { MenuSection } from './MenuSection'
 
-export const MenuBar = observer(({ items }: IMenu) => {
+export const MenuBar = observer(({ items, type }: IMenu) => {
   const { data } = useContext(Context)
   const [indicatorY, setindicatorY] = useState<number>(20)
   const [activeItem, setActiveItem] = useState<IActiveParams>({
     _id: items[0]._id,
     position: 0,
+    category: '',
   })
   const [state, changeState] = useState<boolean>(false)
   const indicatorRef = useRef<HTMLDivElement>(null)
@@ -19,10 +20,31 @@ export const MenuBar = observer(({ items }: IMenu) => {
 
   const itemsSection = [...new Set(items.map(item => item.category))]
 
-  const setActive = ({ _id, position }: IActiveParams) => {
-    setActiveItem({ _id, position })
+  const setActive = ({ _id, position, category }: IActiveParams) => {
+    setActiveItem({ _id, position, category })
     setindicatorY(position - 45)
-    data.setActiveObjById({ _id, position })
+    if (type === 'category') {
+      data.setActiveCategoryObjById({ _id, position, category })
+    }
+    if (type === 'sounds') {
+      data.setActiveObjSoundById({ _id, position, category })
+    }
+    if (type === 'musics') {
+      data.setActiveObjMusicById({ _id, position, category })
+    }
+    if (type === 'users') {
+      data.setActiveObjUsersById({ _id, position, category })
+    }
+    if (type === 'notifications') {
+      data.setActiveObjNotificationById({ _id, position, category })
+    }
+    if (type === 'requests') {
+      data.setActiveObjRequestById({ _id, position, category })
+    }
+    if (type === 'messages') {
+      data.setActiveObjMessageById({ _id, position, category })
+    }
+
     if (data.NewBarIndex && position) {
       scrollRef.current?.centerAt(0, position)
       data.setNewBarIndex('')
@@ -39,10 +61,21 @@ export const MenuBar = observer(({ items }: IMenu) => {
         indicatorRef.current.style.height = '40px'
       }
     }, 50)
-    data.setActiveObjById(activeItem)
+    if (type === 'category') {
+      data.setActiveCategoryObjById(activeItem)
+    }
+    if (type === 'users') {
+      data.setActiveObjUsersById(activeItem)
+    }
+    if (type === 'sounds' || type === 'musics') {
+      data.setActiveObjById(activeItem)
+    }
   }, [])
 
-  useEffect(() => {}, [data.NewBarIndex])
+  useEffect(() => {
+    setActive({ ...activeItem, _id: items[0]._id })
+    data.setDeleteIndex(false)
+  }, [data.DeleteIndex])
 
   return (
     <Scrollbar ref={scrollRef} className={cl.menu} style={{ width: '22%' }}>

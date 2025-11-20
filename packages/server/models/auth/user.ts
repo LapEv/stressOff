@@ -46,28 +46,28 @@ export interface IUser {
   SOUNDS_Categories: {
     category: string
     id: string
-    img: string
-    img_lt: string
+    imgStorage: string
+    imgStorage_lt: string
   }[]
   MUSICS_Categories: {
     category: string
     id: string
-    img: string
-    img_lt: string
+    imgStorage: string
+    imgStorage_lt: string
   }[]
   DATA_SOUNDS: {
     name: string
     id: string
-    img: string
-    sound: string
+    imgStorage: string
+    storage: string
     location: string
     booked: boolean
   }[]
   DATA_MUSICS: {
     name: string
     id: string
-    img: string
-    sound: string
+    imgStorage: string
+    storage: string
     location: string
     booked: boolean
   }[]
@@ -121,24 +121,24 @@ const Users = new Schema<IUser, UserModel>({
     {
       category: { type: String, required: true },
       id: { type: String, required: true },
-      img: { type: String },
-      img_lt: { type: String },
+      imgStorage: { type: String },
+      imgStorage_lt: { type: String },
     },
   ],
   MUSICS_Categories: [
     {
       category: { type: String, required: true },
       id: { type: String, required: true },
-      img: { type: String },
-      img_lt: { type: String },
+      imgStorage: { type: String },
+      imgStorage_lt: { type: String },
     },
   ],
   DATA_SOUNDS: [
     {
       name: { type: String, required: true },
       id: { type: String, required: true },
-      img: { type: String },
-      sound: { type: String },
+      imgStorage: { type: String },
+      storage: { type: String },
       location: { type: String, required: true },
       booked: { type: Boolean, required: true },
     },
@@ -147,8 +147,8 @@ const Users = new Schema<IUser, UserModel>({
     {
       name: { type: String, required: true },
       id: { type: String, required: true },
-      img: { type: String },
-      sound: { type: String },
+      imgStorage: { type: String },
+      storage: { type: String },
       location: { type: String, required: true },
       booked: { type: Boolean, required: true },
     },

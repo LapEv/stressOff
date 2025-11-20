@@ -16,7 +16,7 @@ export const MenuItems = memo(
     const itemClasses = [cl.item, index > 0 ? cl.closeItem : '']
     const [unread, setUnread] = useState<boolean>(activeContainer)
     const [active, setActive] = useState<boolean>(
-      value._id === activeItem ? true : false,
+      value._id === activeItem._id ? true : false,
     )
     const refItem = useRef<HTMLDivElement>(null)
 
@@ -29,15 +29,16 @@ export const MenuItems = memo(
       setActiveItem({
         _id: value._id,
         position: refItem.current?.offsetTop as number,
+        category: value.category,
       })
       setUnread(false)
     }
 
     useEffect(() => {
-      if (value._id !== activeItem) {
+      if (value._id !== activeItem._id) {
         setActive(false)
       }
-      if (!active && value._id === activeItem) {
+      if (!active && value._id === activeItem._id) {
         setActiveElement()
       }
     }, [activeItem])
@@ -47,6 +48,7 @@ export const MenuItems = memo(
         setActiveItem({
           _id: value._id,
           position: refItem.current?.offsetTop as number,
+          category: value.category,
         })
       }
     }, [])
@@ -57,6 +59,7 @@ export const MenuItems = memo(
           setActiveItem({
             _id: value._id,
             position: refItem.current?.offsetTop as number,
+            category: value.category,
           })
         }
       }, 300)
@@ -82,7 +85,7 @@ export const MenuItems = memo(
 
     useEffect(() => {
       if (data.NullIndex) {
-        if (value._id !== activeItem) {
+        if (value._id !== activeItem._id) {
           setActive(false)
         }
         if (value._id === data.NullIndex) {

@@ -1,10 +1,11 @@
-import { ChangeEvent, useContext, useEffect, useRef } from 'react'
+import { ChangeEvent, useContext, useEffect, useRef, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import cl from './AddFile.module.css'
 import { Context } from '../../main'
 import { appData } from 'data/app'
 import { MODAL } from 'data/modal'
-import { IAddFile, IAddFileData } from './interfaces'
+import { IAddFile } from './interfaces'
+import { IFileImage } from 'pages/Sounds/SoundsData/interfaces'
 
 export const AddFile = observer((props: IAddFile) => {
   const { data, modal } = useContext(Context)
@@ -17,8 +18,10 @@ export const AddFile = observer((props: IAddFile) => {
     const reader = new FileReader()
     const fileList = e.target.files as FileList
     reader.onloadend = () => {
-      // data.setFile(e.target.files[0]);
-      onChooseFile({ info: fileList[0], data: reader.result as string | File })
+      onChooseFile({
+        status: true,
+        data: { info: fileList[0], data: reader.result as string },
+      } as IFileImage)
       data.setShowLoading(false)
     }
     if (fileList[0].size >= appData.maxSizeForFileUpload) {
@@ -59,10 +62,7 @@ export const AddFile = observer((props: IAddFile) => {
           onChange={e => ChooseFile(e)}
         />
         <div className={cl.fileText}>
-          {
-            (data?.File[obj as keyof typeof data.File] as IAddFileData).info
-              ?.name
-          }
+          {refInput.current?.value.split(/(\\|\/)/g).pop()}
         </div>
       </div>
     </div>

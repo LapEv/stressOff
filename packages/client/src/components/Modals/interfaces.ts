@@ -13,8 +13,6 @@ export interface IModalMessage {
   buttons: boolean
   response: (answer: string | boolean) => void
   input: boolean
-  value: string
-  responseText: (value: string) => void
 }
 
 export interface IModalMessageSlide {

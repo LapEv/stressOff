@@ -1,20 +1,22 @@
-import { memo } from 'react'
+import { useContext, useState } from 'react'
+import { observer } from 'mobx-react-lite'
 import cl from './modalMessage.module.css'
+import { Context } from '../../../main'
 import { appData } from 'data/app'
 import { Button } from 'components/Button/Button'
 import { InputGroup } from 'components/InputGrop/InputGroup'
 import { IModalMessage } from '../interfaces'
 
-export const ModalMessage = memo(
-  ({
-    title,
-    description,
-    buttons,
-    response,
-    input,
-    value,
-    responseText,
-  }: IModalMessage) => {
+export const ModalMessage = observer(
+  ({ title, description, buttons, response, input }: IModalMessage) => {
+    const { modal } = useContext(Context)
+    const [value, setValue] = useState<string>('')
+
+    const responseText = (value: string) => {
+      setValue(value)
+      modal.setInputText(value)
+    }
+
     return (
       <div className={cl.message}>
         <h3 className={cl.title}>{title}</h3>
@@ -22,11 +24,12 @@ export const ModalMessage = memo(
         {input && (
           <InputGroup
             tabIndex={1}
+            id={'1'}
             required
             containerwidth={{ width: '77%' }}
             style={{ marginBottom: 20 }}
             value={value}
-            data={''}
+            type={'modal'}
             main="modal"
             changetext={responseText}
             autoFocus

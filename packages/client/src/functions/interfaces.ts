@@ -1,4 +1,10 @@
-import { IActiveObj, INOTIFICATIONS } from 'store/Data/interfaces'
+import {
+  IActiveCategoryObj,
+  IActiveObj,
+  ICurrentCategoryObj,
+  ICurrentObj,
+  INOTIFICATIONS,
+} from 'store/Data/interfaces'
 
 export interface IPrepareDataDelete {
   api: string
@@ -8,13 +14,28 @@ export interface IPrepareDataDelete {
 
 export interface IPrepareDataSave {
   api: string
-  object: IActiveObj
+  object: (
+    | IActiveObj
+    | ICurrentObj
+    | IActiveCategoryObj
+    | ICurrentCategoryObj
+  ) &
+    INOTIFICATIONS
   addData: (newObject: INOTIFICATIONS) => void
   uploadImage: any
   uploadSound: any
+  uploadImageStorage: any
+  uploadImageStorage_lt: any
 }
 
 export interface IPrepareDatUpdate {
   api: string
   updateData: any
+}
+
+export interface IAxiosError {
+  message: {
+    RUS: string
+    ENG: string
+  }
 }
