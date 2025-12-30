@@ -1,4 +1,5 @@
 import { Model, Schema, model } from 'mongoose'
+import { IFavorites } from './favorites'
 
 export interface INotificationForUser {
   anonymousUsers: boolean
@@ -11,7 +12,7 @@ export interface INotificationForUser {
   img: string
   name: string
   premiumUsers: boolean
-  push: { type: Boolean; required: true }
+  push: { type: boolean; required: true }
   title: {
     RUS: string
     ENG: string
@@ -71,6 +72,7 @@ export interface IUser {
     location: string
     booked: boolean
   }[]
+  favoritesPlay?: IFavorites[]
 }
 
 export type UserModel = Model<IUser>
@@ -80,7 +82,7 @@ const Users = new Schema<IUser, UserModel>({
   personalData: {
     username: { type: String, unique: true, required: true },
     password: { type: String, reqiured: true },
-    email: { type: String },
+    email: { type: String, unique: true },
     name: { type: String },
     type: { type: String, required: true },
     roles: [{ type: String, ref: 'Role' }],
@@ -151,6 +153,35 @@ const Users = new Schema<IUser, UserModel>({
       storage: { type: String },
       location: { type: String, required: true },
       booked: { type: Boolean, required: true },
+    },
+  ],
+  favoritesPlay: [
+    {
+      StateMusic: {
+        booked: { type: Boolean },
+        id: { type: String },
+        musicStart: { type: Boolean },
+        playing: { type: Boolean },
+        startApp: { type: Boolean },
+        volume: { type: Number },
+      },
+      StateSound: {
+        mixedSound: [
+          {
+            booked: { type: Boolean },
+            id: { type: String },
+            playing: { type: Boolean },
+            volume: { type: Number },
+          },
+        ],
+        musicControl: { type: Boolean },
+        playAll: { type: Boolean },
+        soundStart: { type: Boolean },
+        startApp: { type: Boolean },
+      },
+      category: { type: String },
+      id: { type: Number },
+      name: { type: String },
     },
   ],
 })

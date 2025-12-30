@@ -77,6 +77,14 @@ export const serverData = {
         ENG: 'Error when finding user data!',
         RUS: 'Ошибка при поиске данных пользователя!',
       },
+      updatePassword: {
+        ENG: 'The password has been changed!',
+        RUS: 'Пароль изменен!',
+      },
+      updatePasswordForUser: {
+        ENG: 'The password has been changed! The new password has been sent to the email address specified in the profile.',
+        RUS: 'Пароль изменен! Новый пароль отправлен на почту, которая указана в профиле.',
+      },
     },
     notification: {
       addNotification: {

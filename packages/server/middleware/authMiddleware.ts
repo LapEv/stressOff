@@ -7,6 +7,7 @@ interface jwtAnswer {
   id: string
   roles: string[]
   username: string
+  type: string
 }
 export const authMiddleware = async (
   req: Request,
@@ -23,8 +24,10 @@ export const authMiddleware = async (
       return res.status(401).json({ message: auth.notification.notLogged })
     }
     const verify = jwt.verify(token, SECRET_KEY as Secret)
-    const { id, roles, username } = verify as jwtAnswer
-    req.body = { ...req.body, id, roles, username }
+    console.log('token = ', token)
+    console.log('verify = ', verify)
+    const { id, roles, username, type } = verify as jwtAnswer
+    req.body = { ...req.body, id, roles, username, type }
     next()
   } catch (e) {
     res.status(401).json({ message: auth.notification.notLogged })

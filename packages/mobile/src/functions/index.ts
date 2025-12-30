@@ -1,0 +1,8 @@
+export { CheckFile } from './Files/checkFiles'
+export { CheckFileSize } from './Files/checkFileSize'
+export { FileSizeToString } from './Files/fileSizeToString'
+export { SoundSizes } from './Files/soundSizes'
+export { MusicsSizes } from './Files/musicsSizes'
+export { checkNetwork } from './Bootstrap/checkConnect'
+export { createDataFromCloud } from './Bootstrap/createDataFromCloud'
+export { checkAnonymousData } from './Bootstrap/checkAnonymousData'

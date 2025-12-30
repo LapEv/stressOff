@@ -41,7 +41,6 @@ authFileHost.interceptors.request.use(authInterceptor)
 authhost.interceptors.response.use(
   res => res,
   error => {
-    console.log('res authhost error = ', error)
     if (error.response) {
       if (error.response.status) {
         if (

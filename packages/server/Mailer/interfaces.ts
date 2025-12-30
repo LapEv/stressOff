@@ -10,7 +10,11 @@ export interface IHTMLMailer {
   date?: string
 }
 
-export interface ISendMailer {
+export interface IHTMLResetPassword {
+  password: string
+}
+
+export interface ISendMailerRequire {
   adresses: string
   subject: string
   number: string
@@ -19,4 +23,9 @@ export interface ISendMailer {
   description: string
   solution: string
   language: string
+}
+
+export interface ISendMailerResetPassword {
+  email: string
+  password: string
 }

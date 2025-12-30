@@ -33,25 +33,25 @@ export const dataRouter = (apiRouter: Router) => {
 
   router.get(
     '/getFullSoundsData',
-    roleMiddleware(['ADMIN', 'SUPERADMIN']),
+    roleMiddleware(['ADMIN', 'SUPERADMIN', 'USER']),
     service.getFullSoundsData,
   )
 
   router.get(
     '/getFullMusicsData',
-    roleMiddleware(['ADMIN', 'SUPERADMIN']),
+    roleMiddleware(['ADMIN', 'SUPERADMIN', 'USER']),
     service.getFullMusicsData,
   )
 
   router.get(
     '/getFullSoundCategories',
-    roleMiddleware(['ADMIN', 'SUPERADMIN']),
+    roleMiddleware(['ADMIN', 'SUPERADMIN', 'USER']),
     service.getFullSoundCategories,
   )
 
   router.get(
     '/getFullMusicCategories',
-    roleMiddleware(['ADMIN', 'SUPERADMIN']),
+    roleMiddleware(['ADMIN', 'SUPERADMIN', 'USER']),
     service.getFullMusicCategories,
   )
 

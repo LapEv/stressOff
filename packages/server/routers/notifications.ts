@@ -21,7 +21,7 @@ export const notificationsRouter = (apiRouter: Router) => {
 
   router.get(
     '/getAllNotifications',
-    roleMiddleware(['ADMIN', 'SUPERADMIN']),
+    roleMiddleware(['ADMIN', 'SUPERADMIN', 'USER']),
     service.getAllNotifications,
   )
 

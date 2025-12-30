@@ -25,6 +25,9 @@ export const userRouter = (apiRouter: Router) => {
     service.registration,
   )
   router.post('/login', service.login)
+  router.post('/setAnonymousUser', service.setAnonymousUser)
+  router.post('/resetPassword', service.resetPassword)
+  router.post('/changePassword', service.changePassword)
 
   router.post(
     '/updateUser',
@@ -33,6 +36,7 @@ export const userRouter = (apiRouter: Router) => {
   )
 
   router.get('/check', authMiddleware, service.check)
+  router.post('/findUserData', authMiddleware, service.findUserData)
 
   router.get(
     '/getUsers',

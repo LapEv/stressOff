@@ -4,7 +4,7 @@ import { IRequests, Requests } from '../models/request/request'
 import { getIndexString } from '../utils/getIndexString'
 import { userController } from './user'
 import { IUser } from '../models/auth/user'
-import { sendMail } from '../Mailer/sendMail'
+import { sendMailRequire } from '../Mailer/sendMailRequire'
 const socket = require('../utils/socket')
 
 type IReqByStatus = {
@@ -61,7 +61,7 @@ export class requestsController {
         })
       }
       const service = new userController()
-      const userData = (await service.findUserData(req, res, userID)) as IUser
+      const userData = (await service.findUserDataSV(req, res, userID)) as IUser
       const username = userData.personalData.username
         ? userData.personalData.username
         : userID
@@ -88,7 +88,7 @@ export class requestsController {
       )?.name[userLanguage as keyof typeof name]
       const subjects = serverData.mailMessages.addRequest.subject
       const sendResult = checkSendToEmail
-        ? sendMail({
+        ? sendMailRequire({
             adresses: email,
             subject: `${subjects[userLanguage as keyof typeof subjects]} ${number}`,
             number: number,
@@ -123,7 +123,7 @@ export class requestsController {
         serverData.requestsConsts.updateStatusRequest,
       )
       const { email, status, topic, description, solution, userID } = req.body
-      const userData = (await service.findUserData(req, res, userID)) as IUser
+      const userData = (await service.findUserDataSV(req, res, userID)) as IUser
       const userLanguage = userData.appData.language
       const checkSendToEmail =
         userData.appData.notificationsByEmail.requestStatuses
@@ -132,7 +132,7 @@ export class requestsController {
       )?.name[userLanguage as keyof typeof name]
       const subjects = serverData.mailMessages.changeStatusRequest.subject
       const sendResult = checkSendToEmail
-        ? sendMail({
+        ? sendMailRequire({
             adresses: email,
             subject: subjects[userLanguage as keyof typeof subjects] + number,
             number: number,
@@ -239,7 +239,7 @@ export class requestsController {
   //   )?.name[userLanguage as keyof typeof name]
   //   const subjects = serverData.mailMessages.changeStatusRequest.subject
   //   const sendResult = checkSendToEmail
-  //     ? await sendMail({
+  //     ? await sendMailRequire({
   //         adresses: email,
   //         subject: subjects[userLanguage as keyof typeof subjects] + number,
   //         number: number,

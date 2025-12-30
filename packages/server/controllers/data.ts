@@ -92,6 +92,7 @@ export class dataController {
 
   getFullSoundCategories = async (_req: Request, res: Response) => {
     try {
+      console.log('get')
       const data = await SoundCategory.find()
       return res.json(data)
     } catch (e) {
