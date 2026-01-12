@@ -21,7 +21,7 @@ export const DropDownGroup = ({
   const inputGroupRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
-  const scrollRef = useRef<any>(null)
+  const scrollRef = useRef<Scrollbar>(null)
   const [focus, setFocus] = useState(false)
   const navigate = useNavigate()
 
@@ -117,7 +117,8 @@ export const DropDownGroup = ({
           </div>
         </div>
         <Scrollbar
-          ref={scrollRef}
+          // eslint-disable-next-line
+          ref={scrollRef as any}
           className={`dropDown__activeList ${focus ? 'activated' : ''}`}
           noDefaultStyles={true}
           noScrollX={true}
