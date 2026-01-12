@@ -16,7 +16,7 @@ export const MenuBar = observer(({ items, type }: IMenu) => {
   })
   const [state, changeState] = useState<boolean>(false)
   const indicatorRef = useRef<HTMLDivElement>(null)
-  const scrollRef = useRef<any>(null)
+  const scrollRef = useRef<Scrollbar>(null)
 
   const itemsSection = [...new Set(items.map(item => item.category))]
 
@@ -78,7 +78,11 @@ export const MenuBar = observer(({ items, type }: IMenu) => {
   }, [data.DeleteIndex])
 
   return (
-    <Scrollbar ref={scrollRef} className={cl.menu} style={{ width: '22%' }}>
+    <Scrollbar
+      // eslint-disable-next-line
+      ref={scrollRef as any}
+      className={cl.menu}
+      style={{ width: '22%' }}>
       <div
         ref={indicatorRef}
         className={cl.indicator}

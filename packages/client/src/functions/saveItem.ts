@@ -181,7 +181,7 @@ export const saveItem = async (
   try {
     const prepareData = prepareDataRecord(request) as IPrepareDataSave
     if (prepareData?.uploadImageStorage) {
-      await prepareData.uploadImageStorage(data.File.imgStorage.data.info)
+      prepareData.uploadImageStorage(data.File.imgStorage.data.info)
     }
     if (prepareData?.uploadImageStorage_lt) {
       await prepareData.uploadImageStorage_lt(data.File.imgStorage_lt.data.info)
@@ -199,14 +199,14 @@ export const saveItem = async (
       await prepareData.uploadSound(data.File.storage.data.info)
     }
     if (!isSound && prepareData?.uploadImage) {
-      await prepareData.uploadImage(data.File.imgStorage_lt.info)
+      await prepareData.uploadImage(data.File.imgStorage_lt.data.info)
     }
+    // eslint-disable-next-line
     const { _id, ...obj } = prepareData.object
     const response =
       request !== appData.globalCategory.USERS
         ? await saveData(prepareData.api, obj)
         : await addUser(object as IUSERS)
-    console.log('response = ', response)
     data.setShowLoading(false)
     modal.setShowModal(MODAL.modalMessageTitle.attention, response.message.RUS)
     if (request === appData.globalCategory.USERS) {

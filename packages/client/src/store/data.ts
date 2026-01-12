@@ -348,7 +348,7 @@ export const emptyFile = {
   info: {
     type: '',
   },
-  imgStorage: '',
-  imgStorage_lt: '',
-  storage: '',
+  imgStorage: { data: { data: '', info: { type: '' } } },
+  imgStorage_lt: { data: { data: '', info: { type: '' } } },
+  storage: { data: { data: '', info: { type: '' } } },
 }

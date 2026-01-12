@@ -8,6 +8,7 @@ import {
   ICurrentCategoryObj,
   ICurrentObj,
   IData,
+  IFile,
   IMESSAGES,
   IMUSICCategories,
   IMUSICS,
@@ -60,11 +61,11 @@ export class DataStore {
   _listFiles: string[]
   _sizeImages: number
   _sizeSounds: number
-  _imgFile: {}
-  _img_ltFile: {}
-  _file: any
+  _imgFile: INewFile
+  _img_ltFile: INewFile
+  _file: IFile
   _newFile: INewFile
-  _soundFile: {}
+  _soundFile: INewFile
   _clearFile: boolean
   _activeObj: IActiveObj
   _currentObj: ICurrentObj
@@ -109,11 +110,11 @@ export class DataStore {
     this._listFiles = ['']
     this._sizeImages = 0
     this._sizeSounds = 0
-    this._imgFile = {}
-    this._img_ltFile = {}
+    this._imgFile = emptyNewFile
+    this._img_ltFile = emptyNewFile
     this._file = emptyFile
     this._newFile = emptyNewFile
-    this._soundFile = {}
+    this._soundFile = emptyNewFile
     this._clearFile = false
     this._activeObj = emptyActiveObj
     this._currentObj = emptyCurrentObj

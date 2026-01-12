@@ -22,15 +22,15 @@ export interface IPrepareDataSave {
   ) &
     INOTIFICATIONS
   addData: (newObject: INOTIFICATIONS) => void
-  uploadImage: any
-  uploadSound: any
-  uploadImageStorage: any
-  uploadImageStorage_lt: any
+  uploadImage?: (info: { type: string }) => Promise<void>
+  uploadSound?: (info: { type: string }) => Promise<void>
+  uploadImageStorage?: (info: { type: string }) => Promise<void>
+  uploadImageStorage_lt?: (info: { type: string }) => Promise<void>
 }
 
 export interface IPrepareDatUpdate {
   api: string
-  updateData: any
+  updateData: () => Promise<void>
 }
 
 export interface IAxiosError {

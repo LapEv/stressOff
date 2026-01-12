@@ -21,7 +21,7 @@ export const Info = observer(() => {
   const musicData = useCategoriesDataInfo(data.Musics, data.MusicCategories)
   const allUsersTypes = useUsersTypes(data.Users) as IUserType
   const allUsersRoles = useUsersRoles(data.Users) as IUserRole
-  const scrollRef = useRef<any>(null)
+  const scrollRef = useRef<Scrollbar | null>(null)
 
   const filesData = [
     ...useFilesDataInfo(data.ListFiles, [
@@ -142,7 +142,10 @@ export const Info = observer(() => {
   return (
     data.Sounds.length > 0 && (
       <div className={cl.generalInfo} style={{ minWidth: 500 }}>
-        <Scrollbar className={cl.scrollbarInfo} ref={scrollRef}>
+        <Scrollbar
+          className={cl.scrollbarInfo}
+          // eslint-disable-next-line
+          ref={scrollRef as any}>
           {items.map((value, index) => (
             <div
               style={{ height: 'auto' }}

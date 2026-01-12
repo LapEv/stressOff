@@ -14,11 +14,11 @@ export interface IDataStore {
   _listFiles: string[]
   _sizeImages: number
   _sizeSounds: number
-  _imgFile: {}
-  _img_ltFile: {}
-  _file: {}
+  _imgFile: INewFile
+  _img_ltFile: INewFile
+  _file: IFile
   _newFile: INewFile
-  _soundFile: {}
+  _soundFile: INewFile
   _clearFile: boolean
   _activeObj: IActiveObj
   _currentObj: ICurrentObj
@@ -428,5 +428,21 @@ export interface INewFile {
   data: string
   info: {
     type: string
+  }
+}
+
+export interface IFile {
+  data: string
+  info: {
+    type: string
+  }
+  imgStorage: {
+    data: INewFile
+  }
+  imgStorage_lt: {
+    data: INewFile
+  }
+  storage: {
+    data: INewFile
   }
 }
