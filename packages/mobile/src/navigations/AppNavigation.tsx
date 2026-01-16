@@ -26,10 +26,10 @@ import {
 } from '@/screens'
 import { IAppNavigation, RootStackParamList } from './interfaces'
 import { modalShow } from '@/store/actions/modal'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { verticalAnimationDownUp } from './data'
 import { SectionsTabNavigation } from './SectionsTabNavigation'
 import { LoginNavigation } from './LoginNavigation'
+import { useLanguage } from '@/hooks'
 // import {FeedBackScreen} from '../screens/FeedBackScreen';
 // import {LanguageScreen} from '../screens/LanguageScreen';
 // import {ModalAlert} from '../components/Modal';
@@ -43,10 +43,8 @@ import { LoginNavigation } from './LoginNavigation'
 const Stack = createStackNavigator<RootStackParamList>()
 
 export const AppNavigation = ({ login, setToken }: IAppNavigation) => {
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
-  const token = useSelector<RootState>(state => state.token.token) as string
+  const [{ headerTitle, modalMessages }] = useLanguage()
+  const token = useSelector<RootState>(state => state.token) as string
 
   const navigationRef =
     React.createRef<NavigationContainerRef<ReactNavigation.RootParamList>>()
@@ -55,7 +53,7 @@ export const AppNavigation = ({ login, setToken }: IAppNavigation) => {
 
   const backAction = () => {
     if ((navigationRef.current?.getRootState()?.index as number) <= 0) {
-      dispatch(modalShow(language.modalMessages.exitApp))
+      dispatch(modalShow(modalMessages.exitApp))
     } else {
       navigationRef.current?.goBack()
     }
@@ -118,7 +116,7 @@ export const AppNavigation = ({ login, setToken }: IAppNavigation) => {
           component={PlayerScreen}
           options={{
             ...verticalAnimationDownUp,
-            title: language.headerTitle.player,
+            title: headerTitle.player,
           }}
         />
         <Stack.Screen
@@ -126,7 +124,7 @@ export const AppNavigation = ({ login, setToken }: IAppNavigation) => {
           component={SettingsScreen}
           // options={{
           //   ...verticalAnimationDownUp,
-          //   title: language.headerTitle.settings,
+          //   title: headerTitle.settings,
           // }}
         />
         <Stack.Screen
@@ -134,7 +132,7 @@ export const AppNavigation = ({ login, setToken }: IAppNavigation) => {
           component={FeedBackScreen}
           // options={{
           //   ...verticalAnimationDownUp,
-          //   title: language.headerTitle.feedback,
+          //   title: headerTitle.feedback,
           // }}
         />
         <Stack.Screen
@@ -142,7 +140,7 @@ export const AppNavigation = ({ login, setToken }: IAppNavigation) => {
           component={LanguageScreen}
           // options={{
           //   ...verticalAnimationDownUp,
-          //   title: language.headerTitle.language,
+          //   title: headerTitle.language,
           // }}
         />
         <Stack.Screen
@@ -150,7 +148,7 @@ export const AppNavigation = ({ login, setToken }: IAppNavigation) => {
           component={TimerScreen}
           // options={{
           //   ...verticalAnimationDownUp,
-          //   title: language.headerTitle.timer,
+          //   title: headerTitle.timer,
           // }}
         />
         <Stack.Screen
@@ -158,7 +156,7 @@ export const AppNavigation = ({ login, setToken }: IAppNavigation) => {
           component={NotificationsScreen}
           // options={{
           //   ...verticalAnimationDownUp,
-          //   title: language.headerTitle.notifications,
+          //   title: headerTitle.notifications,
           // }}
         />
       </Stack.Navigator>

@@ -39,7 +39,7 @@ const generateAccessToken = (
   const payload = { id, roles, username, type }
   const _jwt = expiresIn
     ? jwt.sign(payload, process.env.SECRET_KEY as string, {
-        expiresIn: '168h',
+        expiresIn: '720h',
       })
     : jwt.sign(payload, process.env.SECRET_KEY as string)
   return _jwt
@@ -63,27 +63,67 @@ const prepareDataForUser = async ({
   )}`
 
   const dataSoundCat = await SoundCategory.find()
-  const sound_categories = dataSoundCat.map(value => {
-    const { id, category, img, img_lt, imgStorage, imgStorage_lt } = value
-    return { id, category, img, img_lt, imgStorage, imgStorage_lt }
-  })
+  const sound_categories = dataSoundCat.map(
+    ({ id, category, img, img_lt, imgStorage, imgStorage_lt }) => {
+      return { id, category, img, img_lt, imgStorage, imgStorage_lt }
+    },
+  )
   const dataMusicCat = await MusicCategory.find()
-  const music_categories = dataMusicCat.map(value => {
-    const { id, category, img, img_lt } = value
+  const music_categories = dataMusicCat.map(({ id, category, img, img_lt }) => {
     return { id, category, img, img_lt }
   })
   const data_sound = await DataSound.find()
-  const sounds = data_sound.map(value => {
-    const { id, name, img, imgStorage, sound, storage, location, booked } =
-      value
-    return { id, name, img, imgStorage, sound, storage, location, booked }
-  })
+  const sounds = data_sound.map(
+    ({
+      id,
+      name,
+      img,
+      imgStorage,
+      sound,
+      storage,
+      location,
+      booked,
+      newSound,
+    }) => {
+      return {
+        id,
+        name,
+        img,
+        imgStorage,
+        sound,
+        storage,
+        location,
+        booked,
+        newSound,
+      }
+    },
+  )
   const data_music = await DataMusic.find()
-  const musics = data_music.map(value => {
-    const { id, name, img, imgStorage, sound, storage, location, booked } =
-      value
-    return { id, name, img, imgStorage, sound, storage, location, booked }
-  })
+  const musics = data_music.map(
+    ({
+      id,
+      name,
+      img,
+      imgStorage,
+      sound,
+      storage,
+      location,
+      booked,
+      newSound,
+    }) => {
+      return {
+        id,
+        name,
+        img,
+        imgStorage,
+        sound,
+        storage,
+        location,
+        booked,
+        newSound,
+      }
+    },
+  )
 
   return {
     globalCategory: serverData.dataConsts.globalCategoryUsers,
@@ -233,7 +273,7 @@ export class userController {
         { 'personalData.password': hashPassword },
       )
       const { id } = user
-      const expiresIn = '168h'
+      const expiresIn = '720h'
       const token = generateAccessToken(
         id,
         user.personalData.roles,
@@ -270,7 +310,7 @@ export class userController {
           .json({ message: serverData.APInotifications.auth.invalidPassword })
       }
       const { id } = user
-      const expiresIn = '168h'
+      const expiresIn = '720h'
       const token = generateAccessToken(
         id,
         user.personalData.roles,
@@ -328,7 +368,7 @@ export class userController {
   check = (req: Request, res: Response) => {
     try {
       const { username, id, roles, type } = req.body
-      const expiresIn = '168h'
+      const expiresIn = '720h'
       const token = generateAccessToken(id, roles, username, type, expiresIn)
       return res.json({ token })
     } catch (e) {
@@ -442,6 +482,7 @@ export class userController {
         ? this.changeStatusRequestNotification(data, finded)
         : this.addRequestNotification(data, finded)
     if (notification) {
+      // eslint-disable-next-line
       const result = await this.addNotification([finded], notification as any)
       return result.map(value => value?.personalData.username)
     }

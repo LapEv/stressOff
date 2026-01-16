@@ -1,5 +1,6 @@
 export const verticalAnimationDownUp = {
   headerShown: false,
+  // eslint-disable-next-line
   cardStyleInterpolator: ({ current, layouts }: any) => {
     return {
       cardStyle: {

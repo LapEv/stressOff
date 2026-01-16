@@ -7,7 +7,6 @@ import {
   useWindowDimensions,
 } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import Storage from 'expo-sqlite/kv-store'
 import { IFeedBack } from './interfaces'
 import { RootState } from '@/store'
 import { dataApp } from '@/data/dataApp'
@@ -22,17 +21,16 @@ import {
   View,
 } from '@/components'
 import { CustomHeader } from '../components'
-import { isValidEmail } from '@/utils/validation'
-import { ILocalizationOptions } from '@/localization/interfaces'
+import { checkValidation } from '@/utils/validation'
 import { ITheme } from '@/theme/interfaces'
+import * as SecureStore from 'expo-secure-store'
+import { useLanguage } from '@/hooks'
 
 export const FeedBackScreen = ({ navigation }: IFeedBack) => {
+  const [{ feedback, modalMessages, headerTitle }] = useLanguage()
   const dateFeedback = useSelector<RootState>(
     state => state.intervalFeedback.date,
   ) as Date
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
   const width = useWindowDimensions().width
   const theme = useSelector<RootState>(state => state.theme) as ITheme
   const dispatch = useDispatch()
@@ -47,22 +45,20 @@ export const FeedBackScreen = ({ navigation }: IFeedBack) => {
   const CheckFirstNameMax = (value: string) => {
     value.length <= dataApp.feedback.maxLengthFirstName
       ? (setFirstName(value), errorMessage ? setErrorMessage('') : null)
-      : (setFirstName(value),
-        setErrorMessage(language.feedback.errors.maxLengthName))
+      : (setFirstName(value), setErrorMessage(feedback.errors.maxLengthName))
   }
 
   const CheckTopicMax = (value: string) => {
     value.length <= dataApp.feedback.maxLengthTopic
       ? (setTopic(value), errorMessage ? setErrorMessage('') : null)
-      : (setTopic(value),
-        setErrorMessage(language.feedback.errors.maxLengthTopic))
+      : (setTopic(value), setErrorMessage(feedback.errors.maxLengthTopic))
   }
 
   const CheckDescriptionMax = (value: string) => {
     value.length <= dataApp.feedback.maxLengthDescription
       ? (setDescription(value), errorMessage ? setErrorMessage('') : null)
       : (setDescription(value),
-        setErrorMessage(language.feedback.errors.maxLengthDescription))
+        setErrorMessage(feedback.errors.maxLengthDescription))
   }
 
   const сlearFields = () => {
@@ -75,7 +71,7 @@ export const FeedBackScreen = ({ navigation }: IFeedBack) => {
   async function setAsyncStorageTimeRequest() {
     const date = new Date()
     try {
-      return Storage.setItemAsync(
+      return SecureStore.setItemAsync(
         dataApp.STORAGE_KEYS.feedbackInterval,
         JSON.stringify(date),
       )
@@ -94,33 +90,29 @@ export const FeedBackScreen = ({ navigation }: IFeedBack) => {
         0,
         2,
       )}h:${formattedTime.substr(3, 2)}m:${formattedTime.substr(6, 2)}s`
-      setErrorMessage(language.feedback.errors.intervalSending + messageDelay)
+      setErrorMessage(feedback.errors.intervalSending + messageDelay)
       return
     }
 
-    !firstName ? setErrorMessage(language.feedback.errors.emptyName) : null
+    !firstName ? setErrorMessage(feedback.errors.emptyName) : null
     if (!firstName) return
 
     if (firstName.length > dataApp.feedback.maxLengthFirstName) return
 
-    const checkEmail = isValidEmail(email)
-    !checkEmail
-      ? setErrorMessage(language.feedback.errors.incorrectEmail)
-      : null
+    const checkEmail = checkValidation('email', email.trim())
+    !checkEmail ? setErrorMessage(feedback.errors.incorrectEmail) : null
     if (!checkEmail) return
 
-    !topic ? setErrorMessage(language.feedback.errors.emptyTopic) : null
+    !topic ? setErrorMessage(feedback.errors.emptyTopic) : null
     if (topic.length < dataApp.feedback.minLengthTopic) {
-      setErrorMessage(language.feedback.errors.minLengthTopic)
+      setErrorMessage(feedback.errors.minLengthTopic)
       return
     }
     if (!topic) return
 
-    !description
-      ? setErrorMessage(language.feedback.errors.emptyDescription)
-      : null
+    !description ? setErrorMessage(feedback.errors.emptyDescription) : null
     if (description.length < dataApp.feedback.minLengthDescription) {
-      setErrorMessage(language.feedback.errors.minLengthDescription)
+      setErrorMessage(feedback.errors.minLengthDescription)
       return
     }
     if (!description) return
@@ -141,18 +133,17 @@ export const FeedBackScreen = ({ navigation }: IFeedBack) => {
     const numberRequest = await AddFeedBackToFB(value)
     if (numberRequest) {
       сlearFields()
-      language.modalMessages.feedbackSuccess.message =
-        language.feedback.resultSuccess + numberRequest.request
-      dispatch(modalShowMessage(language.modalMessages.feedbackSuccess))
+      modalMessages.feedbackSuccess.message =
+        feedback.resultSuccess + numberRequest.request
+      dispatch(modalShowMessage(modalMessages.feedbackSuccess))
       setTimeStmp(new Date())
       setAsyncStorageTimeRequest()
       dispatch(IntervalFeedback(new Date()))
       navigation.navigate('SettingsScreen', { screen: 'SettingsScreen' })
       return
     }
-    language.modalMessages.error.message =
-      language.feedback.resultError + `${numberRequest}`
-    dispatch(modalShowMessage(language.modalMessages.error))
+    modalMessages.error.message = feedback.resultError + `${numberRequest}`
+    dispatch(modalShowMessage(modalMessages.error))
   }
 
   const shadowitems = {
@@ -198,10 +189,7 @@ export const FeedBackScreen = ({ navigation }: IFeedBack) => {
 
   return (
     <View style={styles.container}>
-      <CustomHeader
-        navigation={navigation}
-        label={language.headerTitle.feedback}
-      />
+      <CustomHeader navigation={navigation} label={headerTitle.feedback} />
       <LinearGradient>
         <KeyboardAvoidingView
           style={styles.viewKeyboard}
@@ -224,7 +212,7 @@ export const FeedBackScreen = ({ navigation }: IFeedBack) => {
             <View style={styles.floatingItem}>
               <FloatLabelInput
                 isPassword={false}
-                label={language.feedback.firstName}
+                label={feedback.firstName}
                 value={firstName}
                 containerStyles={fliStyles.containerStyles}
                 onChangeText={value => CheckFirstNameMax(value)}
@@ -233,7 +221,7 @@ export const FeedBackScreen = ({ navigation }: IFeedBack) => {
             <View style={styles.floatingItem}>
               <FloatLabelInput
                 isPassword={false}
-                label={language.feedback.emailLabel}
+                label={feedback.emailLabel}
                 value={email}
                 containerStyles={fliStyles.containerStyles}
                 onChangeText={setEmail}
@@ -242,7 +230,7 @@ export const FeedBackScreen = ({ navigation }: IFeedBack) => {
             <View style={styles.floatingItem}>
               <FloatLabelInput
                 isPassword={false}
-                label={language.feedback.topicLabel}
+                label={feedback.topicLabel}
                 value={topic}
                 containerStyles={fliStyles.containerStyles}
                 onChangeText={value => CheckTopicMax(value)}
@@ -253,7 +241,7 @@ export const FeedBackScreen = ({ navigation }: IFeedBack) => {
                 value={description}
                 multiline
                 numberOfLines={4}
-                placeholder={language.feedback.descriptionLabel}
+                placeholder={feedback.descriptionLabel}
                 placeholderTextColor={'#aaa'}
                 style={fliStyles.containerStylesDescription}
                 onChangeText={value => CheckDescriptionMax(value)}
@@ -261,9 +249,7 @@ export const FeedBackScreen = ({ navigation }: IFeedBack) => {
             </View>
             <Touchable style={styles.touch} onPress={Submit}>
               <Shadow style={shadowitems}>
-                <TextTitle type="title_16b">
-                  {language.feedback.button}
-                </TextTitle>
+                <TextTitle type="title_16b">{feedback.button}</TextTitle>
               </Shadow>
             </Touchable>
             <View style={styles.viewFooter}></View>

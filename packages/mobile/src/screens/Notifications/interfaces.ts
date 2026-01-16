@@ -7,5 +7,5 @@ export interface INotifications {
 
 export type NavigationPropNotifications = StackNavigationProp<
   RootStackParamList,
-  'Notifications'
+  'NotificationsScreen'
 >

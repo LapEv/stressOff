@@ -4,13 +4,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { IMediaLink } from './interfaces'
 import { RootState } from '@/store'
 import { ITheme } from '@/theme/interfaces'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { ToggleAllSound } from '@/store/actions/sounds'
 import { ISoundStateItems } from '@/store/interfaces'
 import { Shadow, Text, Touchable, View, ViewStyle } from '@/components'
 import { ArrowRightSVG, PauseSVG, PlaySVG } from '@/assets/icons/SVG'
+import { useLanguage } from '@/hooks'
 
 export const MediaLink = ({ navigation }: IMediaLink) => {
+  const [{ Messages }] = useLanguage()
   const playSoundsAll = useSelector<RootState>(
     state => state.sound.playAll,
   ) as boolean
@@ -18,9 +19,6 @@ export const MediaLink = ({ navigation }: IMediaLink) => {
     state => state.favorites.currentMix,
   ) as string
   const theme = useSelector<RootState>(state => state.theme) as ITheme
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
   const playingDataSound = useSelector<RootState>(
     state => state.sound.mixedSound,
   ) as ISoundStateItems[]
@@ -45,18 +43,23 @@ export const MediaLink = ({ navigation }: IMediaLink) => {
   }
 
   const quantity = playingDataSound.length + (playingMusicId > 0 ? 1 : 0)
-  const quantityMessage = `${language.Messages.element}: ${quantity}`
+  const quantityMessage = `${Messages.element}: ${quantity}`
 
   return (
-    <ViewStyle type="tiles" style={styles.container}>
+    <ViewStyle type="tiles" style={{ ...styles.container }}>
       <Shadow
         style={{ width: width * 0.95, backgroundColor: theme.BACKGROUNDCOLOR }}>
         <ViewStyle
           style={{
             ...styles.screen,
             borderColor: theme.borderColorRGBA,
+            backgroundColor: theme.BACKGROUNDCOLOR,
           }}>
-          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
             <Touchable
               style={styles.touchRight}
               onPress={() =>

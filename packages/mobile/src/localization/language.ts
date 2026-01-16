@@ -61,7 +61,7 @@ export const LANGUAGE = {
       resetPassword: 'Сброс пароля',
     },
     loading: 'Загрузка...',
-    newSound: 'NEW',
+    newSoundText: 'NEW',
     notifications: {
       noNotifications: 'У вас пока нет уведомлений.',
       title: 'Добавлен новый звук.',
@@ -381,7 +381,7 @@ export const LANGUAGE = {
       resetPassword: 'Reset Password',
     },
     loading: 'Loading...',
-    newSound: 'NEW',
+    newSoundText: 'NEW',
     notifications: {
       noNotifications: "You don't have any notifications yet.",
       title: 'Added a new sound.',

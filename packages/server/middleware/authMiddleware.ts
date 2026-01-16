@@ -9,6 +9,7 @@ interface jwtAnswer {
   username: string
   type: string
 }
+
 export const authMiddleware = async (
   req: Request,
   res: Response,
@@ -24,8 +25,6 @@ export const authMiddleware = async (
       return res.status(401).json({ message: auth.notification.notLogged })
     }
     const verify = jwt.verify(token, SECRET_KEY as Secret)
-    console.log('token = ', token)
-    console.log('verify = ', verify)
     const { id, roles, username, type } = verify as jwtAnswer
     req.body = { ...req.body, id, roles, username, type }
     next()

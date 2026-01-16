@@ -5,7 +5,6 @@ import {
   Touchable,
   View,
 } from '@/components'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { RootState } from '@/store'
 import { modalShow } from '@/store/actions/modal'
 import { IFavorites } from '@/store/interfaces'
@@ -13,11 +12,10 @@ import React, { useEffect } from 'react'
 import { StyleSheet, FlatList, useWindowDimensions } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { FavoritesTiles } from '../Favorites/FavoritesTiles'
+import { useLanguage } from '@/hooks'
 
 export const MixesScreen = () => {
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ modalMessages, buttons, Messages }] = useLanguage()
   const favorites = useSelector<RootState>(
     state => state.favorites,
   ) as IFavorites
@@ -29,7 +27,7 @@ export const MixesScreen = () => {
 
   const dispatch = useDispatch()
   const ClearMixesList = () => {
-    dispatch(modalShow(language.modalMessages.removeFavoriteAllMix))
+    dispatch(modalShow(modalMessages.removeFavoriteAllMix))
   }
 
   const renderItem = ({ item }) => (
@@ -69,9 +67,7 @@ export const MixesScreen = () => {
                     <Touchable
                       style={styles.touchClear}
                       onPress={ClearMixesList}>
-                      <TextTitle type="title_20b">
-                        {language.buttons.clear}
-                      </TextTitle>
+                      <TextTitle type="title_20b">{buttons.clear}</TextTitle>
                     </Touchable>
                   </Shadow>
                 </View>
@@ -80,7 +76,7 @@ export const MixesScreen = () => {
           ) : (
             <View style={styles.viewEmptyOwn}>
               <TextTitle type="title_14" style={{ opacity: 0.9 }}>
-                {language.Messages.emptyOwnMixes}
+                {Messages.emptyOwnMixes}
               </TextTitle>
             </View>
           )}

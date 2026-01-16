@@ -1,30 +1,23 @@
 import React from 'react'
 import { StyleSheet, FlatList } from 'react-native'
-import { useSelector } from 'react-redux'
 import { ILanguage, ILanguageData } from './interfaces'
 import { View } from '@/components'
 import { CustomHeader } from '../components'
 import { LinearGradient } from 'react-native-svg'
 import { dataApp } from '@/data/dataApp'
-import { RootState } from '@/store'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { LanguageTiles } from './LanguageTiles'
+import { useLanguage } from '@/hooks'
 
 export const LanguageScreen = ({ navigation }: ILanguage) => {
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ headerTitle }] = useLanguage()
 
   const renderItem = ({ title, value }: ILanguageData) => {
-    return <LanguageTiles title={title} name={value} />
+    return <LanguageTiles title={title} nameTiles={value} />
   }
 
   return (
     <View style={styles.container}>
-      <CustomHeader
-        navigation={navigation}
-        label={language.headerTitle.language}
-      />
+      <CustomHeader navigation={navigation} label={headerTitle.language} />
       <LinearGradient>
         <View></View>
         <FlatList

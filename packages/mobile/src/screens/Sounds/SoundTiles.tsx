@@ -1,36 +1,23 @@
 import { dataApp } from '@/data/dataApp'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { RootState } from '@/store'
-import { UpdateSoundsBookedDB, UpdateSoundsDB } from '@/store/actions/db'
-import { ChangeCurrentMixPlay } from '@/store/actions/favorites'
+import { UpdateSoundsBookedDB } from '@/store/actions/db'
 import { modalShowMessage } from '@/store/actions/modalMessage'
-import { AddSound, RemoveSound, ToggleAllSound } from '@/store/actions/sounds'
 import { ISoundStateItems } from '@/store/interfaces'
 import { ITheme } from '@/theme/interfaces'
 import React, { useEffect, useState } from 'react'
-import {
-  ImageBackground,
-  Image,
-  StyleSheet,
-  useWindowDimensions,
-} from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { ImageBackground, StyleSheet, useWindowDimensions } from 'react-native'
+import { useSelector } from 'react-redux'
 import { ISoundsTiles } from './interfaces'
-import { CheckFile, CheckFileSize, FileSizeToString } from '@/functions'
+import { CheckFileSize, FileSizeToString } from '@/functions'
 import { modalShow } from '@/store/actions/modal'
-import {
-  Shadow,
-  Text,
-  TextTitle,
-  Touchable,
-  View,
-  ViewStyle,
-} from '@/components'
+import { Shadow, Text, TextTitle, Touchable, View } from '@/components'
 import { icons } from '@/data/contentApp'
 import { BookedSVGNo, BookedSVGYes, Cloud, Mobile } from '@/assets/icons/SVG'
+import { useDB, useLanguage } from '@/hooks'
 
 export const SoundsTiles = ({
   id,
+  _id,
   findUseSound,
   item,
   img,
@@ -41,11 +28,11 @@ export const SoundsTiles = ({
   name,
   booked,
   globalCategory,
-  newSnd,
+  newSound,
 }: ISoundsTiles) => {
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ sounds }, { UpdateSoundsStatusDB }] = useDB()
+  console.log('sounds = ', sounds[0])
+  const [{ newSoundText, modalMessages }] = useLanguage()
   const soundStart = useSelector<RootState>(
     state => state.sound.soundStart,
   ) as boolean
@@ -58,8 +45,8 @@ export const SoundsTiles = ({
   const theme = useSelector<RootState>(state => state.theme) as ITheme
   const [playing, setPlaying] = useState(findUseSound)
   const [disabled, setDisabled] = useState<boolean>(false)
-  const [newSound, setNewSound] = useState(newSnd)
   const width = useWindowDimensions().width
+  console.log('disabled = ', disabled)
 
   useEffect(() => {
     setPlaying(findUseSound)
@@ -67,69 +54,57 @@ export const SoundsTiles = ({
 
   useEffect(() => {
     !soundStart ? setDisabled(false) : null
-    console.log(disabled)
+    // console.log('Sound Tiles disabled = ', disabled)
   }, [soundStart])
 
-  const dispatch = useDispatch()
-  const addSound = async (id: string, findUseSound: boolean) => {
-    // updateStatusNewSounds(false, id, user.uid);
-    // dispatch(UpdateSoundsStatusDB({ name: name, new: false }));
+  const addSound = async (id: string, _id: string, findUseSound: boolean) => {
     if (playingDataSound.length + 1 >= dataApp.maxSounds) {
-      console.log('empty')
+      // dispatch(modalShowMessage(language.modalMessages.maxSounds))
+      return
     }
-    setNewSound(false)
-    const check = location === 'device' ? await CheckFile(item) : true
-    check || location !== 'device'
-      ? !findUseSound
-        ? (setPlaying(previousState => !previousState),
-          dispatch(
-            ToggleAllSound({
-              playAll: true,
-            }),
-          ),
-          dispatch(
-            AddSound({
-              id: id,
-              playing: true,
-              volume: 1.0,
-              booked: booked,
-            }),
-          ),
-          dispatch(
-            ChangeCurrentMixPlay({
-              name: language.Messages.currentMix,
-              id: 0,
-            }),
-          ),
-          setDisabled(true))
-        : (setPlaying(previousState => !previousState),
-          dispatch(
-            RemoveSound({
-              id: Number(id),
-            }),
-          ),
-          dispatch(
-            ChangeCurrentMixPlay({
-              name: language.Messages.currentMix,
-              id: 0,
-            }),
-          ))
-      : ((language.modalMessages.error.message = `${language.Messages.fileNotFound} ${language.Messages.switchToCloud}`),
-        // await updateSoundsLocation('cloud', id, '', user._id),
-        dispatch(UpdateSoundsDB({ name: name, sound: '', location: 'cloud' })),
-        dispatch(modalShowMessage(language.modalMessages.error)))
-  }
-
-  const shadowOpt = {
-    width: 55,
-    height: 55,
-    color: theme.CHECK_COLOR,
-    border: 7,
-    radius: 10,
-    opacity: 0.8,
-    x: 0,
-    y: 0,
-    style: { marginVertical: 0 },
+    // updateStatusNewSounds(false, id, user.uid)
+    console.log('here findUseSound = ', findUseSound)
+    UpdateSoundsStatusDB({ _id, newSound: false })
+    // const check = location === 'device' ? await CheckFile(item) : true
+    // check || location !== 'device'
+    //   ? !findUseSound
+    //     ? (setPlaying(previousState => !previousState),
+    //       dispatch(
+    //         ToggleAllSound({
+    //           playAll: true,
+    //         }),
+    //       ),
+    //       dispatch(
+    //         AddSound({
+    //           id: id,
+    //           playing: true,
+    //           volume: 1.0,
+    //           booked,
+    //         }),
+    //       ),
+    //       dispatch(
+    //         ChangeCurrentMixPlay({
+    //           name: language.Messages.currentMix,
+    //           id: 0,
+    //         }),
+    //       ),
+    //       setDisabled(true))
+    //     : (setPlaying(previousState => !previousState),
+    //       dispatch(
+    //         RemoveSound({
+    //           id: Number(id),
+    //         }),
+    //       ),
+    //       dispatch(
+    //         ChangeCurrentMixPlay({
+    //           name: language.Messages.currentMix,
+    //           id: 0,
+    //         }),
+    //       ))
+    //   : ((language.modalMessages.error.message = `${language.Messages.fileNotFound} ${language.Messages.switchToCloud}`),
+    //     // await updateSoundsLocation('cloud', id, '', user._id),
+    //     dispatch(UpdateSoundsDB({ name: name, sound: '', location: 'cloud' })),
+    //     dispatch(modalShowMessage(language.modalMessages.error)))
   }
 
   const findPlaySound = playingDataSound.find(value => value.id === Number(id))
@@ -147,12 +122,12 @@ export const SoundsTiles = ({
     globalCategory: string,
   ) => {
     const size = (await CheckSize(storage)) ?? ''
-    language.modalMessages.downloadFromCloud.message = `${language.modalMessages.downloadFromCloud.message1} "${title}" ${language.modalMessages.downloadFromCloud.message2} \n${language.modalMessages.downloadFromCloud.size} ${size}`
-    language.modalMessages.downloadFromCloud.storage = storage
-    language.modalMessages.downloadFromCloud.name = name
-    language.modalMessages.downloadFromCloud.category = globalCategory
-    language.modalMessages.downloadFromCloud.id = id
-    dispatch(modalShow(language.modalMessages.downloadFromCloud))
+    modalMessages.downloadFromCloud.message = `${modalMessages.downloadFromCloud.message1} "${title}" ${modalMessages.downloadFromCloud.message2} \n${modalMessages.downloadFromCloud.size} ${size}`
+    modalMessages.downloadFromCloud.storage = storage
+    modalMessages.downloadFromCloud.name = name
+    modalMessages.downloadFromCloud.category = globalCategory
+    modalMessages.downloadFromCloud.id = id
+    dispatch(modalShow(modalMessages.downloadFromCloud))
   }
 
   const deleteFromDevice = async (
@@ -163,12 +138,12 @@ export const SoundsTiles = ({
   ) => {
     const sizeFile = (await CheckFileSize(item)) as number
     const size = FileSizeToString(sizeFile)
-    language.modalMessages.deleteFromDevice.message = `${language.modalMessages.deleteFromDevice.message1} "${title}" ${language.modalMessages.deleteFromDevice.message2} \n${language.modalMessages.deleteFromDevice.size} ${size}`
-    language.modalMessages.deleteFromDevice.sound = item
-    language.modalMessages.deleteFromDevice.name = name
-    language.modalMessages.deleteFromDevice.id = id
-    language.modalMessages.deleteFromDevice.category = globalCategory
-    dispatch(modalShow(language.modalMessages.deleteFromDevice))
+    modalMessages.deleteFromDevice.message = `${modalMessages.deleteFromDevice.message1} "${title}" ${modalMessages.deleteFromDevice.message2} \n${modalMessages.deleteFromDevice.size} ${size}`
+    modalMessages.deleteFromDevice.sound = item
+    modalMessages.deleteFromDevice.name = name
+    modalMessages.deleteFromDevice.id = id
+    modalMessages.deleteFromDevice.category = globalCategory
+    dispatch(modalShow(modalMessages.deleteFromDevice))
   }
 
   const ToggleBookedSounds = async (id: string, booked: boolean) => {
@@ -176,37 +151,43 @@ export const SoundsTiles = ({
     dispatch(UpdateSoundsBookedDB({ id: id, booked: !booked }))
   }
 
-  console.log('img = ', img)
   return (
-    <ViewStyle
-      style={
-        (styles.container, { width: width / dataApp.FLATLIST.numberColumns })
-      }>
-      {newSound ? (
+    <View
+      type="check"
+      style={{
+        ...styles.container,
+        width: width / dataApp.FLATLIST.numberColumns,
+      }}>
+      {JSON.parse(newSound) ? (
         <View style={styles.new}>
-          <TextTitle type="title_14" style={styles.newText}>
-            {language.newSound}
+          <TextTitle type="title_14" colorType="check" style={styles.newText}>
+            {newSoundText}
           </TextTitle>
         </View>
       ) : null}
       {playing && playSound && playAll && (
         <View style={styles.check}>
-          <Image
-            style={{ width: '80%', height: '100%', resizeMode: 'stretch' }}
+          <ImageBackground
+            style={{ width: '80%', height: '100%' }}
+            imageStyle={{
+              borderRadius: 5,
+              resizeMode: 'stretch',
+              overflow: 'visible',
+            }}
             source={icons.eqGif}
           />
         </View>
       )}
       {playing && playSound && !playAll && (
         <View style={styles.check}>
-          <Image
-            style={{ width: '80%', height: '100%', resizeMode: 'stretch' }}
+          <ImageBackground
+            style={{ width: '80%', height: '100%' }}
             source={icons.eqPng}
-            // imageStyle={{
-            //   borderRadius: 5,
-            //   resizeMode: 'stretch',
-            //   overflow: 'visible',
-            // }}
+            imageStyle={{
+              borderRadius: 5,
+              resizeMode: 'stretch',
+              overflow: 'visible',
+            }}
           />
         </View>
       )}
@@ -253,13 +234,15 @@ export const SoundsTiles = ({
       {playing && (
         <Touchable
           style={styles.touchContainer}
-          onPress={() => addSound(id, findUseSound)}
+          onPress={() => addSound(id, _id, findUseSound)}
           onLongPress={() =>
             description.length > 0 ? OpenDescription(description, title) : null
           }>
-          <Shadow style={shadowOpt}>
+          <Shadow
+            style={{ ...styles.shadow, color: theme.CHECK_COLOR }}
+            distance={55}>
             <ImageBackground
-              source={{ uri: img }}
+              source={img}
               imageStyle={{
                 borderRadius: 5,
                 resizeMode: 'stretch',
@@ -273,12 +256,12 @@ export const SoundsTiles = ({
       {!playing && (
         <Touchable
           style={styles.touchContainer}
-          onPress={() => addSound(id, findUseSound)}
+          onPress={() => addSound(id, _id, findUseSound)}
           onLongPress={() =>
             description.length > 0 ? OpenDescription(description, title) : null
           }>
           <ImageBackground
-            source={{ uri: img }}
+            source={img}
             imageStyle={{
               borderRadius: 5,
               resizeMode: 'stretch',
@@ -291,7 +274,7 @@ export const SoundsTiles = ({
       <Text type="text_14" style={styles.title}>
         {title}
       </Text>
-    </ViewStyle>
+    </View>
   )
 }
 
@@ -303,7 +286,16 @@ const styles = StyleSheet.create({
     width: 110,
     height: 140,
     justifyContent: 'flex-start',
-    zIndex: 1,
+    zIndex: 2,
+  },
+  shadow: {
+    width: 55,
+    height: 55,
+    opacity: 0.8,
+    borderRadius: 7,
+    zIndex: 2,
+    borderColor: 'red',
+    borderWidth: 1,
   },
   touchContainer: {
     justifyContent: 'flex-start',

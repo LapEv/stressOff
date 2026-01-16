@@ -6,17 +6,15 @@ import DateTimePicker, {
 } from '@react-native-community/datetimepicker'
 import { individualStart } from '@/store/actions/individualTimer'
 import { RootState } from '@/store'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { IindividualStart } from '@/store/interfaces'
 import { LinearGradient, TextTitle, Touchable, View } from '@/components'
 import { typeElevation } from '@/components/Shadow/typeElevaion'
+import { useLanguage } from '@/hooks'
 
 export const TimePicker = () => {
   const [show, setShow] = useState<boolean>(false)
   const [time, setTime] = useState<Date>(new Date('2021-10-22T00:00:00'))
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ timer }] = useLanguage()
   const individualTimer = useSelector<RootState>(
     state => state.individualTimer,
   ) as IindividualStart
@@ -119,14 +117,14 @@ export const TimePicker = () => {
                     style={styles.controlItemAddContainer}
                     onPress={() => setShow(false)}>
                     <TextTitle type="title_16b" style={{ textAlign: 'center' }}>
-                      {language.timer.buttonNo}
+                      {timer.buttonNo}
                     </TextTitle>
                   </Touchable>
                   <Touchable
                     style={styles.controlItemAddContainer}
                     onPress={SetTimerIos}>
                     <TextTitle type="title_16b" style={{ textAlign: 'center' }}>
-                      {language.timer.buttonYes}
+                      {timer.buttonYes}
                     </TextTitle>
                   </Touchable>
                 </View>

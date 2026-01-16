@@ -1,55 +1,51 @@
 import React from 'react'
 import { StyleSheet, FlatList, Platform } from 'react-native'
-import { useSelector } from 'react-redux'
 import { ITimeData, ITimer } from './interfaces'
-import { RootState } from '@/store'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { dataApp } from '@/data/dataApp'
 import { LinearGradient, View } from '@/components'
 import { CustomHeader } from '../components'
 import { TimePicker } from './TimePicker'
 import { TimeView } from './TimeView'
 import { TimerTiles } from './TimerTiles'
+import { useLanguage } from '@/hooks'
 
 export const TimerScreen = ({ navigation }: ITimer) => {
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ timer, headerTitle }] = useLanguage()
 
   const timerData = [
     {
       id: '1',
-      title: `${dataApp.timer.time1 / 60000} ${language.timer.mins}`,
+      title: `${dataApp.timer.time1 / 60000} ${timer.mins}`,
       duration: dataApp.timer.time1,
     },
     {
       id: '2',
-      title: `${dataApp.timer.time2 / 60000} ${language.timer.mins}`,
+      title: `${dataApp.timer.time2 / 60000} ${timer.mins}`,
       duration: dataApp.timer.time2,
     },
     {
       id: '3',
-      title: `${dataApp.timer.time3 / 60000} ${language.timer.mins}`,
+      title: `${dataApp.timer.time3 / 60000} ${timer.mins}`,
       duration: dataApp.timer.time3,
     },
     {
       id: '4',
-      title: `${dataApp.timer.time4 / 60000} ${language.timer.mins}`,
+      title: `${dataApp.timer.time4 / 60000} ${timer.mins}`,
       duration: dataApp.timer.time4,
     },
     {
       id: '5',
-      title: `${dataApp.timer.time5 / 3600000} ${language.timer.hour}`,
+      title: `${dataApp.timer.time5 / 3600000} ${timer.hour}`,
       duration: dataApp.timer.time5,
     },
     {
       id: '6',
-      title: `${dataApp.timer.time6 / 3600000} ${language.timer.hours}`,
+      title: `${dataApp.timer.time6 / 3600000} ${timer.hours}`,
       duration: dataApp.timer.time6,
     },
     {
       id: '7',
-      title: language.timer.individual,
+      title: timer.individual,
       duration: 0,
     },
   ]
@@ -61,10 +57,7 @@ export const TimerScreen = ({ navigation }: ITimer) => {
   return (
     <View style={styles.container}>
       {Platform.OS === 'ios' && <TimePicker />}
-      <CustomHeader
-        navigation={navigation}
-        label={language.headerTitle.timer}
-      />
+      <CustomHeader navigation={navigation} label={headerTitle.timer} />
       <LinearGradient>
         <FlatList
           horizontal={false}

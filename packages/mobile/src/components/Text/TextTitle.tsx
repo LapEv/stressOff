@@ -13,7 +13,11 @@ export const TextTitle = (props: IText) => {
     | Record<string, unknown>
     | undefined
   const textColor =
-    colorType === 'error' ? themeCurrent.DANGER_COLOR : themeCurrent.TEXT_COLOR
+    colorType === 'error'
+      ? themeCurrent.DANGER_COLOR
+      : colorType === 'check'
+        ? themeCurrent.CHECK_COLOR
+        : themeCurrent.TEXT_COLOR
   return (
     <DefaultText
       style={[styleText, { color: textColor }, style]}

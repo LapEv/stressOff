@@ -2,21 +2,19 @@ import { Shadow, TextTitle, Touchable, View } from 'components'
 import { RootState } from 'store'
 import { StyleSheet, useWindowDimensions } from 'react-native'
 import { useSelector } from 'react-redux'
-import { ILocalizationOptions } from 'localization/interfaces'
 import { ISoundState } from '@/store/interfaces'
 import { useDispatch } from 'react-redux'
 import { modalShow } from '@/store/actions/modal'
+import { useLanguage } from '@/hooks'
 
 export const ListFooter = () => {
   const width = useWindowDimensions().width
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ modalMessages, buttons }] = useLanguage()
   const StateSound = useSelector<RootState>(state => state.sound) as ISoundState
   const dispatch = useDispatch()
 
   const ClearSoundList = () => {
-    dispatch(modalShow(language.modalMessages.clearSoundList))
+    dispatch(modalShow(modalMessages.clearSoundList))
   }
 
   return (
@@ -24,7 +22,7 @@ export const ListFooter = () => {
       {StateSound.mixedSound.length > 0 && (
         <Shadow style={{ width: width * 0.4, radius: 10, ...styles.shadowOpt }}>
           <Touchable style={styles.touchableSound} onPress={ClearSoundList}>
-            <TextTitle type="title_20b">{language.buttons.clear}</TextTitle>
+            <TextTitle type="title_20b">{buttons.clear}</TextTitle>
           </Touchable>
         </Shadow>
       )}

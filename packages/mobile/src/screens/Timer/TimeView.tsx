@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ITimeView } from './interfaces'
 import { ITimerState } from '@/store/interfaces'
 import { RootState } from '@/store'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { ITheme } from '@/theme/interfaces'
 import { checkCloseApp, timerStop } from '@/store/actions/timer'
 import {
@@ -21,12 +20,11 @@ import {
   ViewStyle,
 } from '@/components'
 import { dataApp } from '@/data/dataApp'
+import { useLanguage } from '@/hooks'
 
 export const TimeView = ({ screen, on }: ITimeView) => {
   const timer = useSelector<RootState>(state => state.timer) as ITimerState
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [language] = useLanguage()
   const theme = useSelector<RootState>(state => state.theme) as ITheme
   const width = useWindowDimensions().width
   const [time, setTime] = useState<number>(0)

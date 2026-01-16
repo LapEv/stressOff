@@ -10,7 +10,7 @@ export const CustomBottomTab = ({
   descriptors,
   navigation,
 }: ICustomBottomProps) => {
-  const myList = useRef<FlatList<any> | null>(null)
+  const myList = useRef<FlatList | null>(null)
 
   const renderItem = ({ id, keys }: ICustomBottomTabData) => {
     const value = state.routes[id - 1]

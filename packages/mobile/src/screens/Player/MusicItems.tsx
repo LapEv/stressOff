@@ -9,7 +9,6 @@ import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from 'expo-av'
 import { Sound } from 'expo-av/build/Audio'
 import { ChangeStateMusic } from '@/store/actions/music'
 import { ChangeCurrentMixPlay } from '@/store/actions/favorites'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import {
   Shadow,
   SlideButton,
@@ -27,15 +26,10 @@ import {
   CloseItemSVG,
 } from '@/assets/icons/SVG'
 import { ITheme } from '@/theme/interfaces'
-import { curLanguage } from '@/localization/language'
+import { useLanguage } from '@/hooks'
 
 export const MusicItems = ({ id, booked }: IMusicItems) => {
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
-  const currentLanguage = useSelector<RootState>(
-    state => state.language.name,
-  ) as curLanguage
+  const [{ modalMessages, Messages, name }] = useLanguage()
   const width = useWindowDimensions().width
   const playingMusic = useSelector<RootState>(
     state => state.music,
@@ -124,7 +118,7 @@ export const MusicItems = ({ id, booked }: IMusicItems) => {
     )
     dispatch(
       ChangeCurrentMixPlay({
-        name: language.Messages.currentMix,
+        name: Messages.currentMix,
         id: 0,
       }),
     )
@@ -149,8 +143,8 @@ export const MusicItems = ({ id, booked }: IMusicItems) => {
           })
           .catch(error => {
             removeSound()
-            language.modalMessages.error.message = `${error.code}\n${error}`
-            dispatch(modalShowMessage(language.modalMessages.error))
+            modalMessages.error.message = `${error.code}\n${error}`
+            dispatch(modalShowMessage(modalMessages.error))
           })
   }, [playingMusic.id])
 
@@ -252,7 +246,7 @@ export const MusicItems = ({ id, booked }: IMusicItems) => {
               />
               <View style={{ ...styles.viewImage, width: width * 0.5 }}>
                 <Text type="text_14" style={styles.textMessages}>
-                  {musicDB[id - 1].title[currentLanguage]}
+                  {JSON.parse(musicDB[id - 1].title)[name]}
                 </Text>
                 <Slider
                   style={{ width: '100%', height: 30 }}

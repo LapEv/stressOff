@@ -15,13 +15,11 @@ import { typeElevation } from '@/components/Shadow/typeElevaion'
 import { SettingItems } from './SettingItems'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { ITheme } from '@/theme/interfaces'
+import { useLanguage } from '@/hooks'
 
 export const SettingsScreen = ({ navigation }: ISettings) => {
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ settings, headerTitle, buttons }] = useLanguage()
   const width = useWindowDimensions().width
   const theme = useSelector<RootState>(state => state.theme) as ITheme
 
@@ -40,15 +38,15 @@ export const SettingsScreen = ({ navigation }: ISettings) => {
   const settingItemsData = [
     {
       id: 1,
-      title: language.settings.titleDecoration,
+      title: settings.titleDecoration,
       data: [
         {
-          name: language.settings.nameTheme,
+          name: settings.nameTheme,
           value: dataApp.settings.theme.value,
           _key: dataApp.settings.theme._key,
         },
         {
-          name: language.settings.nameLanguage,
+          name: settings.nameLanguage,
           value: dataApp.settings.language.value,
           _key: dataApp.settings.language._key,
         },
@@ -56,20 +54,20 @@ export const SettingsScreen = ({ navigation }: ISettings) => {
     },
     {
       id: 2,
-      title: language.settings.titleService,
+      title: settings.titleService,
       data: [
         {
-          name: language.settings.nameAllSizesFile,
+          name: settings.nameAllSizesFile,
           value: dataApp.settings.allSizes.value,
           _key: dataApp.settings.allSizes._key,
         },
         {
-          name: language.settings.nameDeleteAllFiles,
+          name: settings.nameDeleteAllFiles,
           value: dataApp.settings.deleteAllFiles.value,
           _key: dataApp.settings.deleteAllFiles._key,
         },
         {
-          name: language.settings.nameToSupport,
+          name: settings.nameToSupport,
           value: dataApp.settings.toSupport.value,
           _key: dataApp.settings.toSupport._key,
         },
@@ -77,10 +75,10 @@ export const SettingsScreen = ({ navigation }: ISettings) => {
     },
     {
       id: 3,
-      title: language.settings.titleInformation,
+      title: settings.titleInformation,
       data: [
         {
-          name: language.settings.nameTermsOfService,
+          name: settings.nameTermsOfService,
           value: dataApp.settings.termOfService.value,
           _key: dataApp.settings.termOfService._key,
         },
@@ -107,10 +105,7 @@ export const SettingsScreen = ({ navigation }: ISettings) => {
 
   return (
     <View style={styles.container}>
-      <CustomHeader
-        navigation={navigation}
-        label={language.headerTitle.settings}
-      />
+      <CustomHeader navigation={navigation} label={headerTitle.settings} />
       <LinearGradient>
         <Touchable
           style={{
@@ -123,7 +118,7 @@ export const SettingsScreen = ({ navigation }: ISettings) => {
             })
           }>
           <Shadow style={shadowitems}>
-            <TextTitle type="title_16b">{language.buttons.signIn}</TextTitle>
+            <TextTitle type="title_16b">{buttons.signIn}</TextTitle>
           </Shadow>
         </Touchable>
         <SectionList

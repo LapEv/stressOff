@@ -8,7 +8,6 @@ import {
 import { useSelector } from 'react-redux'
 import { IResetPassword } from './interfaces'
 import { RootState } from '@/store'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { ITheme } from '@/theme/interfaces'
 import {
   FloatLabelInput,
@@ -26,11 +25,10 @@ import { addError } from '@/store/actions/error'
 import { resetPassword } from '@/api/userAPI'
 import { modalShowMessage } from '@/store/actions/modalMessage'
 import { checkAnonymousData } from '@/functions'
+import { useLanguage } from '@/hooks'
 
 export const ResetPasswordScreen = ({ navigation }: IResetPassword) => {
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ headerTitle, buttons, Messages }] = useLanguage()
   const width = useWindowDimensions().width
   const theme = useSelector<RootState>(state => state.theme) as ITheme
   const error = useSelector<RootState>(state => state.error) as IError
@@ -43,7 +41,7 @@ export const ResetPasswordScreen = ({ navigation }: IResetPassword) => {
     dispatch(
       modalShowMessage({
         typeMessage: 'resetPassWord',
-        message: language.Messages.resetPassword,
+        message: Messages.resetPassword,
         show: true,
         buttonYes: 'OK',
         title: 'Смена пароля',
@@ -76,7 +74,7 @@ export const ResetPasswordScreen = ({ navigation }: IResetPassword) => {
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
       <LinearGradient style={{ width: '100%' }}>
         <View style={Platform.OS === 'web' ? styles.web : styles.mobile}>
-          <Text type="text_30">{language.headerTitle.resetPassword} </Text>
+          <Text type="text_30">{headerTitle.resetPassword} </Text>
           <View style={styles.floatingItem}>
             <FloatLabelInput
               isPassword={false}
@@ -107,14 +105,12 @@ export const ResetPasswordScreen = ({ navigation }: IResetPassword) => {
               }}
               containerStyle={styles.shadowContainer}
               onPress={handleResetPassword}>
-              <TextTitle type="title_20b">
-                {language.buttons.resetPassword}
-              </TextTitle>
+              <TextTitle type="title_20b">{buttons.resetPassword}</TextTitle>
             </ShadowTouchable>
           </View>
           <View style={styles.optionsContainer}>
             <View style={styles.viewSignUp}>
-              <Text type="text_12">{language.Messages.hasAccount}</Text>
+              <Text type="text_12">{Messages.hasAccount}</Text>
               <ShadowTouchable
                 styleshadow={{
                   ...styles.shadow,
@@ -128,13 +124,11 @@ export const ResetPasswordScreen = ({ navigation }: IResetPassword) => {
                     screen: 'LoginScreen',
                   })
                 }>
-                <TextTitle type="title_16b">
-                  {language.buttons.signIn}
-                </TextTitle>
+                <TextTitle type="title_16b">{buttons.signIn}</TextTitle>
               </ShadowTouchable>
             </View>
             <View style={styles.viewSignUp}>
-              <Text type="text_12">{language.Messages.noAccount}</Text>
+              <Text type="text_12">{Messages.noAccount}</Text>
               <ShadowTouchable
                 styleshadow={{
                   ...styles.shadow,
@@ -148,9 +142,7 @@ export const ResetPasswordScreen = ({ navigation }: IResetPassword) => {
                     screen: 'SignUpScreen',
                   })
                 }>
-                <TextTitle type="title_16b">
-                  {language.buttons.signUp}
-                </TextTitle>
+                <TextTitle type="title_16b">{buttons.signUp}</TextTitle>
               </ShadowTouchable>
             </View>
           </View>
@@ -158,7 +150,7 @@ export const ResetPasswordScreen = ({ navigation }: IResetPassword) => {
             type="title_16b"
             style={styles.withoutAccount}
             onPress={continueWithoutAccount}>
-            {language.Messages.continueWithoutAccount}
+            {Messages.continueWithoutAccount}
           </TextTitle>
         </View>
       </LinearGradient>

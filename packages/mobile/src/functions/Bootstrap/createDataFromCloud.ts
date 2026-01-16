@@ -8,22 +8,26 @@ import {
   createNotification,
   createPersonalData,
   createSOUNDS_Categories,
+  getDataMusics,
+  getDataSounds,
 } from '@/db'
 import store from '@/store'
 import { addAppData } from '@/store/actions/appData'
 import {
   LoadMusicCategoriesFromFB,
-  LoadMusicFromFB,
+  LoadMusicFromDB,
   LoadNotificationsFromFB,
   LoadSoundCategoriesFromFB,
-  LoadSoundFromFB,
+  LoadSoundFromDB,
 } from '@/store/actions/db'
 import { addUserData } from '@/store/actions/user'
 import {
   IMUSICCategories,
   IMUSICS,
+  IMUSICSDB,
   ISOUNDCategories,
   ISOUNDS,
+  ISOUNDSDB,
   IUserData,
 } from '@/store/interfaces'
 
@@ -54,13 +58,16 @@ export const createDataFromCloud = async (userData: IUserData) => {
     await createMUSICS_Categories(musicCategoriesDB)
     store.dispatch(LoadMusicCategoriesFromFB(musicCategoriesDB))
 
-    const soundDB = (await getData(api.GET_DATA_SOUNDS)) as ISOUNDS[]
-    const musicDB = (await getData(api.GET_DATA_MUSICS)) as IMUSICS[]
+    const sound = (await getData(api.GET_DATA_SOUNDS)) as ISOUNDS[]
+    const music = (await getData(api.GET_DATA_MUSICS)) as IMUSICS[]
 
-    await createDataSounds(soundDB)
-    store.dispatch(LoadSoundFromFB(soundDB))
-    await createDataMusics(musicDB)
-    store.dispatch(LoadMusicFromFB(musicDB))
+    await createDataSounds(sound)
+    await createDataMusics(music)
+    const soundDB = (await getDataSounds()) as ISOUNDSDB[]
+    const musicDB = (await getDataMusics()) as IMUSICSDB[]
+
+    store.dispatch(LoadSoundFromDB(soundDB))
+    store.dispatch(LoadMusicFromDB(musicDB))
 
     await createNotification(userData.Notification[0])
     store.dispatch(LoadNotificationsFromFB(userData.Notification))

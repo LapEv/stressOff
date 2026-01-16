@@ -4,9 +4,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import Slider from '@react-native-community/slider'
 import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from 'expo-av'
 import { RootState } from '@/store'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { ISoundsItems, URI } from './interfaces'
-import { ISOUNDS } from '@/store/interfaces'
+import { ISOUNDSDB } from '@/store/interfaces'
 import {
   RemoveSound,
   TogglePlaySound,
@@ -32,17 +31,18 @@ import {
   CloseItemSVG,
 } from '@/assets/icons/SVG'
 import { curLanguage } from '@/localization/language'
+import { useLanguage } from '@/hooks'
 // import { SlideButton, SlideDirection } from 'react-native-slide-button';
 
 export const SoundItems = ({ item, booked }: ISoundsItems) => {
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ modalMessages, Messages }] = useLanguage()
   const currentLanguage = useSelector<RootState>(
     state => state.language.name,
   ) as curLanguage
   const width = useWindowDimensions().width
-  const soundDB = useSelector<RootState>(state => state.db.sounds) as ISOUNDS[]
+  const soundDB = useSelector<RootState>(
+    state => state.db.sounds,
+  ) as ISOUNDSDB[]
   const playSoundsAll = useSelector<RootState>(
     state => state.sound.playAll,
   ) as boolean
@@ -50,6 +50,7 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
     state => state.sound.startApp,
   ) as boolean
   const [volume, setVolumeState] = useState<number>(item.volume)
+  // eslint-disable-next-line
   const [sound, setSound] = useState<any>()
   const theme = useSelector<RootState>(state => state.theme) as ITheme
 
@@ -110,7 +111,7 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
     )
     dispatch(
       ChangeCurrentMixPlay({
-        name: language.Messages.currentMix,
+        name: Messages.currentMix,
         id: 0,
       }),
     )
@@ -138,8 +139,8 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
           })
           .catch(error => {
             removeSound(item.id)
-            language.modalMessages.error.message = `${error.code}\n${error}`
-            dispatch(modalShowMessage(language.modalMessages.error))
+            modalMessages.error.message = `${error.code}\n${error}`
+            dispatch(modalShowMessage(modalMessages.error))
           })
   }, [])
 
@@ -244,7 +245,7 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
               />
               <View style={{ ...styles.viewImage, width: width * 0.5 }}>
                 <Text type="text_14" style={styles.textMessages}>
-                  {soundDB[item.id - 1].title[currentLanguage]}
+                  {JSON.parse(soundDB[item.id - 1].title)[currentLanguage]}
                 </Text>
                 <Slider
                   style={{ width: '100%', height: 30 }}

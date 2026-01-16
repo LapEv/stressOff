@@ -1,5 +1,6 @@
-import { NavigationPropSound } from '@/navigations/interfaces'
-import { ParamListBase, RouteProp } from '@react-navigation/native'
+import { RootStackParamList } from '@/navigations/interfaces'
+import { RouteProp } from '@react-navigation/native'
+import { ImageSourcePropType } from 'react-native'
 
 export interface IMuscisScreenData {
   id: number
@@ -8,20 +9,20 @@ export interface IMuscisScreenData {
 
 export interface IMuscisTiles {
   id: string
+  _id: string
   findUseMusic: boolean
   item: string
-  img: string
+  img: ImageSourcePropType
   title: string
   description: string
   location: string
   storage: string
   name: string
-  booked: boolean
+  booked: string
   globalCategory: string
-  newSnd: boolean
+  newSound: string
 }
 
-export type Props = {
-  navigation: NavigationPropSound
-  route: RouteProp<ParamListBase, string>
+export interface IMusicScreenProps {
+  route?: RouteProp<RootStackParamList, 'MusicsScreen'>
 }

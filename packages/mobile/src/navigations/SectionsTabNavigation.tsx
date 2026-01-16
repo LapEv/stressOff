@@ -2,7 +2,6 @@ import { StyleSheet } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { ITheme } from '@/theme/interfaces'
 import { CustomBottomTab } from '@/screens/components'
 import {
@@ -16,13 +15,12 @@ import { SoundsTabNavigation } from './SoundsTabNavigation'
 import { SettingsScreen } from '@/screens'
 import { MusicsTabNavigation } from './MusicsTabNavigation'
 import { FavouritesTabNavigation } from './FavouritesTabNavigation'
+import { useLanguage } from '@/hooks'
 
 const SectionsTab = createBottomTabNavigator()
 
 export const SectionsTabNavigation = () => {
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ headerTitle, section }] = useLanguage()
   const theme = useSelector<RootState>(state => state.theme) as ITheme
 
   return (
@@ -30,16 +28,14 @@ export const SectionsTabNavigation = () => {
       initialRouteName="SoundsTabNavigation"
       backBehavior="initialRoute"
       tabBar={props => {
-        return (
-          <CustomBottomTab {...props} label={language.headerTitle.library} />
-        )
+        return <CustomBottomTab {...props} label={headerTitle.library} />
       }}>
       <SectionsTab.Screen
         name="FavouritesTabNavigation"
         component={FavouritesTabNavigation}
         options={{
           tabBarShowLabel: true,
-          tabBarLabel: language.section.favoriteMix,
+          tabBarLabel: section.favoriteMix,
           tabBarIcon: () => (
             <View style={styles.view25}>
               <HeartSVGforSection
@@ -56,7 +52,7 @@ export const SectionsTabNavigation = () => {
         name="SoundsTabNavigation"
         component={SoundsTabNavigation}
         options={{
-          tabBarLabel: language.section.sounds,
+          tabBarLabel: section.sounds,
           tabBarIcon: () => (
             <View style={styles.view30}>
               <SoundSVG width="100%" height="100%" fill={theme.ITEM_COLOR} />
@@ -70,7 +66,7 @@ export const SectionsTabNavigation = () => {
         name="MusicsTabNavigation"
         component={MusicsTabNavigation}
         options={{
-          tabBarLabel: language.section.musics,
+          tabBarLabel: section.musics,
           tabBarIcon: () => (
             <View style={styles.view30}>
               <MusicSVG width="100%" height="100%" fill={theme.ITEM_COLOR} />
@@ -83,7 +79,7 @@ export const SectionsTabNavigation = () => {
         name="SettingsScreen"
         component={SettingsScreen}
         options={{
-          tabBarLabel: language.section.settings,
+          tabBarLabel: section.settings,
           tabBarIcon: () => (
             <View style={styles.view25}>
               <SettingsSVG width="100%" height="100%" fill={theme.ITEM_COLOR} />

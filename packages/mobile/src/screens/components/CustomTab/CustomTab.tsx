@@ -9,7 +9,6 @@ import { ISOUNDCategories } from '@/store/interfaces'
 import { CustomTabItem } from './CustomTabItem'
 import { CustomHeader } from '../CustomHeader/CustomHeader'
 import { MediaLink } from '../MediaLink/MediaLink'
-import { NavigationPropSound } from '@/navigations/interfaces'
 
 export const CustomTab = ({
   state,
@@ -22,18 +21,18 @@ export const CustomTab = ({
     state => state.language.categoryFavorites,
   ) as ICategoryFavorites[]
   const theme = useSelector<RootState>(state => state.theme) as ITheme
+  const myList = useRef<FlatList | null>(null)
 
   const findMixesScreen = function (
     categories: ISOUNDCategories[],
     categoryFavorites: ICategoryFavorites[],
   ) {
+    // eslint-disable-next-line
     return categories.filter(function (n: any) {
       return categoryFavorites.indexOf(n) !== -1
     })
   }
   const mixesScreen = findMixesScreen(categories, categoryFavorites)
-
-  const myList = useRef<FlatList<any> | null>(null)
 
   const renderItem = ({ id }: ISOUNDCategories) => {
     const value = state.routes[Number(id) - 1]
@@ -54,11 +53,8 @@ export const CustomTab = ({
 
   return (
     <View>
-      <CustomHeader
-        navigation={navigation as NavigationPropSound}
-        label={label}
-      />
-      <MediaLink navigation={navigation as NavigationPropSound} />
+      <CustomHeader navigation={navigation} label={label} />
+      <MediaLink navigation={navigation} />
 
       <FlatList
         horizontal={true}
@@ -76,7 +72,7 @@ export const CustomTab = ({
         showsHorizontalScrollIndicator={false}
         style={{
           ...styles.flat,
-          backgroundColor: theme.BACKGROUNDCOLOR_HEADER,
+          backgroundColor: theme.BACKGROUNDCOLOR_TILES,
         }}
         contentContainerStyle={[
           mixesScreen.length ? { flex: 1 } : null,

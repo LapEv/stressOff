@@ -4,22 +4,20 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ITimeTiles } from './interfaces'
 import { RootState } from '@/store'
 import { ITheme } from '@/theme/interfaces'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { individualStart } from '@/store/actions/individualTimer'
 import { Shadow, TextTitle, Touchable } from '@/components'
 import { dataApp } from '@/data/dataApp'
+import { useLanguage } from '@/hooks'
 
 export const TimerTiles = ({ title, duration }: ITimeTiles) => {
   const theme = useSelector<RootState>(state => state.theme) as ITheme
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ timer }] = useLanguage()
   const width = useWindowDimensions().width
 
   const dispatch = useDispatch()
 
   const timerStart = (duration: number) => {
-    if (title !== language.timer.individual) {
+    if (title !== timer.individual) {
       const interval = setInterval(() => {
         dispatch({
           type: 'TICK',

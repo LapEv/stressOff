@@ -6,7 +6,7 @@ import { BackSVG, NotificationsSVG } from '@/assets/icons/SVG'
 import { RootState } from 'store'
 import { ITheme } from 'theme/interfaces'
 import { ICustomHeader } from './interfaces'
-import { INotifications } from '@/screens/Notifications/interfaces'
+import { INOTIFICATIONS } from '@/store/interfaces'
 
 export const CustomHeader = ({ navigation, label, type }: ICustomHeader) => {
   const itemColor = useSelector<RootState>(
@@ -14,7 +14,7 @@ export const CustomHeader = ({ navigation, label, type }: ICustomHeader) => {
   ) as string
   const dbNotifications = useSelector<RootState>(
     state => state.db.notifications,
-  ) as INotifications[]
+  ) as INOTIFICATIONS[]
   const screen = navigation.getState().routes[navigation.getState().index].name
   const [countNotReaded, setCountNotReaded] = useState<number>(0)
   const theme = useSelector<RootState>(state => state.theme) as ITheme
@@ -28,7 +28,7 @@ export const CustomHeader = ({ navigation, label, type }: ICustomHeader) => {
 
   const borderColor = theme.borderColorRGBA
   return (
-    <Shadow style={styles.shadow} type="header">
+    <Shadow style={styles.shadow} type="header" distance={20}>
       <ViewStyle
         style={{ ...styles.container, borderBottomColor: borderColor }}
         type="header">

@@ -1,10 +1,10 @@
 import { Shadow, Touchable, View } from '@/components'
 import { RootState } from '@/store'
 import { ITheme } from '@/theme/interfaces'
-import React, { ReactNode, useRef, useState } from 'react'
+import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { Animated, StyleSheet } from 'react-native'
 import { useSelector } from 'react-redux'
-import { ICustomBottomItem } from './interfaces'
+import { ICustomBottomItem, IOptionsBottomStyle } from './interfaces'
 
 export const CustomBottomItem = ({
   state,
@@ -17,7 +17,12 @@ export const CustomBottomItem = ({
   const theme = useSelector<RootState>(state => state.theme) as ITheme
   const fadeAnim = useRef(new Animated.Value(0.6)).current
   const [isFocused, setIsFocused] = useState<boolean>(false)
-
+  const [optionsStyle, setOptionsStyle] = useState<IOptionsBottomStyle>({
+    buttonMain: {},
+    button: {},
+    touch: {},
+    container: {},
+  })
   const fadeIn = () => {
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -45,36 +50,41 @@ export const CustomBottomItem = ({
       : null
   }
 
-  state.index === id - 1 ? scrollToIndex(id - 1) : null
-  state.index === id - 1 ? fadeIn() : fadeOut()
-
-  const buttonMain = {
-    ...styles.shadowBottomTabItemMain,
-    color: state.index == id - 1 ? theme.CHECK_COLOR : theme.BACKGROUNDCOLOR,
-  }
-
-  const button = {
-    ...styles.shadowBottomTabItem,
-    color: state.index == id - 1 ? theme.CHECK_COLOR : theme.BACKGROUNDCOLOR,
-  }
-
-  const touch = {
-    ...styles.bottomTabItemTouch,
-    width: id === 1 || id === 4 ? 70 : 90,
-    height: id === 1 || id === 4 ? 60 : 80,
-    borderColor: theme.borderColorRGBA,
-    borderWidth: state.index != id - 1 ? 1 : 2,
-  }
-
-  const container = {
-    ...styles.containerStyle,
-    marginLeft: id === 1 ? 10 : 0,
-  }
+  useEffect(() => {
+    state.index === id - 1 ? scrollToIndex(id - 1) : null
+    state.index === id - 1 ? fadeIn() : fadeOut()
+    const styleOptions = {
+      buttonMain: {
+        ...styles.shadowBottomTabItemMain,
+        color:
+          state.index == id - 1 ? theme.CHECK_COLOR : theme.BACKGROUNDCOLOR,
+      },
+      button: {
+        ...styles.shadowBottomTabItem,
+        color:
+          state.index == id - 1 ? theme.CHECK_COLOR : theme.BACKGROUNDCOLOR,
+      },
+      touch: {
+        ...styles.bottomTabItemTouch,
+        width: id === 1 || id === 4 ? 70 : 90,
+        height: id === 1 || id === 4 ? 60 : 80,
+        borderColor: theme.borderColorRGBA,
+        borderWidth: state.index != id - 1 ? 1 : 2,
+      },
+      container: {
+        ...styles.containerStyle,
+        marginLeft: id === 1 ? 10 : 0,
+      },
+    }
+    setOptionsStyle(styleOptions)
+  }, [state])
 
   return (
     <Shadow
-      style={id === 1 || id === 4 ? button : buttonMain}
-      containerStyle={container}>
+      style={
+        id === 1 || id === 4 ? optionsStyle.button : optionsStyle.buttonMain
+      }
+      containerStyle={optionsStyle.container}>
       <Touchable
         accessibilityRole="button"
         accessibilityState={state.index === id ? { selected: true } : undefined}
@@ -95,7 +105,7 @@ export const CustomBottomItem = ({
             target: value.key,
           })
         }}
-        style={touch}>
+        style={optionsStyle.touch}>
         <Animated.View style={{ opacity: fadeAnim }}>
           <View>{(options?.tabBarIcon as () => ReactNode)()}</View>
         </Animated.View>

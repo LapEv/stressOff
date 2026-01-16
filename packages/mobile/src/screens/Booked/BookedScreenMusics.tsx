@@ -3,27 +3,27 @@ import { StyleSheet, FlatList } from 'react-native'
 import { useSelector } from 'react-redux'
 import { Props } from './interfaces'
 import { RootState } from '@/store'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { ITheme } from '@/theme/interfaces'
-import { IMUSICS } from '@/store/interfaces'
+import { IMUSICSDB } from '@/store/interfaces'
 import { MusicTiles } from '../Music/MusicTiles'
-import { curLanguage } from '@/localization/language'
 import { LinearGradient, TextTitle, View } from '@/components'
 import { dataApp } from '@/data/dataApp'
+import { DATA_MUSIC } from '@/data/contentApp'
+import { useLanguage } from '@/hooks'
 
 export const BookedScreenMusics = ({ route }: Props) => {
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ name, Messages }] = useLanguage()
   const theme = useSelector<RootState>(state => state.theme) as ITheme
   const playingMusicId = useSelector<RootState>(
     state => state.music.id,
   ) as number
-  const musicDB = useSelector<RootState>(state => state.db.musics) as IMUSICS[]
+  const musicDB = useSelector<RootState>(
+    state => state.db.musics,
+  ) as IMUSICSDB[]
 
   const data = musicDB.filter(value => value.booked)
 
-  const flatlistRef = useRef<FlatList<any> | null>(null)
+  const flatlistRef = useRef<FlatList | null>(null)
   const scroll = () => {
     // if (route.params && route.params.scrollToEnd) {
     if (route.params) {
@@ -34,22 +34,31 @@ export const BookedScreenMusics = ({ route }: Props) => {
     }
   }
 
-  const renderItem = ({ id }: IMUSICS) => {
-    const curLanguage = language.name as curLanguage
+  const renderItem = ({ id, _id }: IMUSICSDB) => {
+    const curLanguage = name
+    const description = JSON.parse(musicDB[Number(id) - 1].description)[
+      curLanguage
+    ]
+    const title = JSON.parse(musicDB[Number(id) - 1].title)[curLanguage]
+    const img = DATA_MUSIC.find(
+      item => item.name === musicDB[Number(id) - 1].name,
+    )?.img
+
     return (
       <MusicTiles
         id={id}
+        _id={_id}
         findUseMusic={playingMusicId === Number(id) ? true : false}
         item={musicDB[Number(id) - 1].sound}
-        img={musicDB[Number(id) - 1].img}
-        title={musicDB[Number(id) - 1].title[curLanguage]}
-        description={musicDB[Number(id) - 1].description[curLanguage]}
+        img={img}
+        title={title}
+        description={description}
         location={musicDB[Number(id) - 1].location}
         storage={musicDB[Number(id) - 1].storage}
         name={musicDB[Number(id) - 1].name}
         booked={musicDB[Number(id) - 1].booked}
         globalCategory={musicDB[Number(id) - 1].globalCategory}
-        newSnd={musicDB[Number(id) - 1].new as boolean}
+        newSound={musicDB[Number(id) - 1].newSound}
       />
     )
   }
@@ -83,7 +92,7 @@ export const BookedScreenMusics = ({ route }: Props) => {
             <TextTitle
               type="title_14"
               style={{ color: theme.TEXT_COLOR, opacity: 0.9 }}>
-              {language.Messages.emptyBookedList}
+              {Messages.emptyBookedList}
             </TextTitle>
           </View>
         )}

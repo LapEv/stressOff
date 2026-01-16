@@ -19,7 +19,7 @@ export interface ICustomBottomItem {
   id: number
   value: NavigationRoute<ParamListBase, string>
   options: BottomTabNavigationOptions
-  myList: React.RefObject<FlatList<any> | null>
+  myList: React.RefObject<FlatList | null>
   keys?: string
 }
 
@@ -31,4 +31,11 @@ export interface ICustomBottomTabData {
 
 export interface ICustomBottomProps extends BottomTabBarProps {
   label: string
+}
+
+export interface IOptionsBottomStyle {
+  buttonMain: Record<string, unknown>
+  button: Record<string, unknown>
+  touch: Record<string, unknown>
+  container: Record<string, unknown>
 }

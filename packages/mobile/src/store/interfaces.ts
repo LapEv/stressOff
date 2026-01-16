@@ -96,19 +96,28 @@ export interface ISOUNDS {
   imgStorage: string
   location: string
   payment: boolean
-  category: {
-    RUS: string
-    ENG: string
-  }
-  title: {
-    RUS: string
-    ENG: string
-  }
-  description: {
-    RUS: string
-    ENG: string
-  }
-  new?: boolean
+  category: string
+  title: string
+  description: string
+  newSound: boolean
+}
+
+export interface ISOUNDSDB {
+  _id: string
+  id: string
+  name: string
+  globalCategory: string
+  booked: string
+  sound: string
+  storage: string
+  img: string
+  imgStorage: string
+  location: string
+  payment: string
+  category: string
+  title: string
+  description: string
+  newSound: string
 }
 
 export interface IUpdateSOUNDS {
@@ -150,19 +159,28 @@ export interface IMUSICS {
   imgStorage: string
   location: string
   payment: boolean
-  category: {
-    RUS: string
-    ENG: string
-  }
-  title: {
-    RUS: string
-    ENG: string
-  }
-  description: {
-    RUS: string
-    ENG: string
-  }
-  new?: boolean
+  category: string
+  title: string
+  description: string
+  newSound: boolean
+}
+
+export interface IMUSICSDB {
+  _id: string
+  id: string
+  name: string
+  globalCategory: string
+  booked: string
+  sound: string
+  storage: string
+  img: string
+  imgStorage: string
+  location: string
+  payment: string
+  category: string
+  title: string
+  description: string
+  newSound: string
 }
 
 export interface IUpdateMUSICS {
@@ -196,10 +214,7 @@ export interface ISOUNDCategories {
   _id: string
   id: string
   globalCategory: string
-  title: {
-    RUS: string
-    ENG: string
-  }
+  title: string
   img: string
   imgStorage: string
   img_lt: string
@@ -212,10 +227,7 @@ export interface IMUSICCategories {
   _id: string
   id: string
   globalCategory: string
-  title: {
-    RUS: string
-    ENG: string
-  }
+  title: string
   img: string
   imgStorage: string
   img_lt: string
@@ -252,10 +264,10 @@ export interface IUpdateNotification {
 export interface IActionDB {
   type: string
   payload:
-    | ISOUNDS
-    | ISOUNDS[]
-    | IMUSICS
-    | IMUSICS[]
+    | ISOUNDSDB
+    | ISOUNDSDB[]
+    | IMUSICSDB
+    | IMUSICSDB[]
     | ISOUNDCategories
     | ISOUNDCategories[]
     | IMUSICCategories
@@ -265,8 +277,8 @@ export interface IActionDB {
 }
 
 export interface IDBState {
-  sounds: ISOUNDS[]
-  musics: IMUSICS[]
+  sounds: ISOUNDSDB[]
+  musics: IMUSICSDB[]
   soundCategories: ISOUNDCategories[]
   musicCategories: IMUSICCategories[]
   notifications: INOTIFICATIONS[]
@@ -287,8 +299,8 @@ export interface IUser {
 export interface IUserData {
   SOUNDS_Categories: ISOUNDCategories[]
   MUSICS_Categories: IMUSICCategories[]
-  DATA_SOUNDS: ISOUNDS[]
-  DATA_MUSICS: IMUSICS[]
+  DATA_SOUNDS: ISOUNDSDB[]
+  DATA_MUSICS: IMUSICSDB[]
   Notification: INOTIFICATIONS[]
   personalData: IUser
   appData: IAppData_
@@ -413,9 +425,7 @@ export interface IIntervalFeedback {
 
 export interface IActionindividualStart {
   type: string
-  payload: {
-    individual: boolean
-  }
+  payload: boolean
 }
 
 export interface IindividualStart {
@@ -464,7 +474,14 @@ export interface IToken {
 
 export interface IActionToken {
   type: string
-  payload: {
-    token: string
-  }
+  payload: string | null
+}
+
+export interface IConnect {
+  connect: boolean
+}
+
+export interface IActionConnect {
+  type: string
+  payload: boolean
 }

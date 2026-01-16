@@ -3,10 +3,8 @@ import { StyleSheet, ImageBackground, useWindowDimensions } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { typeElevation } from '@/components/Shadow/typeElevaion'
 import { RootState } from '@/store'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { ITheme } from '@/theme/interfaces'
-import { IFavorites, IMUSICS, ISOUNDS } from '@/store/interfaces'
-import { curLanguage } from '@/localization/language'
+import { IFavorites, IMUSICSDB, ISOUNDSDB } from '@/store/interfaces'
 import { modalShow } from '@/store/actions/modal'
 import { AddFavoritesSound } from '@/store/actions/sounds'
 import { ChangeStateMusic } from '@/store/actions/music'
@@ -21,16 +19,19 @@ import {
 } from '@/components'
 import { mixData } from '@/data/contentApp'
 import { CloseItemSVG, EditSVG } from '@/assets/icons/SVG'
+import { useLanguage } from '@/hooks'
 
 export const FavoritesTiles = ({ item, use }) => {
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ name, modalMessages }] = useLanguage()
   const currentMix = useSelector<RootState>(
     state => state.favorites.currentMix,
   ) as string
-  const dbmusics = useSelector<RootState>(state => state.db.musics) as IMUSICS[]
-  const dbsounds = useSelector<RootState>(state => state.db.musics) as ISOUNDS[]
+  const dbmusics = useSelector<RootState>(
+    state => state.db.musics,
+  ) as IMUSICSDB[]
+  const dbsounds = useSelector<RootState>(
+    state => state.db.musics,
+  ) as ISOUNDSDB[]
   const favorites = useSelector<RootState>(
     state => state.favorites.favorites,
   ) as IFavorites[]
@@ -38,31 +39,30 @@ export const FavoritesTiles = ({ item, use }) => {
   const width = useWindowDimensions().width
   const [playing, setPlaying] = useState(use)
 
-  const curLanguage = language.name as curLanguage
   const music = dbmusics[item.StateMusic.id - 1]
-    ? `${dbmusics[item.StateMusic.id - 1]?.title[curLanguage]}`
+    ? `${JSON.parse(dbmusics[item.StateMusic.id - 1]?.title)[name]}`
     : ''
   const mixedsounds = item.StateSound.mixedSound
-    .map(sound => ' ' + dbsounds[sound.id - 1].title[curLanguage])
+    .map(
+      (sound: ISOUNDSDB) =>
+        ' ' + JSON.parse(dbsounds[Number(sound.id) - 1].title)[name],
+    )
     .toString()
   const sounds = mixedsounds ? (music ? `,${mixedsounds}` : mixedsounds) : ''
   const textMessage = music + sounds
 
   const dispatch = useDispatch()
   const editMix = (id: string) => {
-    const modalInfo = Object.assign(
-      { id: id },
-      language.modalMessages.editFavoriteMix,
-    )
+    const modalInfo = Object.assign({ id: id }, modalMessages.editFavoriteMix)
     dispatch(modalShow(modalInfo))
   }
 
   const removeMix = (id: string) => {
     const modalInfo = Object.assign(
       { id: id, name: item.name },
-      language.modalMessages.removeFavoriteMix,
+      modalMessages.removeFavoriteMix,
       {
-        message: `${language.modalMessages.removeFavoriteMix.message} "${item.name}"?`,
+        message: `${modalMessages.removeFavoriteMix.message} "${item.name}"?`,
       },
     )
     dispatch(modalShow(modalInfo))

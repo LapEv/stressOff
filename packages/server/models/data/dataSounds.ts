@@ -23,6 +23,7 @@ export interface IDataSound extends Document {
     RUS: string
     ENG: string
   }
+  newSound: boolean
 }
 
 export type DataSoundModel = Model<IDataSound>
@@ -50,6 +51,7 @@ const DataSounds = new Schema<IDataSound, DataSoundModel>({
     RUS: { type: String, reqiured: true },
     ENG: { type: String, reqiured: true },
   },
+  newSound: { type: Boolean, default: false },
 })
 
 export const DataSound = model<IDataSound, DataSoundModel>(

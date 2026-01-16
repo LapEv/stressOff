@@ -2,23 +2,16 @@ import React from 'react'
 import { StyleSheet, FlatList } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/store'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { INOTIFICATIONS } from '@/store/interfaces'
 import { INotifications } from './interfaces'
 import { UpdateNotificationsDB } from '@/store/actions/db'
 import { CustomHeader } from '../components'
 import { LinearGradient, Text, View } from '@/components'
-import { curLanguage } from '@/localization/language'
 import { NotificationTiles } from './NotificationTiles'
-// import { NotificationTiles } from '../components/NotificationTiles'
-// import { CONST } from '../const'
-// import { UpdateNotificationsDB } from '../store/actions/db'
-// import { THEME } from '../theme'
+import { useLanguage } from '@/hooks'
 
 export const NotificationsScreen = ({ navigation }: INotifications) => {
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ name, headerTitle, notifications }] = useLanguage()
   const notificationsDB = useSelector<RootState>(
     state => state.db.notifications,
   ) as INOTIFICATIONS[]
@@ -30,18 +23,17 @@ export const NotificationsScreen = ({ navigation }: INotifications) => {
   // }
 
   const renderItem = (item: INOTIFICATIONS) => {
-    const curLanguage = language.name as curLanguage
     return (
       <NotificationTiles
         id={item.id}
         // date={formatDate(item.date)}
         date={item.date}
-        title={item.title[curLanguage]}
-        body={item.body[curLanguage]}
+        title={item.title[name as keyof typeof item.title]}
+        body={item.body[name]}
         unread={item.unread}
         screen={item.category}
         section={item.navigation}
-        languageName={language.name}
+        languageName={name}
         navigation={navigation}
       />
     )
@@ -62,15 +54,12 @@ export const NotificationsScreen = ({ navigation }: INotifications) => {
 
   return (
     <View style={styles.container}>
-      <CustomHeader
-        navigation={navigation}
-        label={language.headerTitle.notifications}
-      />
+      <CustomHeader navigation={navigation} label={headerTitle.notifications} />
       <LinearGradient
         style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
         {!notificationsDB.length && (
           <View style={{ marginTop: 20 }}>
-            <Text type="text_14">{language.notifications.noNotifications}</Text>
+            <Text type="text_14">{notifications.noNotifications}</Text>
           </View>
         )}
         {notificationsDB.length > 0 && (

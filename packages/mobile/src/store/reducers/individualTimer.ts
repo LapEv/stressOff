@@ -1,21 +1,14 @@
 import { Reducer } from 'react'
 import { INDIVIDUAL } from '../types'
-import { IActionindividualStart, IindividualStart } from '../interfaces'
-
-const initialState = {
-  individual: false,
-}
+import { IActionindividualStart } from '../interfaces'
 
 export const individualTimerReducer: Reducer<
-  IindividualStart,
+  boolean,
   IActionindividualStart
-> = (state = initialState, action) => {
+> = (state = false, action) => {
   switch (action.type) {
     case INDIVIDUAL:
-      return {
-        ...state,
-        ...action.payload,
-      }
+      return action.payload
     default:
       return state
   }

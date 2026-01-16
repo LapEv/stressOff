@@ -7,7 +7,6 @@ import {
   BackHandler,
 } from 'react-native'
 import { RootState } from '@/store'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { IFavorites, IModal } from '@/store/interfaces'
 import { ITheme } from '@/theme/interfaces'
 import { modalShow } from '@/store/actions/modal'
@@ -26,11 +25,10 @@ import {
   View,
 } from '@/components'
 import { typeElevation } from '@/components/Shadow/typeElevaion'
+import { useLanguage } from '@/hooks'
 
 export const ModalAlert = () => {
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ modalMessages }] = useLanguage()
   const theme = useSelector<RootState>(state => state.theme) as ITheme
   const modal = useSelector<RootState>(state => state.modal) as IModal
   const favorites = useSelector<RootState>(
@@ -45,29 +43,26 @@ export const ModalAlert = () => {
   const response = (value: boolean) => {
     !value
       ? dispatch(modalShow({ show: false }))
-      : (modal.typeMessage === language.modalMessages.clearSoundList.typeMessage
+      : (modal.typeMessage === modalMessages.clearSoundList.typeMessage
           ? ClearSoundList()
           : null,
-        modal.typeMessage === language.modalMessages.addFavoriteMix.typeMessage
+        modal.typeMessage === modalMessages.addFavoriteMix.typeMessage
           ? AddFavoriteMix(
               favorites.favorites.length + 1,
               input,
               modal.category as string,
             )
           : null,
-        modal.typeMessage === language.modalMessages.editFavoriteMix.typeMessage
+        modal.typeMessage === modalMessages.editFavoriteMix.typeMessage
           ? EditFavoriteMix(modal.id as number, input)
           : null,
-        modal.typeMessage ===
-        language.modalMessages.removeFavoriteMix.typeMessage
+        modal.typeMessage === modalMessages.removeFavoriteMix.typeMessage
           ? RemoveFavoritesMix(modal.id as number)
           : null,
-        modal.typeMessage ===
-        language.modalMessages.removeFavoriteAllMix.typeMessage
+        modal.typeMessage === modalMessages.removeFavoriteAllMix.typeMessage
           ? RemoveFavoritesAllMix(modal.id as number)
           : null,
-        modal.typeMessage ===
-        language.modalMessages.downloadFromCloud.typeMessage
+        modal.typeMessage === modalMessages.downloadFromCloud.typeMessage
           ? (dispatch(
               progressBarShow({
                 showDownload: true,
@@ -79,12 +74,10 @@ export const ModalAlert = () => {
             ),
             dispatch(modalShow({ show: false })))
           : null,
-        modal.typeMessage ===
-        language.modalMessages.deleteFromDevice.typeMessage
+        modal.typeMessage === modalMessages.deleteFromDevice.typeMessage
           ? DeleteFromDevice(modal.sound, modal.id, modal.name, modal.category)
           : null,
-        modal.typeMessage ===
-        language.modalMessages.deleteAllFromDevice.typeMessage
+        modal.typeMessage === modalMessages.deleteAllFromDevice.typeMessage
           ? (dispatch(
               progressBarShow({
                 showDeleteAll: true,
@@ -92,7 +85,7 @@ export const ModalAlert = () => {
             ),
             dispatch(modalShow({ show: false })))
           : null,
-        modal.typeMessage === language.modalMessages.exitApp.typeMessage
+        modal.typeMessage === modalMessages.exitApp.typeMessage
           ? (BackHandler.exitApp(), dispatch(modalShow({ show: false })))
           : null)
   }
@@ -137,10 +130,9 @@ export const ModalAlert = () => {
                 }}>
                 <TextTitle type="title_20b">{modal.title}</TextTitle>
               </View>
-              {modal.typeMessage ===
-                language.modalMessages.addFavoriteMix.typeMessage ||
+              {modal.typeMessage === modalMessages.addFavoriteMix.typeMessage ||
               modal.typeMessage ===
-                language.modalMessages.editFavoriteMix.typeMessage ? (
+                modalMessages.editFavoriteMix.typeMessage ? (
                 <View style={styles.view}>
                   <View style={styles.floatingItem}>
                     <FloatLabelInput
@@ -163,7 +155,7 @@ export const ModalAlert = () => {
               <View style={styles.modalBottomContainer}>
                 <View style={styles.modalButtonContainer}>
                   {modal.typeMessage !==
-                  language.modalMessages.sameNameFound.typeMessage ? (
+                  modalMessages.sameNameFound.typeMessage ? (
                     <Touchable
                       style={styles.controlItemAddContainer}
                       onPress={() => response(false)}>

@@ -1,27 +1,17 @@
 import React from 'react'
-import { ImageBackground, ImageSourcePropType, StyleSheet } from 'react-native'
+import { ImageBackground, StyleSheet } from 'react-native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store'
-import { IHeaderTitle } from '@/localization/interfaces'
 import { ITheme } from '@/theme/interfaces'
 import { CustomTab } from '@/screens/components'
-import { ISOUNDCategories } from '@/store/interfaces'
 import { BookedScreenMusics, BookedScreenSounds, MixesScreen } from '@/screens'
+import { useLanguage } from '@/hooks'
 
 const FavouritesTab = createMaterialTopTabNavigator()
 
 export const FavouritesTabNavigation = () => {
-  const favoritesCat = useSelector<RootState>(
-    state => state.language.favoritesCat,
-  ) as ImageSourcePropType[]
-  const headerTitle = useSelector<RootState>(
-    state => state.language.headerTitle,
-  ) as IHeaderTitle
-
-  const categories = useSelector<RootState>(
-    state => state.language.categoryFavorites,
-  ) as ISOUNDCategories[]
+  const [{ headerTitle, categoryFavorites }] = useLanguage()
   const theme = useSelector<RootState>(state => state.theme) as ITheme
 
   const arrIcons = theme.name === 'MAIN_THEME' ? favoritesCat : favoritesCat
@@ -35,7 +25,7 @@ export const FavouritesTabNavigation = () => {
           <CustomTab
             {...props}
             label={headerTitle.library}
-            categories={categories}
+            categories={categoryFavorites}
           />
         )
       }}>
@@ -43,7 +33,7 @@ export const FavouritesTabNavigation = () => {
         name="MixesScreen"
         component={MixesScreen}
         options={{
-          tabBarLabel: categories[0].name,
+          tabBarLabel: categoryFavorites[0].name,
           tabBarIcon: () => (
             <ImageBackground
               source={arrIcons[0]}
@@ -51,14 +41,14 @@ export const FavouritesTabNavigation = () => {
               style={styles.imgBack}
             />
           ),
-          title: categories[0].name,
+          title: categoryFavorites[0].name,
         }}
       />
       <FavouritesTab.Screen
         name="BookedScreenSounds"
         component={BookedScreenSounds}
         options={{
-          tabBarLabel: categories[1].name,
+          tabBarLabel: categoryFavorites[1].name,
           tabBarIcon: () => (
             <ImageBackground
               source={arrIcons[1]}
@@ -66,14 +56,14 @@ export const FavouritesTabNavigation = () => {
               style={styles.imgBack}
             />
           ),
-          title: categories[1].name,
+          title: categoryFavorites[1].name,
         }}
       />
       <FavouritesTab.Screen
         name="BookedScreenMusics"
         component={BookedScreenMusics}
         options={{
-          tabBarLabel: categories[2].name,
+          tabBarLabel: categoryFavorites[2].name,
           tabBarIcon: () => (
             <ImageBackground
               source={arrIcons[2]}
@@ -81,7 +71,7 @@ export const FavouritesTabNavigation = () => {
               style={styles.imgBack}
             />
           ),
-          title: categories[2].name,
+          title: categoryFavorites[2].name,
         }}
       />
     </FavouritesTab.Navigator>

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { ImageBackground, StyleSheet, useWindowDimensions } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { IMuscisTiles } from './interfaces'
 import { RootState } from '@/store'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { ITheme } from '@/theme/interfaces'
 import { CheckFile, CheckFileSize, FileSizeToString } from '@/functions'
 import { ChangeStateMusic } from '@/store/actions/music'
@@ -13,19 +12,14 @@ import { modalShowMessage } from '@/store/actions/modalMessage'
 import { UpdateMusicsBookedDB, UpdateMusicsDB } from '@/store/actions/db'
 import { modalShow } from '@/store/actions/modal'
 import { dataApp } from '@/data/dataApp'
-import {
-  Shadow,
-  Text,
-  TextTitle,
-  Touchable,
-  View,
-  ViewStyle,
-} from '@/components'
+import { Shadow, Text, TextTitle, Touchable, View } from '@/components'
 import { icons } from '@/data/contentApp'
 import { BookedSVGNo, BookedSVGYes, Cloud, Mobile } from '@/assets/icons/SVG'
+import { useDB, useLanguage } from '@/hooks'
 
 export const MusicTiles = ({
   id,
+  _id,
   findUseMusic,
   item,
   img,
@@ -36,11 +30,11 @@ export const MusicTiles = ({
   name,
   booked,
   globalCategory,
-  newSnd,
+  newSound,
 }: IMuscisTiles) => {
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ musics }, { UpdateMusicsStatusDB }] = useDB()
+  console.log('musics = ', musics[0])
+  const [{ modalMessages, newSoundText, Messages }] = useLanguage()
   const musicStart = useSelector<RootState>(
     state => state.music.musicStart,
   ) as boolean
@@ -53,19 +47,16 @@ export const MusicTiles = ({
   ) as number
   const width = useWindowDimensions().width
   const [disabled, setDisabled] = useState<boolean>(false)
-  const [newSound, setNewSound] = useState<boolean>(newSnd)
   const [playing, setPlaying] = useState<boolean>(findUseMusic)
 
   useEffect(() => {
     !musicStart ? setDisabled(false) : null
-    console.log('disabled = ', disabled)
   }, [musicStart])
 
-  const dispatch = useDispatch()
   const addMusic = async (id: string) => {
     // updateStatusNewMusics(false, id, user.uid);
-    // dispatch(UpdateMusicsStatusDB({ name: name, new: false }));
-    setNewSound(false)
+    UpdateMusicsStatusDB({ _id, newSound: true })
+    console.log('disabled = ', disabled)
     const check = location === 'device' ? await CheckFile(item) : true
     check || location !== 'device'
       ? !playing
@@ -87,7 +78,7 @@ export const MusicTiles = ({
           ),
           dispatch(
             ChangeCurrentMixPlay({
-              name: language.Messages.currentMix,
+              name: Messages.currentMix,
               id: 0,
             }),
           ),
@@ -102,36 +93,24 @@ export const MusicTiles = ({
           ),
           dispatch(
             ChangeCurrentMixPlay({
-              name: language.Messages.currentMix,
+              name: Messages.currentMix,
               id: 0,
             }),
           ))
-      : ((language.modalMessages.error.message = `${language.Messages.fileNotFound} ${language.Messages.switchToCloud}`),
+      : ((modalMessages.error.message = `${Messages.fileNotFound} ${Messages.switchToCloud}`),
         // await updateMusicsLocation('cloud', id, '', user._id),
         dispatch(UpdateMusicsDB({ name: name, sound: '', location: 'cloud' })),
-        dispatch(modalShowMessage(language.modalMessages.error)))
+        dispatch(modalShowMessage(modalMessages.error)))
   }
 
   useEffect(() => {
     currentPlayingMusicId !== Number(id) ? setPlaying(false) : setPlaying(true)
   }, [currentPlayingMusicId])
 
-  const shadowOpt = {
-    width: 55,
-    height: 55,
-    color: '#15a522',
-    border: 7,
-    radius: 10,
-    opacity: 0.8,
-    x: 0,
-    y: 0,
-    style: { marginVertical: 0 },
-  }
-
   const OpenDescription = (description: string, title: string) => {
-    language.modalMessages.OpenDescription.title = title
-    language.modalMessages.OpenDescription.message = description
-    dispatch(modalShowMessage(language.modalMessages.OpenDescription))
+    modalMessages.OpenDescription.title = title
+    modalMessages.OpenDescription.message = description
+    dispatch(modalShowMessage(modalMessages.OpenDescription))
   }
 
   const downloadFromCloud = async (
@@ -140,12 +119,12 @@ export const MusicTiles = ({
     globalCategory: string,
   ) => {
     const size = await CheckSize(storage)
-    language.modalMessages.downloadFromCloud.message = `${language.modalMessages.downloadFromCloud.message1} "${title}" ${language.modalMessages.downloadFromCloud.message2} \n${language.modalMessages.downloadFromCloud.size} ${size}`
-    language.modalMessages.downloadFromCloud.storage = storage
-    language.modalMessages.downloadFromCloud.name = name
-    language.modalMessages.downloadFromCloud.category = globalCategory
-    language.modalMessages.downloadFromCloud.id = id
-    dispatch(modalShow(language.modalMessages.downloadFromCloud))
+    modalMessages.downloadFromCloud.message = `${modalMessages.downloadFromCloud.message1} "${title}" ${modalMessages.downloadFromCloud.message2} \n${modalMessages.downloadFromCloud.size} ${size}`
+    modalMessages.downloadFromCloud.storage = storage
+    modalMessages.downloadFromCloud.name = name
+    modalMessages.downloadFromCloud.category = globalCategory
+    modalMessages.downloadFromCloud.id = id
+    dispatch(modalShow(modalMessages.downloadFromCloud))
   }
 
   const deleteFromDevice = async (
@@ -156,12 +135,12 @@ export const MusicTiles = ({
   ) => {
     const sizeFile = (await CheckFileSize(item)) as number
     const size = FileSizeToString(sizeFile)
-    language.modalMessages.deleteFromDevice.message = `${language.modalMessages.deleteFromDevice.message1} "${title}" ${language.modalMessages.deleteFromDevice.message2} \n${language.modalMessages.deleteFromDevice.size} ${size}`
-    language.modalMessages.deleteFromDevice.sound = item
-    language.modalMessages.deleteFromDevice.name = name
-    language.modalMessages.deleteFromDevice.id = id
-    language.modalMessages.deleteFromDevice.category = globalCategory
-    dispatch(modalShow(language.modalMessages.deleteFromDevice))
+    modalMessages.deleteFromDevice.message = `${modalMessages.deleteFromDevice.message1} "${title}" ${modalMessages.deleteFromDevice.message2} \n${modalMessages.deleteFromDevice.size} ${size}`
+    modalMessages.deleteFromDevice.sound = item
+    modalMessages.deleteFromDevice.name = name
+    modalMessages.deleteFromDevice.id = id
+    modalMessages.deleteFromDevice.category = globalCategory
+    dispatch(modalShow(modalMessages.deleteFromDevice))
   }
 
   const ToggleBookedMusics = async (id: string, booked: boolean) => {
@@ -170,14 +149,15 @@ export const MusicTiles = ({
   }
 
   return (
-    <ViewStyle
-      style={
-        (styles.container, { width: width / dataApp.FLATLIST.numberColumns })
-      }>
-      {newSound ? (
+    <View
+      style={{
+        ...styles.container,
+        width: width / dataApp.FLATLIST.numberColumns,
+      }}>
+      {JSON.parse(newSound) ? (
         <View style={styles.new}>
           <TextTitle type="title_14" style={styles.newText}>
-            {language.newSound}
+            {newSoundText}
           </TextTitle>
         </View>
       ) : null}
@@ -244,9 +224,11 @@ export const MusicTiles = ({
           onLongPress={() =>
             description.length > 0 ? OpenDescription(description, title) : null
           }>
-          <Shadow style={shadowOpt}>
+          <Shadow
+            style={{ ...styles.shadow, color: theme.CHECK_COLOR }}
+            distance={55}>
             <ImageBackground
-              source={{ uri: img }}
+              source={img}
               imageStyle={{
                 borderRadius: 5,
                 resizeMode: 'stretch',
@@ -257,7 +239,7 @@ export const MusicTiles = ({
           </Shadow>
         </Touchable>
       )}
-      {playing && (
+      {!playing && (
         <Touchable
           style={styles.touchContainer}
           onPress={() => addMusic(id)}
@@ -265,7 +247,7 @@ export const MusicTiles = ({
             description.length > 0 ? OpenDescription(description, title) : null
           }>
           <ImageBackground
-            source={{ uri: img }}
+            source={img}
             imageStyle={{
               borderRadius: 5,
               resizeMode: 'stretch',
@@ -278,7 +260,7 @@ export const MusicTiles = ({
       <Text type="text_14" style={styles.title}>
         {title}
       </Text>
-    </ViewStyle>
+    </View>
   )
 }
 
@@ -290,8 +272,16 @@ const styles = StyleSheet.create({
     width: 110,
     height: 140,
     justifyContent: 'flex-start',
-    alignItems: 'center',
     zIndex: 1,
+  },
+  shadow: {
+    width: 55,
+    height: 55,
+    opacity: 0.8,
+    borderRadius: 7,
+    zIndex: 2,
+    borderColor: 'red',
+    borderWidth: 1,
   },
   touchContainer: {
     justifyContent: 'flex-start',

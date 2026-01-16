@@ -6,7 +6,6 @@ import { RootState } from '@/store'
 import { useSelector } from 'react-redux'
 import { HeartSVG, HeartSVGYes } from '@/assets/icons/SVG'
 import { useEffect } from 'react'
-import { Storage } from 'expo-sqlite/kv-store'
 import { dataApp } from '@/data/dataApp'
 import {
   IFavorites,
@@ -17,8 +16,9 @@ import {
 import { CheckForFavoriteContent } from '../../Favorites/functions/checkForFavoriteContent'
 import { useDispatch } from 'react-redux'
 import { modalShow } from '@/store/actions/modal'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { modalShowMessage } from '@/store/actions/modalMessage'
+import * as SecureStore from 'expo-secure-store'
+import { useLanguage } from '@/hooks'
 
 export const PlayerFavorites = ({
   disabledControl,
@@ -26,12 +26,10 @@ export const PlayerFavorites = ({
   favorite,
   setFavorite,
 }: IPlayerFavorites) => {
+  const [{ modalMessages }] = useLanguage()
   const theme = useSelector<RootState>(state => state.theme) as ITheme
   const StateMusic = useSelector<RootState>(state => state.music) as IMusicState
   const StateSound = useSelector<RootState>(state => state.music) as ISoundState
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
   const favorites = useSelector<RootState>(
     state => state.favorites,
   ) as IFavorites
@@ -49,16 +47,16 @@ export const PlayerFavorites = ({
     !result
       ? dispatch(
           modalShow({
-            ...language.modalMessages.addFavoriteMix,
+            ...modalMessages.addFavoriteMix,
             ...{
               category: 'mixes',
             },
           }),
         )
-      : ((language.modalMessages.sameMixFound.message = `${
-          language.modalMessages.sameMixFound.message1
+      : ((modalMessages.sameMixFound.message = `${
+          modalMessages.sameMixFound.message1
         } "${result.trim()}"`),
-        dispatch(modalShowMessage(language.modalMessages.sameMixFound)),
+        dispatch(modalShowMessage(modalMessages.sameMixFound)),
         setFavorite(true))
   }
 
@@ -95,7 +93,7 @@ export const PlayerFavorites = ({
       },
     }
     try {
-      return Storage.setItemAsync(
+      return SecureStore.setItemAsync(
         dataApp.STORAGE_KEYS.currentPlay,
         JSON.stringify(value),
       )

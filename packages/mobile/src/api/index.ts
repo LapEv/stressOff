@@ -1,6 +1,6 @@
 import Constants from 'expo-constants'
 import axios, { InternalAxiosRequestConfig } from 'axios'
-import Storage from 'expo-sqlite/kv-store'
+import * as SecureStore from 'expo-secure-store'
 import store from '@/store'
 import { addError } from '@/store/actions/error'
 
@@ -33,10 +33,10 @@ const host = axios.create({
   },
 })
 
-const authInterceptor = (
+const authInterceptor = async (
   config: InternalAxiosRequestConfig,
-): InternalAxiosRequestConfig => {
-  config.headers.authorization = `Bearer ${Storage.getItemSync('token')}`
+): Promise<InternalAxiosRequestConfig> => {
+  config.headers.authorization = `Bearer ${await SecureStore.getItemAsync('token')}`
   return config
 }
 
@@ -55,7 +55,7 @@ authhost.interceptors.response.use(
             error.response.statusText === 'Forbidden' &&
             error.response.data.message === 'The user is not logged in')
         ) {
-          Storage.removeItemAsync('token')
+          SecureStore.deleteItemAsync('token')
           // store.dispatch(clearUser())
         }
       }

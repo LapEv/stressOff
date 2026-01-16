@@ -2,9 +2,11 @@ import { Dispatch } from 'react'
 import {
   IMUSICCategories,
   IMUSICS,
+  IMUSICSDB,
   INOTIFICATIONS,
   ISOUNDCategories,
   ISOUNDS,
+  ISOUNDSDB,
   IUpdateMUSICS,
   IUpdateSOUNDS,
 } from '../interfaces'
@@ -30,15 +32,19 @@ import {
   UPDATE_MUSIC_BOOKED,
   LOAD_NOTIFICATIONS_FB,
 } from '../types'
+import {
+  IUpdateMusicsStatusDB,
+  IUpdateSoundsStatusDB,
+} from '@/hooks/interfaces'
 
-export const AddSoundsDB = (data: ISOUNDS) => {
+export const AddSoundsDB = (data: ISOUNDSDB) => {
   return {
     type: ADD_SOUND_DB,
     payload: data,
   }
 }
 
-export const AddMusicsDB = (data: IMUSICS) => {
+export const AddMusicsDB = (data: IMUSICSDB) => {
   return {
     type: ADD_MUSIC_DB,
     payload: data,
@@ -101,7 +107,7 @@ export const LoadNotificationsFromFB = (notificationsDB: INOTIFICATIONS[]) => {
   }
 }
 
-export const LoadSoundFromDB = (soundDB: ISOUNDS[]) => {
+export const LoadSoundFromDB = (soundDB: ISOUNDSDB[]) => {
   return async (dispatch: Dispatch<Record<string, unknown>>) => {
     dispatch({
       type: LOAD_SOUND_DB,
@@ -110,7 +116,7 @@ export const LoadSoundFromDB = (soundDB: ISOUNDS[]) => {
   }
 }
 
-export const LoadMusicFromDB = (musicDB: IMUSICS[]) => {
+export const LoadMusicFromDB = (musicDB: IMUSICSDB[]) => {
   return async (dispatch: Dispatch<Record<string, unknown>>) => {
     dispatch({
       type: LOAD_MUSIC_DB,
@@ -171,14 +177,14 @@ export const UpdateNotificationsDB = (data: INOTIFICATIONS) => {
   }
 }
 
-export const UpdateSoundsStatusDB = (data: ISOUNDS) => {
+export const UpdateSoundsStatusDB = (data: IUpdateSoundsStatusDB) => {
   return {
     type: UPDATE_SOUND_STATUS_NEW,
     payload: data,
   }
 }
 
-export const UpdateMusicsStatusDB = (data: IMUSICS) => {
+export const UpdateMusicsStatusDB = (data: IUpdateMusicsStatusDB) => {
   return {
     type: UPDATE_MUSIC_STATUS_NEW,
     payload: data,

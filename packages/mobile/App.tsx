@@ -7,6 +7,7 @@ import { bootstrap } from '@/functions/Bootstrap/bootstrap'
 import { checkNetwork } from '@/functions'
 import * as SecureStore from 'expo-secure-store'
 import { IBootstrapResult } from '@/functions/interfaces'
+import { changeConnect } from '@/store/actions/connect'
 
 export default function App() {
   const [isReady, setIsReady] = useState<boolean>(false)
@@ -17,7 +18,7 @@ export default function App() {
   if (!isBootReady) {
     setTimeout(() => {
       setIsBootReady(true)
-    }, 3000)
+    }, 300)
   }
 
   const checkInternet = async () => {
@@ -37,7 +38,9 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    console.log('Изменение в подключении')
+    console.log('Изменение в подключении. isConnected = ', isConnected)
+    console.log('Поставить 3000 секунд')
+    store.dispatch(changeConnect(isConnected))
   }, [isConnected])
 
   return (

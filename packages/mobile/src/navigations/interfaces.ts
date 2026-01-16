@@ -17,6 +17,7 @@ export type RootStackParamList = {
     name?: string
     component?: JSX.Element
     screen?: string
+    initialRouteName?: string
   }
 
   LoginNavigation: {
@@ -48,8 +49,18 @@ export type RootStackParamList = {
     component?: JSX.Element
   }
   SoundsScreen: {
+    initialRouteName: string
     screen: string
     component?: JSX.Element
+    category?: string
+    scrollToEnd: boolean
+  }
+  MusicsScreen: {
+    initialRouteName: string
+    screen: string
+    component?: JSX.Element
+    category?: string
+    scrollToEnd: boolean
   }
   LoginScreen: {
     screen: string
@@ -72,10 +83,6 @@ export type RootStackParamList = {
     component?: JSX.Element
   }
   BookedScreenMusics: {
-    screen: string
-    component?: JSX.Element
-  }
-  MusicsScreen: {
     screen: string
     component?: JSX.Element
   }

@@ -22,7 +22,7 @@ export interface IState {
   initialX?: number
   locationX?: number
   dx?: number
-  animatedX?: any
+  animatedX?: Animated.Value | Animated.ValueXY
   released?: boolean
   swiped?: boolean
   buttonWidth?: number
@@ -42,12 +42,11 @@ export interface LayoutChangeEvent {
 
 export const SlideButton = (props: IProps) => {
   const [state, setState] = useState<IState>()
-  const [isTimeOut, set_isTimeOut] = useState<any>()
+  // const [isTimeOut, set_isTimeOut] = useState()
   const [buttonWidth, setButtonWidth] = useState<number>(0)
   let panResponder
 
   useEffect(() => {
-    console.log('isTimeOut = ', isTimeOut)
     panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => false,
       onStartShouldSetPanResponderCapture: () => false,
@@ -81,17 +80,17 @@ export const SlideButton = (props: IProps) => {
           })
 
           // Slide it back in after 1 sec
-          set_isTimeOut(
-            setTimeout(() => {
-              moveButtonIn(() => {
-                setState({
-                  ...state,
-                  released: false,
-                  dx: state?.initialX,
-                })
-              })
-            }, 2000),
-          )
+          // set_isTimeOut(
+          //   setTimeout(() => {
+          //     moveButtonIn(() => {
+          //       setState({
+          //         ...state,
+          //         released: false,
+          //         dx: state?.initialX,
+          //       })
+          //     })
+          //   }, 2000),
+          // )
         } else {
           snapToPosition(() => {
             setState({
@@ -159,25 +158,29 @@ export const SlideButton = (props: IProps) => {
   //   });
   // }
 
-  const moveButtonIn = (onCompleteCallback: any) => {
-    const startPos =
-      state!.dx! >= 0
-        ? state!.initialX! + buttonWidth * 0.2
-        : state!.initialX! - buttonWidth * 0.2
-    const endPos = state!.initialX as number
+  // const moveButtonIn = (
+  //   onCompleteCallback: Animated.EndCallback | undefined,
+  // ) => {
+  //   const startPos =
+  //     state!.dx! >= 0
+  //       ? state!.initialX! + buttonWidth * 0.2
+  //       : state!.initialX! - buttonWidth * 0.2
+  //   const endPos = state!.initialX as number
 
-    setState({
-      ...state,
-      released: true,
-      animatedX: new Animated.Value(startPos),
-    })
-    Animated.timing(state!.animatedX, {
-      toValue: endPos,
-      useNativeDriver: false,
-    }).start(onCompleteCallback)
-  }
+  //   setState({
+  //     ...state,
+  //     released: true,
+  //     animatedX: new Animated.Value(startPos),
+  //   })
+  //   Animated.timing(state?.animatedX as Animated.Value, {
+  //     toValue: endPos,
+  //     useNativeDriver: false,
+  //   }).start(onCompleteCallback)
+  // }
 
-  const moveButtonOut = (onCompleteCallback: any) => {
+  const moveButtonOut = (
+    onCompleteCallback: Animated.EndCallback | undefined,
+  ) => {
     const startPos = state!.initialX! + state!.dx!
     const endPos = state!.dx! < 0 ? -buttonWidth * 0.2 : buttonWidth * 0.2
 
@@ -185,13 +188,15 @@ export const SlideButton = (props: IProps) => {
       released: true,
       animatedX: new Animated.Value(startPos),
     })
-    Animated.timing(state!.animatedX, {
+    Animated.timing(state!.animatedX as Animated.Value, {
       toValue: endPos,
       useNativeDriver: false,
     }).start(onCompleteCallback)
   }
 
-  const snapToPosition = (onCompleteCallback: any) => {
+  const snapToPosition = (
+    onCompleteCallback: Animated.EndCallback | undefined,
+  ) => {
     const startPos = state!.initialX! + state!.dx!
     const endPos = state!.initialX as number
 
@@ -199,7 +204,7 @@ export const SlideButton = (props: IProps) => {
       released: true,
       animatedX: new Animated.Value(startPos),
     })
-    Animated.timing(state!.animatedX, {
+    Animated.timing(state!.animatedX as Animated.Value, {
       toValue: endPos,
       useNativeDriver: false,
     }).start(onCompleteCallback)

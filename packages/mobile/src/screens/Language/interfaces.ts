@@ -7,7 +7,7 @@ export interface ILanguage {
 
 export type NavigationPropLanguage = StackNavigationProp<
   RootStackParamList,
-  'Language'
+  'LanguageScreen'
 >
 
 export interface ILanguageData {
@@ -18,5 +18,5 @@ export interface ILanguageData {
 
 export interface ILanguageTiles {
   title: string
-  name: string
+  nameTiles: string
 }

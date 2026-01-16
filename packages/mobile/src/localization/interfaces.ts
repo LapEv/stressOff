@@ -16,14 +16,14 @@ export interface ILocalizationOptions {
   headerTitle: IHeaderTitle
   buttons: IButtonsLabel
   loading: string
-  newSound: string
+  newSoundText: string
   notifications: INotificationLabel
   settings: ISettingsLabel
   modalMessages: IModalMessage
   timer: ITimerMessages
   Messages: ILanguageMessages
   feedback: IFeedbackMessages
-  favoritesCat: ImageSourcePropType[] | undefined
+  favoritesCat: ImageSourcePropType[]
 }
 
 export interface ICategoryFavorites {

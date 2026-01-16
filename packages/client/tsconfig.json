@@ -19,6 +19,7 @@
     "baseUrl": "./src/",
     "paths": {
       "main/*": ["./src/*"],
+      "hookes/*": ["./src/hooks/*"],
       "storeUsers/*": ["./src/store/Users/*"],
       "storeData/*": ["./src/store/Data/*"],
       "storeModals/*": ["./src/store/Modals/*"],

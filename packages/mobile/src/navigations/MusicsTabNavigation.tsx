@@ -1,47 +1,41 @@
 import React from 'react'
-import { ImageBackground, StyleSheet } from 'react-native'
+import { Image, ImageSourcePropType, StyleSheet } from 'react-native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store'
-import { IMUSICCategories } from '@/store/interfaces'
 import { ITheme } from '@/theme/interfaces'
 import { MusicsScreen } from '@/screens'
-import { IHeaderTitle } from '@/localization/interfaces'
 import { CustomTab } from '@/screens/components'
+import { musicCat } from '@/data/contentApp'
+import { useDB, useLanguage } from '@/hooks'
 
 const MusicsTab = createMaterialTopTabNavigator()
 
 export const MusicsTabNavigation = () => {
-  const headerTitle = useSelector<RootState>(
-    state => state.language.headerTitle,
-  ) as IHeaderTitle
-  const language = useSelector<RootState>(
-    state => state.language.name,
-  ) as string
-  const categories = useSelector<RootState>(
-    state => state.db.musicCategories,
-  ) as IMUSICCategories[]
+  const [{ headerTitle, name }] = useLanguage()
+  const [{ musicCategories }] = useDB()
   const theme = useSelector<RootState>(state => state.theme) as ITheme
 
   function CategoriesScreens() {
-    return categories.map(({ title, img, img_lt, id }) => {
+    return musicCategories.map(({ category, title, _id }) => {
+      const imgURI = musicCat.find(({ name }) => name === category)
+      const img =
+        theme.name === 'MAIN_THEME'
+          ? (imgURI?.imgStorage as ImageSourcePropType)
+          : (imgURI?.imgStorage_lt as ImageSourcePropType)
       return (
         <MusicsTab.Screen
-          name={title[language as keyof typeof title]}
-          key={id}
+          name={category}
+          key={_id}
+          initialParams={{ category: JSON.parse(title)[name] }}
           component={MusicsScreen}
           options={{
-            tabBarLabel: title[language as keyof typeof title],
+            tabBarShowIcon: true,
+            tabBarLabel: JSON.parse(title)[name],
             tabBarIcon: () => (
-              <ImageBackground
-                source={
-                  theme.name === 'MAIN_THEME' ? { uri: img } : { uri: img_lt }
-                }
-                resizeMode="stretch"
-                style={styles.imgBack}
-              />
+              <Image source={img} resizeMode="stretch" style={styles.img} />
             ),
-            title: title[language as keyof typeof title],
+            title: JSON.parse(title)[name],
           }}
         />
       )
@@ -55,7 +49,7 @@ export const MusicsTabNavigation = () => {
           <CustomTab
             {...props}
             label={headerTitle.library}
-            categories={categories}
+            categories={musicCategories}
           />
         )
       }}>
@@ -65,7 +59,7 @@ export const MusicsTabNavigation = () => {
 }
 
 const styles = StyleSheet.create({
-  imgBack: {
+  img: {
     width: 45,
     height: 35,
   },

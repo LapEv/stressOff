@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, useWindowDimensions } from 'react-native'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { NavigationPropPlayer } from 'navigations'
 import { ITheme } from 'theme/interfaces'
-import { ILocalizationOptions } from 'localization/interfaces'
 import { LinearGradient, View } from 'components'
 import { Mountaint } from './Mountain'
 import { IFavorites } from '@/store/interfaces'
@@ -16,16 +14,17 @@ import { ToggleAllSound } from '@/store/actions/sounds'
 import { useDispatch } from 'react-redux'
 import { PlayerControlContainer } from './PlayerControl/PlayerControlContainer'
 import { CheckForFavoriteContent } from '../Favorites/functions/checkForFavoriteContent'
+import { MaterialTopTabNavigationEventMap } from '@react-navigation/material-top-tabs'
+import { NavigationHelpers, ParamListBase } from '@react-navigation/native'
+import { useLanguage } from '@/hooks'
 
 type Props = {
-  navigation: NavigationPropPlayer
+  navigation: NavigationHelpers<ParamListBase, MaterialTopTabNavigationEventMap>
 }
 
 export const PlayerScreen = ({ navigation }: Props) => {
   const width = useWindowDimensions().width
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ headerTitle }] = useLanguage()
   const playingMusicId = useSelector<RootState>(
     state => state.music.id,
   ) as number
@@ -76,10 +75,7 @@ export const PlayerScreen = ({ navigation }: Props) => {
 
   return (
     <View style={styles.container}>
-      <CustomHeader
-        navigation={navigation}
-        label={language.headerTitle.player}
-      />
+      <CustomHeader navigation={navigation} label={headerTitle.player} />
       <LinearGradient style={styles.containerLG}>
         <Mountaint />
         <Library
@@ -87,7 +83,7 @@ export const PlayerScreen = ({ navigation }: Props) => {
           navigation={navigation}
           favesLength={faves.favorites.length}
           itemColor={theme.ITEM_COLOR}
-          title={language.headerTitle.library}
+          title={headerTitle.library}
         />
         <PlayerContainer navigation={navigation} />
         <PlayerControlContainer

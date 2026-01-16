@@ -3,18 +3,16 @@ import { RootState } from 'store'
 import { ITheme } from 'theme/interfaces'
 import { StyleSheet, useWindowDimensions } from 'react-native'
 import { useSelector } from 'react-redux'
-import { ILocalizationOptions } from 'localization/interfaces'
 import { IListHeader } from './interfaces'
 import { MusicSVG, SoundSVG } from '@/assets/icons/SVG'
 import { MusicItems } from './MusicItems'
 import { typeElevation } from '@/components/Shadow/typeElevaion'
+import { useLanguage } from '@/hooks'
 
 export const ListHeader = ({ navigation, playingDataSound }: IListHeader) => {
   const width = useWindowDimensions().width
   const theme = useSelector<RootState>(state => state.theme) as ITheme
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ headerTitle, Messages }] = useLanguage()
   const stateMusicID = useSelector<RootState>(state => state.music.id) as number
 
   return (
@@ -33,7 +31,7 @@ export const ListHeader = ({ navigation, playingDataSound }: IListHeader) => {
             })
           }>
           <TextTitle type="title_20b" style={styles.textMusic}>
-            {language.headerTitle.music}
+            {headerTitle.music}
           </TextTitle>
           <View style={styles.viewSVG}>
             <MusicSVG width="100%" height="100%" fill={theme.ITEM_COLOR} />
@@ -42,7 +40,7 @@ export const ListHeader = ({ navigation, playingDataSound }: IListHeader) => {
       </Shadow>
       {stateMusicID === 0 ? (
         <TextTitle type="title_14" style={styles.textMessages}>
-          {language.Messages.emptyList}
+          {Messages.emptyList}
         </TextTitle>
       ) : (
         <MusicItems id={stateMusicID} />
@@ -64,7 +62,7 @@ export const ListHeader = ({ navigation, playingDataSound }: IListHeader) => {
               screen: 'SoundsTabNavigation',
             })
           }>
-          <TextTitle type="title_20b">{language.headerTitle.sound}</TextTitle>
+          <TextTitle type="title_20b">{headerTitle.sound}</TextTitle>
           <View style={styles.viewSVG}>
             <SoundSVG width="100%" height="100%" fill={theme.ITEM_COLOR} />
           </View>
@@ -73,7 +71,7 @@ export const ListHeader = ({ navigation, playingDataSound }: IListHeader) => {
       {!playingDataSound.length && (
         <View>
           <TextTitle type="title_14" style={styles.textMessages}>
-            {language.Messages.emptyList}
+            {Messages.emptyList}
           </TextTitle>
         </View>
       )}

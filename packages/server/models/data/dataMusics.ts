@@ -23,6 +23,7 @@ export interface IDataMusic {
     RUS: string
     ENG: string
   }
+  newSound: boolean
 }
 
 export type DataMusicModel = Model<IDataMusic>
@@ -50,6 +51,7 @@ const DataMusics = new Schema<IDataMusic, DataMusicModel>({
     RUS: { type: String, reqiured: true },
     ENG: { type: String, reqiured: true },
   },
+  newSound: { type: Boolean, default: false },
 })
 
 export const DataMusic = model<IDataMusic, DataMusicModel>(

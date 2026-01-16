@@ -1,51 +1,55 @@
 import React, { useRef } from 'react'
 import { FlatList, StyleSheet, View } from 'react-native'
 import { useSelector } from 'react-redux'
-import { Props } from './interfaces'
+import { IMusicScreenProps } from './interfaces'
 import { RootState } from '@/store'
-import { curLanguage } from '@/localization/language'
-import { IMUSICS } from '@/store/interfaces'
+import { IMUSICSDB } from '@/store/interfaces'
 import { dataApp } from '@/data/dataApp'
 import { LinearGradient } from '@/components'
 import { MusicTiles } from './MusicTiles'
+import { useCategoryFilter, useDB, useLanguage } from '@/hooks'
+import { DATA_MUSIC } from '@/data/contentApp'
 
-export const MusicsScreen = ({ route }: Props) => {
-  const language = useSelector<RootState>(
-    state => state.language.name,
-  ) as curLanguage
+export const MusicsScreen = ({ route }: IMusicScreenProps) => {
+  const [{ musics }] = useDB()
+  const [{ name }] = useLanguage()
   const playingMusicId = useSelector<RootState>(state => state.music.id)
-  const musicDB = useSelector<RootState>(state => state.db.musics) as IMUSICS[]
+  const data = useCategoryFilter({
+    data: musics,
+    filter: route?.params.category as string,
+  })
 
-  const data = musicDB.filter(
-    value =>
-      value.category[language as keyof typeof value.category] === route.name,
-  )
-
-  const flatlistRef = useRef<FlatList<any> | null>(null)
+  const flatlistRef = useRef<FlatList | null>(null)
   const scroll = () => {
     // if (route.params && route.params.scrollToEnd) {
-    if (route.params) {
+    if (route?.params) {
       setTimeout(() => {
         flatlistRef.current?.scrollToEnd({ animated: true })
       }, 1000)
     }
   }
 
-  const renderItem = ({ id }: IMUSICS) => {
+  const renderItem = ({ id, _id }: IMUSICSDB) => {
+    const description = JSON.parse(musics[Number(id) - 1].description)[name]
+    const title = JSON.parse(musics[Number(id) - 1].title)[name]
+    const img = DATA_MUSIC.find(
+      item => item.name === musics[Number(id) - 1].name,
+    )?.img
     return (
       <MusicTiles
         id={id}
+        _id={_id}
         findUseMusic={playingMusicId === id ? true : false}
-        item={musicDB[Number(id) - 1].sound}
-        img={musicDB[Number(id) - 1].img}
-        title={musicDB[Number(id) - 1].title[language]}
-        description={musicDB[Number(id) - 1].description[language]}
-        location={musicDB[Number(id) - 1].location}
-        storage={musicDB[Number(id) - 1].storage}
-        name={musicDB[Number(id) - 1].name}
-        booked={musicDB[Number(id) - 1].booked}
-        globalCategory={musicDB[Number(id) - 1].globalCategory}
-        newSnd={musicDB[Number(id) - 1].new as boolean}
+        item={musics[Number(id) - 1].sound}
+        img={img}
+        title={title}
+        description={description}
+        location={musics[Number(id) - 1].location}
+        storage={musics[Number(id) - 1].storage}
+        name={musics[Number(id) - 1].name}
+        booked={musics[Number(id) - 1].booked}
+        globalCategory={musics[Number(id) - 1].globalCategory}
+        newSound={musics[Number(id) - 1].newSound}
       />
     )
   }
@@ -65,7 +69,7 @@ export const MusicsScreen = ({ route }: Props) => {
           renderItem={({ item }) => renderItem(item)}
           onFocus={scroll}
           keyExtractor={item => item.id.toString()}
-          getItemLayout={(data, index) => ({
+          getItemLayout={(_, index) => ({
             length: 150,
             offset: 150 * index,
             index,

@@ -1,18 +1,16 @@
 import { AxiosError } from 'axios'
-import { getData } from 'api/dataAPI'
-import { api } from 'api/api'
 import store from 'store'
 import * as Font from 'expo-font'
+import * as SecureStore from 'expo-secure-store'
 import {
-  LoadMusicCategoriesFromFB,
-  LoadMusicFromFB,
+  LoadMusicCategoriesFromDB,
+  LoadMusicFromDB,
   LoadNotificationsFromFB,
-  LoadSoundCategoriesFromFB,
-  LoadSoundFromFB,
+  LoadSoundCategoriesFromDB,
+  LoadSoundFromDB,
 } from '@/store/actions/db'
 import { errorHandler } from 'utils/errorHandler'
-import { check, findUserData } from 'api/userAPI'
-import { Storage } from 'expo-sqlite/kv-store'
+import { check, findUserData, login } from 'api/userAPI'
 import { addUserData } from '@/store/actions/user'
 import { ChangeLanguage } from '@/store/actions/language'
 import { ChangeTheme } from '@/store/actions/theme'
@@ -26,6 +24,7 @@ import { getPesonalData } from '@/db/personalData'
 import { createDataFromCloud } from './createDataFromCloud'
 import {
   getAppData,
+  getDataMusics,
   getDataSounds,
   getMUSICS_Categories,
   getNotifications,
@@ -34,10 +33,10 @@ import {
 import {
   IAppData_,
   IMUSICCategories,
-  IMUSICS,
+  IMUSICSDB,
   INOTIFICATIONS,
   ISOUNDCategories,
-  ISOUNDS,
+  ISOUNDSDB,
   IUser,
 } from '@/store/interfaces'
 import { addAppData } from '@/store/actions/appData'
@@ -52,11 +51,11 @@ import { addAppData } from '@/store/actions/appData'
 
 export const bootstrap = async ({ isConnected, token, user }: IBootstrap) => {
   try {
-    // const _handleNotification = (notification: any) => {
+    // const _handleNotification = (notification) => {
     //   console.log('notification = ', notification)
     //   // setNotification({ notification: notification });
     // }
-    // const _handleNotificationResponse = (response: any) => {
+    // const _handleNotificationResponse = (response) => {
     //   console.log('notification response = ', response)
     // }
     // const pushToken = await registerForPushNotificationsAsync()
@@ -65,7 +64,6 @@ export const bootstrap = async ({ isConnected, token, user }: IBootstrap) => {
     // Notifications.addNotificationResponseReceivedListener(
     //   _handleNotificationResponse,
     // )
-
     if (!isConnected && !token) {
       return {
         status: true,
@@ -75,6 +73,32 @@ export const bootstrap = async ({ isConnected, token, user }: IBootstrap) => {
 
     const personal = (await getPesonalData()) as IUser[]
     const appData = (await getAppData()) as IAppData_[]
+
+    // const update = await updateDataSound(
+    //   'newSound',
+    //   true,
+    //   '_id',
+    //   '62fe4f5dd7f506ff8b3161a1',
+    // )
+    // console.log('update = ', update)
+    // const soundDB = (await getDataSounds()) as ISOUNDS[]
+    // console.log('soundDB = ', soundDB[0])
+    // console.log('soundDB = ', soundDB[1])
+
+    if (!token && personal) {
+      if (personal[0].type !== 'isAnonymous') {
+        return {
+          status: true,
+          newError: 'Token expired!',
+        }
+      }
+      const data = await login(
+        personal[0].username,
+        process.env.EXPO_PUBLIC_ANONYMOUSUSER_PASSWORD,
+      )
+      token = data.token
+    }
+
     let createData = false
     if (token && !personal) {
       const userToken = !user && isConnected ? await check() : null
@@ -96,12 +120,12 @@ export const bootstrap = async ({ isConnected, token, user }: IBootstrap) => {
         (await getSOUNDS_Categories()) as ISOUNDCategories[]
       const musicCategoriesDB =
         (await getMUSICS_Categories()) as IMUSICCategories[]
-      store.dispatch(LoadSoundCategoriesFromFB(soundCategoriesDB))
-      store.dispatch(LoadMusicCategoriesFromFB(musicCategoriesDB))
-      const soundDB = (await getDataSounds()) as ISOUNDS[]
-      const musicDB = (await getData(api.GET_DATA_MUSICS)) as IMUSICS[]
-      store.dispatch(LoadSoundFromFB(soundDB))
-      store.dispatch(LoadMusicFromFB(musicDB))
+      store.dispatch(LoadSoundCategoriesFromDB(soundCategoriesDB))
+      store.dispatch(LoadMusicCategoriesFromDB(musicCategoriesDB))
+      const soundDB = (await getDataSounds()) as ISOUNDSDB[]
+      const musicDB = (await getDataMusics()) as IMUSICSDB[]
+      store.dispatch(LoadSoundFromDB(soundDB))
+      store.dispatch(LoadMusicFromDB(musicDB))
       const notifications = (await getNotifications()) as INOTIFICATIONS[]
       store.dispatch(LoadNotificationsFromFB(notifications))
       store.dispatch(addAppData(appData[0]))
@@ -116,7 +140,9 @@ export const bootstrap = async ({ isConnected, token, user }: IBootstrap) => {
     // }
 
     const currentPlay = JSON.parse(
-      Storage.getItemSync(dataApp.STORAGE_KEYS.currentPlay) as string,
+      (await SecureStore.getItemAsync(
+        dataApp.STORAGE_KEYS.currentPlay,
+      )) as string,
     ) as ICurrentPlay
 
     if (currentPlay) {
@@ -145,7 +171,9 @@ export const bootstrap = async ({ isConnected, token, user }: IBootstrap) => {
     })
 
     const dateFeedback = JSON.parse(
-      Storage.getItemSync(dataApp.STORAGE_KEYS.feedbackInterval) as string,
+      (await SecureStore.getItemAsync(
+        dataApp.STORAGE_KEYS.feedbackInterval,
+      )) as string,
     )
 
     dateFeedback ? store.dispatch(IntervalFeedback(dateFeedback)) : null

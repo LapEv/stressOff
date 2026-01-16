@@ -12,7 +12,7 @@ import { modalShowMessage } from '@/store/actions/modalMessage'
 import { modalShow } from '@/store/actions/modal'
 import { Shadow, Text, Touchable, View } from '@/components'
 import { ArrowRightSVG } from '@/assets/icons/SVG'
-import { ILocalizationOptions } from '@/localization/interfaces'
+import { useLanguage } from '@/hooks'
 
 export const SettingItems = ({
   name,
@@ -20,9 +20,7 @@ export const SettingItems = ({
   navigation,
   settingItemsData,
 }: ISettingsItems) => {
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ modalMessages }] = useLanguage()
   const user = useSelector<RootState>(state => state.user) as IUser
   const theme = useSelector<RootState>(state => state.theme) as ITheme
   const width = useWindowDimensions().width
@@ -47,7 +45,7 @@ export const SettingItems = ({
 
   const Press = () => {
     if (_key === settingItemsData[0].data[1]._key) {
-      navigation.navigate('Language', { screen: 'Language' })
+      navigation.navigate('LanguageScreen', { screen: 'LanguageScreen' })
     }
     if (_key === settingItemsData[1].data[0]._key) {
       const soundSize = SoundSizes()
@@ -56,14 +54,14 @@ export const SettingItems = ({
       const soundSizeString = FileSizeToString(soundSize)
       const musicSizeString = FileSizeToString(musicSize)
       const totalSizeString = FileSizeToString(totalSize)
-      language.modalMessages.TotalSize.message = `${language.modalMessages.TotalSize.message1}${soundSizeString} \n${language.modalMessages.TotalSize.message2}${musicSizeString} \n\n${language.modalMessages.TotalSize.message4}${totalSizeString}`
-      dispatch(modalShowMessage(language.modalMessages.TotalSize))
+      modalMessages.TotalSize.message = `${modalMessages.TotalSize.message1}${soundSizeString} \n${modalMessages.TotalSize.message2}${musicSizeString} \n\n${modalMessages.TotalSize.message4}${totalSizeString}`
+      dispatch(modalShowMessage(modalMessages.TotalSize))
     }
     if (_key === settingItemsData[1].data[1]._key) {
-      dispatch(modalShow(language.modalMessages.deleteAllFromDevice))
+      dispatch(modalShow(modalMessages.deleteAllFromDevice))
     }
     if (_key === settingItemsData[1].data[2]._key) {
-      navigation.navigate('FeedBack', { screen: 'FeedBack' })
+      navigation.navigate('FeedBackScreen', { screen: 'FeedBackScreen' })
     }
     if (_key === settingItemsData[2].data[0]._key) console.log('terms')
   }
@@ -136,7 +134,9 @@ export const SettingItems = ({
           </View>
           <Touchable
             style={styles.touch}
-            onPress={() => navigation.navigate('Player', { screen: 'Player' })}>
+            onPress={() =>
+              navigation.navigate('PlayerScreen', { screen: 'PlayerScreen' })
+            }>
             <ArrowRightSVG width="100%" height="100%" fill={theme.ITEM_COLOR} />
           </Touchable>
         </Shadow>

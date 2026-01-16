@@ -1,24 +1,8 @@
-import {
-  NavigationPropNotifications,
-  NavigationPropPlayer,
-} from '@/navigations'
-import { NavigationPropSound } from '@/navigations/interfaces'
-import { NavigationPropAuth } from '@/screens/Auth/interfaces'
-import { NavigationPropFeedBack } from '@/screens/FeedBack/interfaces'
-import { NavigationPropLanguage } from '@/screens/Language/interfaces'
-import { NavigationPropSettings } from '@/screens/Settings/interfaces'
-import { NavigationPropTimer } from '@/screens/Timer/interfaces'
+import { MaterialTopTabNavigationEventMap } from '@react-navigation/material-top-tabs'
+import { NavigationHelpers, ParamListBase } from '@react-navigation/native'
 
 export interface ICustomHeader {
-  navigation:
-    | NavigationPropPlayer
-    | NavigationPropNotifications
-    | NavigationPropSound
-    | NavigationPropAuth
-    | NavigationPropSettings
-    | NavigationPropFeedBack
-    | NavigationPropLanguage
-    | NavigationPropTimer
+  navigation: NavigationHelpers<ParamListBase, MaterialTopTabNavigationEventMap>
   label: string
   type?: string
 }

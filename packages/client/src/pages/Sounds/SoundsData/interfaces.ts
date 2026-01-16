@@ -77,4 +77,5 @@ export interface IList {
         ENG: string
       }
   id: number
+  name: string
 }

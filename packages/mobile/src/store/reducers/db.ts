@@ -3,10 +3,10 @@ import {
   IActionDB,
   IDBState,
   IMUSICCategories,
-  IMUSICS,
+  IMUSICSDB,
   INOTIFICATIONS,
   ISOUNDCategories,
-  ISOUNDS,
+  ISOUNDSDB,
 } from '../interfaces'
 import {
   ADD_SOUND_DB,
@@ -47,12 +47,12 @@ export const DBReducer: Reducer<IDBState, IActionDB> = (
     case ADD_SOUND_DB:
       return {
         ...state,
-        sounds: [...state.sounds, { ...(action.payload as ISOUNDS) }],
+        sounds: [...state.sounds, { ...(action.payload as ISOUNDSDB) }],
       }
     case ADD_MUSIC_DB:
       return {
         ...state,
-        musics: [...state.musics, { ...(action.payload as IMUSICS) }],
+        musics: [...state.musics, { ...(action.payload as IMUSICSDB) }],
       }
     case ADD_NOTIFICATIONS_DB:
       return {
@@ -65,12 +65,12 @@ export const DBReducer: Reducer<IDBState, IActionDB> = (
     case LOAD_SOUND_FB:
       return {
         ...state,
-        sounds: action.payload as ISOUNDS[],
+        sounds: action.payload as ISOUNDSDB[],
       }
     case LOAD_MUSIC_FB:
       return {
         ...state,
-        musics: action.payload as IMUSICS[],
+        musics: action.payload as IMUSICSDB[],
       }
     case LOAD_SOUND_CATEGORIES_FB:
       return {
@@ -88,66 +88,24 @@ export const DBReducer: Reducer<IDBState, IActionDB> = (
         notifications: action.payload as INOTIFICATIONS[],
       }
     case LOAD_SOUND_DB:
-      state.sounds.map(_sound => {
-        const updateSound = (action.payload as ISOUNDS[]).find(
-          value => value.name === _sound.name,
-        )
-        if (updateSound) {
-          _sound.img = updateSound.img
-          _sound.sound = updateSound.sound
-          _sound.location = updateSound.location
-          _sound.booked = updateSound.booked
-          _sound.new = updateSound.new
-        }
-      })
       return {
         ...state,
-        sounds: state.sounds,
+        sounds: action.payload as ISOUNDSDB[],
       }
     case LOAD_MUSIC_DB:
-      state.musics.map(_music => {
-        const updateMusic = (action.payload as IMUSICS[]).find(
-          value => value.name === _music.name,
-        )
-        if (updateMusic) {
-          _music.img = updateMusic.img
-          _music.sound = updateMusic.sound
-          _music.location = updateMusic.location
-          _music.booked = updateMusic.booked
-          _music.new = updateMusic.new
-        }
-      })
       return {
         ...state,
-        musics: state.musics,
+        musics: action.payload as IMUSICSDB[],
       }
     case LOAD_SOUND_CATEGORIES_DB:
-      state.soundCategories.map(_soundCategories => {
-        const updateSoundCategories = (
-          action.payload as ISOUNDCategories[]
-        ).find(value => value.name === _soundCategories.category)
-        if (updateSoundCategories) {
-          _soundCategories.img = updateSoundCategories.img
-          _soundCategories.img_lt = updateSoundCategories.img_lt
-        }
-      })
       return {
         ...state,
-        soundCategories: state.soundCategories,
+        soundCategories: action.payload as ISOUNDCategories[],
       }
     case LOAD_MUSIC_CATEGORIES_DB:
-      state.musicCategories.map(_musicCategories => {
-        const updateMusicCategories = (
-          action.payload as IMUSICCategories[]
-        ).find(value => value.name === _musicCategories.category)
-        if (updateMusicCategories) {
-          _musicCategories.img = updateMusicCategories.img
-          _musicCategories.img_lt = updateMusicCategories.img_lt
-        }
-      })
       return {
         ...state,
-        musicCategories: state.musicCategories,
+        musicCategories: action.payload as IMUSICCategories[],
       }
     case LOAD_NOTIFICATIONS_DB:
       return {
@@ -156,7 +114,7 @@ export const DBReducer: Reducer<IDBState, IActionDB> = (
       }
     case UPDATE_SOUND_DB: {
       const dbSound = state.sounds.map(value => {
-        const newValue = action.payload as ISOUNDS
+        const newValue = action.payload as ISOUNDSDB
         if (value.name === newValue.name) {
           value.sound = newValue.sound
           value.location = newValue.location
@@ -170,7 +128,7 @@ export const DBReducer: Reducer<IDBState, IActionDB> = (
     }
     case UPDATE_MUSIC_DB: {
       const dbMusic = state.musics.map(value => {
-        const newValue = action.payload as IMUSICS
+        const newValue = action.payload as IMUSICSDB
         if (value.name === newValue.name) {
           value.sound = newValue.sound
           value.location = newValue.location
@@ -196,34 +154,26 @@ export const DBReducer: Reducer<IDBState, IActionDB> = (
       }
     }
     case UPDATE_SOUND_STATUS_NEW: {
-      const dbStatusNewSounds = state.sounds.map(value => {
-        const newValue = action.payload as ISOUNDS
-        if (value.name === newValue.name) {
-          value.new = newValue.new
-        }
-        return value
-      })
+      const { _id, newSound } = action.payload as ISOUNDSDB
       return {
         ...state,
-        sounds: dbStatusNewSounds,
+        sounds: state.sounds.map(item =>
+          item._id === _id ? { ...item, newSound: newSound } : item,
+        ),
       }
     }
     case UPDATE_MUSIC_STATUS_NEW: {
-      const dbStatusNewMusics = state.musics.map(value => {
-        const newValue = action.payload as IMUSICS
-        if (value.name === newValue.name) {
-          value.new = newValue.new
-        }
-        return value
-      })
+      const { _id, newSound } = action.payload as IMUSICSDB
       return {
         ...state,
-        musics: dbStatusNewMusics,
+        sounds: state.musics.map(item =>
+          item._id === _id ? { ...item, newSound: newSound } : item,
+        ),
       }
     }
     case UPDATE_SOUND_BOOKED: {
       const dbStatusSoundsBooked = state.sounds.map(value => {
-        const newValue = action.payload as ISOUNDS
+        const newValue = action.payload as ISOUNDSDB
         if (value.id === newValue.id) {
           value.booked = newValue.booked
         }
@@ -236,7 +186,7 @@ export const DBReducer: Reducer<IDBState, IActionDB> = (
     }
     case UPDATE_MUSIC_BOOKED: {
       const dbStatusMusicsBooked = state.musics.map(value => {
-        const newValue = action.payload as IMUSICS
+        const newValue = action.payload as IMUSICSDB
         if (value.id === newValue.id) {
           value.booked = newValue.booked
         }

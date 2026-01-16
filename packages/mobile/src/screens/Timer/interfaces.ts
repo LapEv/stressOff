@@ -7,7 +7,7 @@ export interface ITimer {
 
 export type NavigationPropTimer = StackNavigationProp<
   RootStackParamList,
-  'Timer'
+  'TimerScreen'
 >
 
 export interface ITimeData {

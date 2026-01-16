@@ -1,23 +1,25 @@
 import { NavigationPropPlayer } from '@/navigations'
 import { ISoundStateItems } from '@/store/interfaces'
+import { MaterialTopTabNavigationEventMap } from '@react-navigation/material-top-tabs'
+import { NavigationHelpers, ParamListBase } from '@react-navigation/native'
 
 export interface ILibrary {
   width: number
-  navigation: NavigationPropPlayer
+  navigation: NavigationHelpers<ParamListBase, MaterialTopTabNavigationEventMap>
   favesLength: number
   itemColor: string
   title: string
 }
 
 export interface IPlayerContainer {
-  navigation: NavigationPropPlayer
+  navigation: NavigationHelpers<ParamListBase, MaterialTopTabNavigationEventMap>
 }
 
 export interface IPlayerControlContainer {
   setStatusPlay: (data: boolean) => void
   play: boolean
   disabledControl: boolean
-  navigation: NavigationPropPlayer
+  navigation: NavigationHelpers<ParamListBase, MaterialTopTabNavigationEventMap>
   favorite: boolean
   setFavorite: (data: boolean) => void
 }

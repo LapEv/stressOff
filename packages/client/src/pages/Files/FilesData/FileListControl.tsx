@@ -88,7 +88,7 @@ export const FileListControl = observer(({ newFolder }: IFileListControl) => {
       const file = data.FilePath.split('\\')
       GetFile(file[file.length - 1])
       // } else {
-      //   setFile({data: '', info: '' as any})
+      //   setFile({data: '', info: ''})
     }
   }, [data.FilePath])
 

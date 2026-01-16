@@ -7,7 +7,6 @@ import {
 } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/store'
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { ITheme } from '@/theme/interfaces'
 import { IAuthorization } from './interfaces'
 import {
@@ -25,11 +24,10 @@ import { checkValidation } from '@/utils/validation'
 import { addError } from '@/store/actions/error'
 import { bootstrap } from '@/functions/Bootstrap/bootstrap'
 import { checkAnonymousData } from '@/functions'
+import { useLanguage } from '@/hooks'
 
 export const Authorization = ({ screen, navigation }: IAuthorization) => {
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
+  const [{ headerTitle, buttons, Messages }] = useLanguage()
   const width = useWindowDimensions().width
   const theme = useSelector<RootState>(state => state.theme) as ITheme
   const error = useSelector<RootState>(state => state.error) as IError
@@ -89,9 +87,7 @@ export const Authorization = ({ screen, navigation }: IAuthorization) => {
       <LinearGradient style={{ width: '100%' }}>
         <View style={Platform.OS === 'web' ? styles.web : styles.mobile}>
           <Text type="text_30">
-            {screen === 'LoginScreen'
-              ? language.headerTitle.login
-              : language.headerTitle.signUp}
+            {screen === 'LoginScreen' ? headerTitle.login : headerTitle.signUp}
           </Text>
           <View style={styles.floatingItem}>
             <FloatLabelInput
@@ -160,16 +156,14 @@ export const Authorization = ({ screen, navigation }: IAuthorization) => {
               containerStyle={styles.shadowContainer}
               onPress={screen === 'LoginScreen' ? handleLogin : handleSignUp}>
               <TextTitle type="title_20b">
-                {screen === 'LoginScreen'
-                  ? language.buttons.signIn
-                  : language.buttons.signUp}
+                {screen === 'LoginScreen' ? buttons.signIn : buttons.signUp}
               </TextTitle>
             </ShadowTouchable>
           </View>
           <View style={styles.optionsContainer}>
             {screen === 'SignUpScreen' ? (
               <View style={styles.view}>
-                <Text type="text_12">{language.Messages.hasAccount}</Text>
+                <Text type="text_12">{Messages.hasAccount}</Text>
                 <ShadowTouchable
                   styleshadow={{
                     ...styles.shadow,
@@ -183,15 +177,13 @@ export const Authorization = ({ screen, navigation }: IAuthorization) => {
                       screen: 'LoginScreen',
                     })
                   }>
-                  <TextTitle type="title_16b">
-                    {language.buttons.signIn}
-                  </TextTitle>
+                  <TextTitle type="title_16b">{buttons.signIn}</TextTitle>
                 </ShadowTouchable>
               </View>
             ) : (
               <View style={styles.optionsInContainer}>
                 <View style={styles.viewSignUp}>
-                  <Text type="text_12">{language.Messages.noAccount}</Text>
+                  <Text type="text_12">{Messages.noAccount}</Text>
                   <ShadowTouchable
                     styleshadow={{
                       ...styles.shadow,
@@ -205,13 +197,11 @@ export const Authorization = ({ screen, navigation }: IAuthorization) => {
                         screen: 'SignUpScreen',
                       })
                     }>
-                    <TextTitle type="title_16b">
-                      {language.buttons.signUp}
-                    </TextTitle>
+                    <TextTitle type="title_16b">{buttons.signUp}</TextTitle>
                   </ShadowTouchable>
                 </View>
                 <View style={styles.viewSignUp}>
-                  <Text type="text_12">{language.Messages.forgotPassword}</Text>
+                  <Text type="text_12">{Messages.forgotPassword}</Text>
                   <ShadowTouchable
                     styleshadow={{
                       ...styles.shadow,
@@ -226,7 +216,7 @@ export const Authorization = ({ screen, navigation }: IAuthorization) => {
                       })
                     }>
                     <TextTitle type="title_16b">
-                      {language.buttons.resetPassword}
+                      {buttons.resetPassword}
                     </TextTitle>
                   </ShadowTouchable>
                 </View>
@@ -237,7 +227,7 @@ export const Authorization = ({ screen, navigation }: IAuthorization) => {
             type="title_16b"
             style={styles.withoutAccount}
             onPress={continueWithoutAccount}>
-            {language.Messages.continueWithoutAccount}
+            {Messages.continueWithoutAccount}
           </TextTitle>
         </View>
       </LinearGradient>

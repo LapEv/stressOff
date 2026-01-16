@@ -1,13 +1,11 @@
 import { useEffect, useState, useContext } from 'react'
 import { observer } from 'mobx-react-lite'
-import {
-  useFilterList,
-  useNewFilteredObjCat,
-} from '../../../hooks/useDropDownData'
 import { Context } from '../../../main'
 import { appData } from 'data/app'
-import { IDropDownData, IItem } from '../../Sounds/SoundsData/interfaces'
+import { IDropDownData, IList } from '../../Sounds/SoundsData/interfaces'
 import { DropDownGroup } from 'components/DropDownGroup/DropDownGroup'
+import { useFilterList, useNewFilteredObjCat } from 'hooks/useDropDownData'
+import { ITitle } from 'store/Data/interfaces'
 
 export const DropDownCategoryData = observer((props: IDropDownData) => {
   const { data } = useContext(Context)
@@ -55,9 +53,9 @@ export const DropDownCategoryData = observer((props: IDropDownData) => {
                 value,
                 'name',
               )
-            : list
+            : (list as IList[])
 
-  const onChange = (value: string | boolean) => {
+  const onChange = (value: string | boolean | number | ITitle) => {
     setValue(value as string)
     checkMediaChanges(value as string)
 
@@ -82,7 +80,6 @@ export const DropDownCategoryData = observer((props: IDropDownData) => {
         ...current,
         [main]: {
           [optional]: value,
-          ...(current[main as keyof typeof current] as {}),
         },
       })
       return
@@ -100,7 +97,7 @@ export const DropDownCategoryData = observer((props: IDropDownData) => {
       getFileImg &&
       data.ActiveObj[main as keyof typeof data.ActiveObj] !== value
     ) {
-      if (items.findIndex((item: IItem) => item.name === value) >= 0) {
+      if (items.findIndex(({ name }) => name === value)) {
         getFileImg(value)
       }
     }
@@ -108,7 +105,7 @@ export const DropDownCategoryData = observer((props: IDropDownData) => {
       getFileSound &&
       data.ActiveObj[main as keyof typeof data.ActiveObj] !== value
     ) {
-      if (items.findIndex((item: IItem) => item.name === value) >= 0) {
+      if (items.findIndex(({ name }) => name === value) >= 0) {
         getFileSound(value)
       }
     }
@@ -148,11 +145,11 @@ export const DropDownCategoryData = observer((props: IDropDownData) => {
     onChange(
       items.length > 0 && value
         ? items[0].name
-        : optional
-          ? activeObj[main as keyof typeof activeObj][
+        : (optional as string)
+          ? (activeObj[main as keyof typeof activeObj][
               optional as keyof typeof main
-            ]
-          : data?.ActiveObj[main as keyof typeof data.ActiveObj],
+            ] as string)
+          : (data?.ActiveObj[main as keyof typeof data.ActiveObj] as string),
     )
   }
 

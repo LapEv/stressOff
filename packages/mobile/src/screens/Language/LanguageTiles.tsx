@@ -1,34 +1,36 @@
-import { ILocalizationOptions } from '@/localization/interfaces'
 import { RootState } from '@/store'
-import { IMUSICS, ISOUNDS, IUser } from '@/store/interfaces'
+import { IMUSICSDB, ISOUNDSDB, IUser } from '@/store/interfaces'
 import { ITheme } from '@/theme/interfaces'
 import React, { useEffect, useState } from 'react'
 import { useWindowDimensions, StyleSheet } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { ILanguageTiles } from './interfaces'
-import Storage from 'expo-sqlite/kv-store'
 import { LANGUAGE } from '@/localization/language'
 import { ChangeCurrentMixPlay } from '@/store/actions/favorites'
 import { dataApp } from '@/data/dataApp'
 import { ChangeLanguage } from '@/store/actions/language'
 import { Shadow, Text, Touchable, View } from '@/components'
 import { CheckSVG } from '@/assets/icons/SVG'
+import * as SecureStore from 'expo-secure-store'
+import { useLanguage } from '@/hooks'
 
-export const LanguageTiles = ({ title, name }: ILanguageTiles) => {
+export const LanguageTiles = ({ title, nameTiles }: ILanguageTiles) => {
+  const [{ name }, { UpdateLanguage }] = useLanguage()
   const user = useSelector<RootState>(state => state.user) as IUser
-  const language = useSelector<RootState>(
-    state => state.language,
-  ) as ILocalizationOptions
   const width = useWindowDimensions().width
   const theme = useSelector<RootState>(state => state.theme) as ITheme
   const [active, setActive] = useState<boolean>(
-    name === language.name ? true : false,
+    nameTiles === name ? true : false,
   )
   const currentMix = useSelector<RootState>(
     state => state.favorites.currentMix,
   ) as string
-  const soundDB = useSelector<RootState>(state => state.db.sounds) as ISOUNDS[]
-  const musicDB = useSelector<RootState>(state => state.db.musics) as IMUSICS[]
+  const soundDB = useSelector<RootState>(
+    state => state.db.sounds,
+  ) as ISOUNDSDB[]
+  const musicDB = useSelector<RootState>(
+    state => state.db.musics,
+  ) as IMUSICSDB[]
 
   const dispatch = useDispatch()
 
@@ -50,12 +52,12 @@ export const LanguageTiles = ({ title, name }: ILanguageTiles) => {
   }
 
   useEffect(() => {
-    language.name !== name && active ? setActive(false) : null
-  }, [language.name])
+    name !== name && active ? setActive(false) : null
+  }, [name])
 
   function setAsyncStorageValueFor(key: string, value: string) {
     try {
-      return Storage.setItemAsync(key, JSON.stringify(value))
+      return SecureStore.setItemAsync(key, JSON.stringify(value))
     } catch (e) {
       console.log('SettingsItems: Error: ', e)
     }
@@ -107,7 +109,7 @@ export const LanguageTiles = ({ title, name }: ILanguageTiles) => {
         _categoryFavorites: LANGUAGE[name].categoryFavorites,
       }),
     )
-    await updateLanguageFB(name, user._id)
+    await UpdateLanguage({ name, _id: user._id })
   }
 
   return (

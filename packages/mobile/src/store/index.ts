@@ -24,7 +24,6 @@ import {
   IDBState,
   IError,
   IFavorites,
-  IindividualStart,
   IIntervalFeedback,
   IModal,
   IModalMessage,
@@ -32,13 +31,13 @@ import {
   IProgressBar,
   ISoundState,
   ITimerState,
-  IToken,
   IUser,
 } from './interfaces'
 import { ILocalizationOptions } from '@/localization/interfaces'
 import { ITheme } from '@/theme/interfaces'
 import { tokenReducer } from './reducers/token'
 import { appDataReducer } from './reducers/appData'
+import { connectReducer } from './reducers/connect'
 
 const rootReducer = combineReducers({
   sound: soundReducer,
@@ -56,6 +55,7 @@ const rootReducer = combineReducers({
   language: languageReducer,
   error: errorReducer,
   token: tokenReducer,
+  connect: connectReducer,
   appData: appDataReducer,
 })
 
@@ -84,14 +84,16 @@ export type RootState = {
 } & {
   intervalFeedback: IIntervalFeedback
 } & {
-  individualTimer: IindividualStart
+  individualTimer: boolean
 } & {
   timer: ITimerState
 } & {
   error: IError
 } & {
-  token: IToken
+  token: string | null
 } & {
   appData: IAppData_
+} & {
+  connect: boolean
 }
 export default createStore(rootReducer, applyMiddleware(thunk))
