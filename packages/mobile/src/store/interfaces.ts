@@ -285,7 +285,7 @@ export interface IDBState {
 }
 
 export interface IUser {
-  _id?: string
+  _id: string
   id?: string
   createdAt: string
   username: string

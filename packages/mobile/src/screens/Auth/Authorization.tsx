@@ -7,7 +7,6 @@ import {
 } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/store'
-import { ITheme } from '@/theme/interfaces'
 import { IAuthorization } from './interfaces'
 import {
   FloatLabelInput,
@@ -24,12 +23,13 @@ import { checkValidation } from '@/utils/validation'
 import { addError } from '@/store/actions/error'
 import { bootstrap } from '@/functions/Bootstrap/bootstrap'
 import { checkAnonymousData } from '@/functions'
-import { useLanguage } from '@/hooks'
+import { useLanguage, useTheme } from '@/hooks'
 
 export const Authorization = ({ screen, navigation }: IAuthorization) => {
   const [{ headerTitle, buttons, Messages }] = useLanguage()
+  const [{ TEXT_COLOR, CHECK_COLOR }] = useTheme()
+
   const width = useWindowDimensions().width
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
   const error = useSelector<RootState>(state => state.error) as IError
   const [username, setUsername] = useState<string>('')
   const [email, setEmail] = useState<string>('')
@@ -94,7 +94,7 @@ export const Authorization = ({ screen, navigation }: IAuthorization) => {
               isPassword={false}
               label="Логин"
               value={username}
-              hintTextColor={theme.TEXT_COLOR}
+              hintTextColor={TEXT_COLOR}
               containerStyles={styles.fliContainerStyles}
               onChangeText={setUsername}
             />
@@ -105,7 +105,7 @@ export const Authorization = ({ screen, navigation }: IAuthorization) => {
                 isPassword={false}
                 label="Email"
                 value={email}
-                hintTextColor={theme.TEXT_COLOR}
+                hintTextColor={TEXT_COLOR}
                 containerStyles={styles.fliContainerStyles}
                 onChangeText={setEmail}
               />
@@ -117,7 +117,7 @@ export const Authorization = ({ screen, navigation }: IAuthorization) => {
               label="Password"
               value={password}
               togglePassword={false}
-              hintTextColor={theme.TEXT_COLOR}
+              hintTextColor={TEXT_COLOR}
               containerStyles={styles.fliContainerStyles}
               onChangeText={setPassword}
             />
@@ -129,7 +129,7 @@ export const Authorization = ({ screen, navigation }: IAuthorization) => {
                 label="Confirm Password"
                 value={confirmPassword}
                 togglePassword={false}
-                hintTextColor={theme.TEXT_COLOR}
+                hintTextColor={TEXT_COLOR}
                 containerStyles={styles.fliContainerStyles}
                 onChangeText={setConfirmPassword}
               />
@@ -148,7 +148,7 @@ export const Authorization = ({ screen, navigation }: IAuthorization) => {
           <View style={styles.buttonContainer}>
             <ShadowTouchable
               background={null}
-              styleshadow={{ ...styles.shadow, borderColor: theme.CHECK_COLOR }}
+              styleshadow={{ ...styles.shadow, borderColor: CHECK_COLOR }}
               style={{
                 ...styles.touchChange,
                 width: width / dataApp.timer.numberColumns,
@@ -168,7 +168,7 @@ export const Authorization = ({ screen, navigation }: IAuthorization) => {
                   styleshadow={{
                     ...styles.shadow,
                     width: width * 0.45 > 120 ? width * 0.45 : 120,
-                    borderColor: theme.CHECK_COLOR,
+                    borderColor: CHECK_COLOR,
                   }}
                   style={styles.touchChange}
                   containerStyle={styles.shadow2Container}
@@ -188,7 +188,7 @@ export const Authorization = ({ screen, navigation }: IAuthorization) => {
                     styleshadow={{
                       ...styles.shadow,
                       width: width * 0.45 > 120 ? width * 0.45 : 120,
-                      borderColor: theme.CHECK_COLOR,
+                      borderColor: CHECK_COLOR,
                     }}
                     style={styles.touchChange}
                     containerStyle={styles.shadow2Container}
@@ -206,7 +206,7 @@ export const Authorization = ({ screen, navigation }: IAuthorization) => {
                     styleshadow={{
                       ...styles.shadow,
                       width: width * 0.45 > 120 ? width * 0.45 : 120,
-                      borderColor: theme.CHECK_COLOR,
+                      borderColor: CHECK_COLOR,
                     }}
                     style={styles.touchChange}
                     containerStyle={styles.shadow2Container}

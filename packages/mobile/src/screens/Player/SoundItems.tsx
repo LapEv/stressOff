@@ -15,7 +15,6 @@ import {
 import { ChangeCurrentMixPlay } from '@/store/actions/favorites'
 import { GetImage } from '@/functions/getImage'
 import { modalShowMessage } from '@/store/actions/modalMessage'
-import { ITheme } from '@/theme/interfaces'
 import {
   Shadow,
   SlideButton,
@@ -31,11 +30,12 @@ import {
   CloseItemSVG,
 } from '@/assets/icons/SVG'
 import { curLanguage } from '@/localization/language'
-import { useLanguage } from '@/hooks'
+import { useLanguage, useTheme } from '@/hooks'
 // import { SlideButton, SlideDirection } from 'react-native-slide-button';
 
 export const SoundItems = ({ item, booked }: ISoundsItems) => {
   const [{ modalMessages, Messages }] = useLanguage()
+  const [theme] = useTheme()
   const currentLanguage = useSelector<RootState>(
     state => state.language.name,
   ) as curLanguage
@@ -52,7 +52,6 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
   const [volume, setVolumeState] = useState<number>(item.volume)
   // eslint-disable-next-line
   const [sound, setSound] = useState<any>()
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
 
   const dispatch = useDispatch()
   const playSound = async (item: URI) => {
@@ -279,7 +278,7 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
                     <BookedSVGYes
                       width="100%"
                       height="100%"
-                      fill={theme.booked}
+                      fill={theme.bookedColor}
                     />
                   </View>
                 ) : (
@@ -287,7 +286,7 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
                     <BookedSVGNo
                       width="100%"
                       height="100%"
-                      fill={theme.booked}
+                      fill={theme.bookedColor}
                     />
                   </View>
                 )}

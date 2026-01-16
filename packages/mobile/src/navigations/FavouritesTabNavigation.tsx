@@ -1,20 +1,17 @@
 import React from 'react'
 import { ImageBackground, StyleSheet } from 'react-native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
-import { useSelector } from 'react-redux'
-import { RootState } from '@/store'
-import { ITheme } from '@/theme/interfaces'
 import { CustomTab } from '@/screens/components'
 import { BookedScreenMusics, BookedScreenSounds, MixesScreen } from '@/screens'
-import { useLanguage } from '@/hooks'
+import { useLanguage, useTheme } from '@/hooks'
 
 const FavouritesTab = createMaterialTopTabNavigator()
 
 export const FavouritesTabNavigation = () => {
   const [{ headerTitle, categoryFavorites }] = useLanguage()
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
+  const [{ nameTheme }] = useTheme()
 
-  const arrIcons = theme.name === 'MAIN_THEME' ? favoritesCat : favoritesCat
+  const arrIcons = nameTheme === 'MAIN_THEME' ? favoritesCat : favoritesCat
 
   return (
     <FavouritesTab.Navigator

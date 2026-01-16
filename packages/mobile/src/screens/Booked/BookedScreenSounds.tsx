@@ -3,17 +3,16 @@ import { StyleSheet, FlatList } from 'react-native'
 import { useSelector } from 'react-redux'
 import { Props } from './interfaces'
 import { RootState } from '@/store'
-import { ITheme } from '@/theme/interfaces'
 import { ISOUNDS, ISOUNDSDB, ISoundStateItems } from '@/store/interfaces'
 import { SoundsTiles } from '../Sounds/SoundTiles'
 import { LinearGradient, TextTitle, View } from '@/components'
 import { dataApp } from '@/data/dataApp'
 import { DATA_SOUNDS } from '@/data/contentApp'
-import { useLanguage } from '@/hooks'
+import { useLanguage, useTheme } from '@/hooks'
 
 export const BookedScreenSounds = ({ route }: Props) => {
   const [{ name, Messages }] = useLanguage()
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
+  const [{ TEXT_COLOR }] = useTheme()
   const soundDB = useSelector<RootState>(
     state => state.db.sounds,
   ) as ISOUNDSDB[]
@@ -95,7 +94,7 @@ export const BookedScreenSounds = ({ route }: Props) => {
           <View style={styles.viewEmpty}>
             <TextTitle
               type="title_14"
-              style={{ color: theme.TEXT_COLOR, opacity: 0.9 }}>
+              style={{ color: TEXT_COLOR, opacity: 0.9 }}>
               {Messages.emptyBookedList}
             </TextTitle>
           </View>

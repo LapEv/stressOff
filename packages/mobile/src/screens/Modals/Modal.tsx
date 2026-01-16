@@ -8,7 +8,6 @@ import {
 } from 'react-native'
 import { RootState } from '@/store'
 import { IFavorites, IModal } from '@/store/interfaces'
-import { ITheme } from '@/theme/interfaces'
 import { modalShow } from '@/store/actions/modal'
 import { ClearSoundList } from '@/screens/Player/functions/clearSoundList'
 import { AddFavoriteMix } from 'favorites/functions/addFavoriteMix'
@@ -25,11 +24,11 @@ import {
   View,
 } from '@/components'
 import { typeElevation } from '@/components/Shadow/typeElevaion'
-import { useLanguage } from '@/hooks'
+import { useLanguage, useTheme } from '@/hooks'
 
 export const ModalAlert = () => {
   const [{ modalMessages }] = useLanguage()
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
+  const [{ BACKGROUNDCOLOR, NO_ACTIVE }] = useTheme()
   const modal = useSelector<RootState>(state => state.modal) as IModal
   const favorites = useSelector<RootState>(
     state => state.favorites,
@@ -121,12 +120,12 @@ export const ModalAlert = () => {
             <LinearGradient
               style={{
                 ...styles.modalView,
-                backgroundColor: theme.BACKGROUNDCOLOR,
+                backgroundColor: BACKGROUNDCOLOR,
               }}>
               <View
                 style={{
                   ...styles.modalTitleContainer,
-                  backgroundColor: theme.BACKGROUNDCOLOR,
+                  backgroundColor: BACKGROUNDCOLOR,
                 }}>
                 <TextTitle type="title_20b">{modal.title}</TextTitle>
               </View>
@@ -139,7 +138,7 @@ export const ModalAlert = () => {
                       isPassword={false}
                       label={modal.message as string}
                       value={input}
-                      hintTextColor={theme.NO_ACTIVE}
+                      hintTextColor={NO_ACTIVE}
                       containerStyles={styles.floatContainerStyle}
                       onChangeText={setInput}
                     />

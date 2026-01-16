@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux'
 import { ICustomTab } from './interfaces'
 import { RootState } from '@/store'
 import { ICategoryFavorites } from '@/localization/interfaces'
-import { ITheme } from '@/theme/interfaces'
 import { ISOUNDCategories } from '@/store/interfaces'
 import { CustomTabItem } from './CustomTabItem'
 import { CustomHeader } from '../CustomHeader/CustomHeader'
 import { MediaLink } from '../MediaLink/MediaLink'
+import { useTheme } from '@/hooks'
 
 export const CustomTab = ({
   state,
@@ -20,7 +20,7 @@ export const CustomTab = ({
   const categoryFavorites = useSelector<RootState>(
     state => state.language.categoryFavorites,
   ) as ICategoryFavorites[]
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
+  const [{ BACKGROUNDCOLOR_TILES }] = useTheme()
   const myList = useRef<FlatList | null>(null)
 
   const findMixesScreen = function (
@@ -72,7 +72,7 @@ export const CustomTab = ({
         showsHorizontalScrollIndicator={false}
         style={{
           ...styles.flat,
-          backgroundColor: theme.BACKGROUNDCOLOR_TILES,
+          backgroundColor: BACKGROUNDCOLOR_TILES,
         }}
         contentContainerStyle={[
           mixesScreen.length ? { flex: 1 } : null,

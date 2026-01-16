@@ -1,9 +1,7 @@
 import { Shadow as DefaultShadow } from 'react-native-shadow-2'
 import { TouchableOpacity as DefaultTouchable } from 'react-native'
-import { useSelector } from 'react-redux'
-import { ITheme } from '@/theme/interfaces'
-import { RootState } from '@/store'
 import { IShadowTouchable } from './interfaces'
+import { useTheme } from '@/hooks'
 
 export const ShadowTouchable = (props: IShadowTouchable) => {
   const {
@@ -15,10 +13,10 @@ export const ShadowTouchable = (props: IShadowTouchable) => {
     border,
     ...otherProps
   } = props
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
+  const [{ BACKGROUNDCOLOR, borderColorRGBA }] = useTheme()
   const backgroundColor =
-    background !== undefined ? background : theme.BACKGROUNDCOLOR
-  const borderColor = border !== undefined ? border : theme.borderColorRGBA
+    background !== undefined ? background : BACKGROUNDCOLOR
+  const borderColor = border !== undefined ? border : borderColorRGBA
 
   const shadowOpt = {
     borderRadius: 10,

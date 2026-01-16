@@ -1,26 +1,23 @@
 import React from 'react'
 import { Image, ImageSourcePropType, StyleSheet } from 'react-native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
-import { useSelector } from 'react-redux'
-import { RootState } from '@/store'
-import { ITheme } from '@/theme/interfaces'
 import { MusicsScreen } from '@/screens'
 import { CustomTab } from '@/screens/components'
 import { musicCat } from '@/data/contentApp'
-import { useDB, useLanguage } from '@/hooks'
+import { useDB, useLanguage, useTheme } from '@/hooks'
 
 const MusicsTab = createMaterialTopTabNavigator()
 
 export const MusicsTabNavigation = () => {
   const [{ headerTitle, name }] = useLanguage()
   const [{ musicCategories }] = useDB()
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
+  const [{ nameTheme }] = useTheme()
 
   function CategoriesScreens() {
     return musicCategories.map(({ category, title, _id }) => {
       const imgURI = musicCat.find(({ name }) => name === category)
       const img =
-        theme.name === 'MAIN_THEME'
+        nameTheme === 'MAIN_THEME'
           ? (imgURI?.imgStorage as ImageSourcePropType)
           : (imgURI?.imgStorage_lt as ImageSourcePropType)
       return (

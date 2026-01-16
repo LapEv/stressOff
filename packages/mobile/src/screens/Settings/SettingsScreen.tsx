@@ -13,18 +13,14 @@ import {
 import { dataApp } from '@/data/dataApp'
 import { typeElevation } from '@/components/Shadow/typeElevaion'
 import { SettingItems } from './SettingItems'
-import { useSelector } from 'react-redux'
-import { RootState } from '@/store'
-import { ITheme } from '@/theme/interfaces'
-import { useLanguage } from '@/hooks'
+import { useLanguage, useTheme } from '@/hooks'
 
 export const SettingsScreen = ({ navigation }: ISettings) => {
   const [{ settings, headerTitle, buttons }] = useLanguage()
   const width = useWindowDimensions().width
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
+  const [{ borderColor, CHECK_COLOR }] = useTheme()
 
   const renderItem = ({ data }: ISettingsItemsRender) => {
-    console.log('data = ', data)
     return (
       <SettingItems
         name={data[0].name}
@@ -98,7 +94,7 @@ export const SettingsScreen = ({ navigation }: ISettings) => {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      borderColor: theme.borderColor,
+      borderColor: borderColor,
       borderWidth: 1,
     },
   }
@@ -133,7 +129,7 @@ export const SettingsScreen = ({ navigation }: ISettings) => {
                 <ViewStyle
                   style={{
                     ...styles.sectionView,
-                    borderColor: theme.CHECK_COLOR,
+                    borderColor: CHECK_COLOR,
                   }}
                 />
               )}

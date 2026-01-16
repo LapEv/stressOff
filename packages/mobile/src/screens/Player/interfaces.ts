@@ -1,4 +1,3 @@
-import { NavigationPropPlayer } from '@/navigations'
 import { ISoundStateItems } from '@/store/interfaces'
 import { MaterialTopTabNavigationEventMap } from '@react-navigation/material-top-tabs'
 import { NavigationHelpers, ParamListBase } from '@react-navigation/native'
@@ -32,18 +31,18 @@ export interface IPlayerControl {
 
 export interface IPlayerFavorites {
   disabledControl: boolean
-  navigation: NavigationPropPlayer
+  navigation: NavigationHelpers<ParamListBase, MaterialTopTabNavigationEventMap>
   favorite: boolean
   setFavorite: (data: boolean) => void
 }
 
 export interface IPlayerTimer {
-  navigation: NavigationPropPlayer
+  navigation: NavigationHelpers<ParamListBase, MaterialTopTabNavigationEventMap>
   disabledControl: boolean
 }
 
 export interface IListHeader {
-  navigation: NavigationPropPlayer
+  navigation: NavigationHelpers<ParamListBase, MaterialTopTabNavigationEventMap>
   playingDataSound: ISoundStateItems[]
 }
 

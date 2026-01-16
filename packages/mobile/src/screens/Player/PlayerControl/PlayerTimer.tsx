@@ -4,12 +4,12 @@ import { TimeView } from '@/screens/Timer/TimeView'
 import { StyleSheet } from 'react-native'
 import { IPlayerTimer } from '../interfaces'
 import { RootState } from '@/store'
-import { ITheme } from '@/theme/interfaces'
 import { IMusicState, ISoundState } from '@/store/interfaces'
 import { useSelector } from 'react-redux'
+import { useTheme } from '@/hooks'
 
 export const PlayerTimer = ({ navigation, disabledControl }: IPlayerTimer) => {
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
+  const [{ ITEM_COLOR }] = useTheme()
   const StateMusic = useSelector<RootState>(state => state.music) as IMusicState
   const StateSound = useSelector<RootState>(state => state.music) as ISoundState
 
@@ -24,7 +24,7 @@ export const PlayerTimer = ({ navigation, disabledControl }: IPlayerTimer) => {
           navigation.navigate('TimerScreen', { screen: 'TimerScreen' })
         }>
         <View style={styles.viewTimer}>
-          <TimerSVG width="100%" height="100%" fill={theme.ITEM_COLOR} />
+          <TimerSVG width="100%" height="100%" fill={ITEM_COLOR} />
           <TimeView
             screen={'Player'}
             on={

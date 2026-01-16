@@ -4,20 +4,17 @@ import { useSelector } from 'react-redux'
 import { Shadow, TextTitle, Text, View, ViewStyle, Touchable } from 'components'
 import { BackSVG, NotificationsSVG } from '@/assets/icons/SVG'
 import { RootState } from 'store'
-import { ITheme } from 'theme/interfaces'
 import { ICustomHeader } from './interfaces'
 import { INOTIFICATIONS } from '@/store/interfaces'
+import { useTheme } from '@/hooks'
 
 export const CustomHeader = ({ navigation, label, type }: ICustomHeader) => {
-  const itemColor = useSelector<RootState>(
-    state => state.theme.ITEM_COLOR,
-  ) as string
+  const [{ BACKGROUNDCOLOR_HEADER, ITEM_COLOR, borderColorRGBA }] = useTheme()
   const dbNotifications = useSelector<RootState>(
     state => state.db.notifications,
   ) as INOTIFICATIONS[]
   const screen = navigation.getState().routes[navigation.getState().index].name
   const [countNotReaded, setCountNotReaded] = useState<number>(0)
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
 
   useEffect(() => {
     const notificationsReaded = dbNotifications
@@ -26,7 +23,7 @@ export const CustomHeader = ({ navigation, label, type }: ICustomHeader) => {
     setCountNotReaded(notificationsReaded)
   }, [dbNotifications])
 
-  const borderColor = theme.borderColorRGBA
+  const borderColor = borderColorRGBA
   return (
     <Shadow style={styles.shadow} type="header" distance={20}>
       <ViewStyle
@@ -37,7 +34,7 @@ export const CustomHeader = ({ navigation, label, type }: ICustomHeader) => {
             <Touchable
               style={styles.containerTouch}
               onPress={navigation.goBack}>
-              <BackSVG width="70%" height="70%" fill={itemColor} />
+              <BackSVG width="70%" height="70%" fill={ITEM_COLOR} />
             </Touchable>
           </View>
         ) : (
@@ -52,14 +49,14 @@ export const CustomHeader = ({ navigation, label, type }: ICustomHeader) => {
               type="noColor"
               style={{
                 ...styles.containerTouch,
-                backgroundColor: theme.BACKGROUNDCOLOR_HEADER,
+                backgroundColor: BACKGROUNDCOLOR_HEADER,
               }}
               onPress={() =>
                 navigation.navigate('NotificationsScreen', {
                   screen: 'NotificationsScreen',
                 })
               }>
-              <NotificationsSVG width="90%" height="90%" fill={itemColor} />
+              <NotificationsSVG width="90%" height="90%" fill={ITEM_COLOR} />
               {countNotReaded > 0 && (
                 <ViewStyle style={styles.containerCheck} type="check">
                   <Text type="text_12">{countNotReaded}</Text>

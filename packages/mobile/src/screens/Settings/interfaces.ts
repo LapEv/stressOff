@@ -1,13 +1,15 @@
 import { RootStackParamList } from '@/navigations'
+import { MaterialTopTabNavigationEventMap } from '@react-navigation/material-top-tabs'
+import { NavigationHelpers, ParamListBase } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 
 export interface ISettings {
-  navigation: NavigationPropSettings
+  navigation: NavigationHelpers<ParamListBase, MaterialTopTabNavigationEventMap>
 }
 
 export type NavigationPropSettings = StackNavigationProp<
   RootStackParamList,
-  'Settings'
+  'SettingsScreen'
 >
 
 // export interface ISettingsItems {
@@ -33,6 +35,7 @@ export interface ISettingsItemsRender {
 export interface ISettingsItems {
   name: string
   _key: string
-  navigation: NavigationPropSettings
+  navigation: NavigationHelpers<ParamListBase, MaterialTopTabNavigationEventMap>
+  // eslint-disable-next-line
   settingItemsData: any
 }

@@ -22,17 +22,17 @@ import {
 } from '@/components'
 import { CustomHeader } from '../components'
 import { checkValidation } from '@/utils/validation'
-import { ITheme } from '@/theme/interfaces'
 import * as SecureStore from 'expo-secure-store'
 import { useLanguage } from '@/hooks'
+import { useTheme } from '@/hooks'
 
 export const FeedBackScreen = ({ navigation }: IFeedBack) => {
   const [{ feedback, modalMessages, headerTitle }] = useLanguage()
+  const [{ TEXT_COLOR, borderColor, ITEM_COLOR }] = useTheme()
   const dateFeedback = useSelector<RootState>(
     state => state.intervalFeedback.date,
   ) as Date
   const width = useWindowDimensions().width
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
   const dispatch = useDispatch()
 
   const [firstName, setFirstName] = useState<string>('')
@@ -155,7 +155,7 @@ export const FeedBackScreen = ({ navigation }: IFeedBack) => {
       borderRadius: 15,
       justifyContent: 'center',
       alignItems: 'center',
-      borderColor: theme.borderColor,
+      borderColor: borderColor,
       borderWidth: 1,
     },
   }
@@ -164,20 +164,20 @@ export const FeedBackScreen = ({ navigation }: IFeedBack) => {
     containerStyles: {
       borderWidth: 1,
       paddingHorizontal: 10,
-      borderColor: theme.ITEM_COLOR,
+      borderColor: ITEM_COLOR,
       borderRadius: 15,
       height: 60,
       marginVertical: 20,
-      color: theme.TEXT_COLOR,
+      color: TEXT_COLOR,
     },
     containerStylesDescription: {
       borderWidth: 1,
       padding: 10,
-      borderColor: theme.ITEM_COLOR,
+      borderColor: ITEM_COLOR,
       borderRadius: 15,
       height: 160,
       marginVertical: 20,
-      color: theme.TEXT_COLOR,
+      color: TEXT_COLOR,
       textAlignVertical: 'top' as
         | 'auto'
         | 'center'

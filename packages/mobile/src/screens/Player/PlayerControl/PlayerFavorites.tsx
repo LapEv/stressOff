@@ -1,7 +1,6 @@
 import { Shadow, Touchable, ViewStyle } from '@/components'
 import { ImageBackground, StyleSheet } from 'react-native'
 import { IPlayerFavorites, ISoundsItems } from '../interfaces'
-import { ITheme } from '@/theme/interfaces'
 import { RootState } from '@/store'
 import { useSelector } from 'react-redux'
 import { HeartSVG, HeartSVGYes } from '@/assets/icons/SVG'
@@ -18,7 +17,7 @@ import { useDispatch } from 'react-redux'
 import { modalShow } from '@/store/actions/modal'
 import { modalShowMessage } from '@/store/actions/modalMessage'
 import * as SecureStore from 'expo-secure-store'
-import { useLanguage } from '@/hooks'
+import { useLanguage, useTheme } from '@/hooks'
 
 export const PlayerFavorites = ({
   disabledControl,
@@ -27,7 +26,7 @@ export const PlayerFavorites = ({
   setFavorite,
 }: IPlayerFavorites) => {
   const [{ modalMessages }] = useLanguage()
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
+  const [{ ITEM_COLOR, CHECK_COLOR, toFavoritesScreen }] = useTheme()
   const StateMusic = useSelector<RootState>(state => state.music) as IMusicState
   const StateSound = useSelector<RootState>(state => state.music) as ISoundState
   const favorites = useSelector<RootState>(
@@ -129,7 +128,7 @@ export const PlayerFavorites = ({
         {disabledControl ? (
           <ViewStyle style={styles.viewFavorites}>
             <ImageBackground
-              source={theme.toFavoritesScreen}
+              source={toFavoritesScreen}
               resizeMode={'contain'}
               imageStyle={styles.imgStyleContainer}
               style={styles.imgStyle}
@@ -139,21 +138,17 @@ export const PlayerFavorites = ({
           playingDataSound.length > 1 ? (
           !favorite ? (
             <ViewStyle style={styles.viewSVG}>
-              <HeartSVG width="100%" height="100%" fill={theme.ITEM_COLOR} />
+              <HeartSVG width="100%" height="100%" fill={ITEM_COLOR} />
             </ViewStyle>
           ) : (
             <ViewStyle style={styles.viewSVG}>
-              <HeartSVGYes
-                width="100%"
-                height="100%"
-                fill={theme.CHECK_COLOR}
-              />
+              <HeartSVGYes width="100%" height="100%" fill={CHECK_COLOR} />
             </ViewStyle>
           )
         ) : (
           <ViewStyle style={styles.view}>
             <ImageBackground
-              source={theme.toFavoritesScreen}
+              source={toFavoritesScreen}
               resizeMode={'contain'}
               style={styles.imgStyle}
             />

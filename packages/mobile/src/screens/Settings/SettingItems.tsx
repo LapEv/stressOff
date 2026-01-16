@@ -5,14 +5,13 @@ import { ISettingsItems } from './interfaces'
 import Theme from '@/theme/Theme'
 import { RootState } from '@/store'
 import { IUser } from '@/store/interfaces'
-import { ITheme } from '@/theme/interfaces'
 import { ChangeTheme } from '@/store/actions/theme'
 import { FileSizeToString, MusicsSizes, SoundSizes } from '@/functions'
 import { modalShowMessage } from '@/store/actions/modalMessage'
 import { modalShow } from '@/store/actions/modal'
 import { Shadow, Text, Touchable, View } from '@/components'
 import { ArrowRightSVG } from '@/assets/icons/SVG'
-import { useLanguage } from '@/hooks'
+import { useLanguage, useTheme } from '@/hooks'
 
 export const SettingItems = ({
   name,
@@ -21,8 +20,8 @@ export const SettingItems = ({
   settingItemsData,
 }: ISettingsItems) => {
   const [{ modalMessages }] = useLanguage()
+  const [theme, { UpdateTheme }] = useTheme()
   const user = useSelector<RootState>(state => state.user) as IUser
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
   const width = useWindowDimensions().width
   const [isEnabled, setIsEnabled] = useState<boolean>(
     theme.name !== Theme.dark.name ? true : false,
@@ -39,7 +38,7 @@ export const SettingItems = ({
     const newTheme = isEnabled ? Theme.dark : Theme.light
     if (theme.name !== newTheme.name) {
       dispatch(ChangeTheme(newTheme.name))
-      await updateThemeFB(newTheme.name, user._id)
+      UpdateTheme({ newTheme, _id: user._id })
     }
   }
 

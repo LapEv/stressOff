@@ -3,22 +3,21 @@ import { StyleSheet, useWindowDimensions } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { IMediaLink } from './interfaces'
 import { RootState } from '@/store'
-import { ITheme } from '@/theme/interfaces'
 import { ToggleAllSound } from '@/store/actions/sounds'
 import { ISoundStateItems } from '@/store/interfaces'
 import { Shadow, Text, Touchable, View, ViewStyle } from '@/components'
 import { ArrowRightSVG, PauseSVG, PlaySVG } from '@/assets/icons/SVG'
-import { useLanguage } from '@/hooks'
+import { useLanguage, useTheme } from '@/hooks'
 
 export const MediaLink = ({ navigation }: IMediaLink) => {
   const [{ Messages }] = useLanguage()
+  const [{ BACKGROUNDCOLOR, ITEM_COLOR, borderColorRGBA }] = useTheme()
   const playSoundsAll = useSelector<RootState>(
     state => state.sound.playAll,
   ) as boolean
   const currentMix = useSelector<RootState>(
     state => state.favorites.currentMix,
   ) as string
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
   const playingDataSound = useSelector<RootState>(
     state => state.sound.mixedSound,
   ) as ISoundStateItems[]
@@ -47,13 +46,12 @@ export const MediaLink = ({ navigation }: IMediaLink) => {
 
   return (
     <ViewStyle type="tiles" style={{ ...styles.container }}>
-      <Shadow
-        style={{ width: width * 0.95, backgroundColor: theme.BACKGROUNDCOLOR }}>
+      <Shadow style={{ width: width * 0.95, backgroundColor: BACKGROUNDCOLOR }}>
         <ViewStyle
           style={{
             ...styles.screen,
-            borderColor: theme.borderColorRGBA,
-            backgroundColor: theme.BACKGROUNDCOLOR,
+            borderColor: borderColorRGBA,
+            backgroundColor: BACKGROUNDCOLOR,
           }}>
           <View
             style={{
@@ -65,11 +63,7 @@ export const MediaLink = ({ navigation }: IMediaLink) => {
               onPress={() =>
                 navigation.navigate('PlayerScreen', { screen: 'PlayerScreen' })
               }>
-              <ArrowRightSVG
-                width="100%"
-                height="100%"
-                fill={theme.ITEM_COLOR}
-              />
+              <ArrowRightSVG width="100%" height="100%" fill={ITEM_COLOR} />
             </Touchable>
           </View>
           <Touchable
@@ -85,11 +79,11 @@ export const MediaLink = ({ navigation }: IMediaLink) => {
           <Touchable style={styles.touchPlay} onPress={() => setStatusPlay()}>
             {!play || quantity === 0 ? (
               <View style={styles.viewPlay}>
-                <PlaySVG width="100%" height="100%" fill={theme.ITEM_COLOR} />
+                <PlaySVG width="100%" height="100%" fill={ITEM_COLOR} />
               </View>
             ) : (
               <View style={styles.viewPause}>
-                <PauseSVG width="100%" height="100%" fill={theme.ITEM_COLOR} />
+                <PauseSVG width="100%" height="100%" fill={ITEM_COLOR} />
               </View>
             )}
           </Touchable>

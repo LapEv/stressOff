@@ -9,20 +9,20 @@ import {
 import { BlurView } from 'expo-blur'
 import { RootState } from '@/store'
 import { IModalMessage } from '@/store/interfaces'
-import { ITheme } from '@/theme/interfaces'
 import { modalShowMessage } from '@/store/actions/modalMessage'
 import { LinearGradient, Text, TextTitle, Touchable, View } from '@/components'
 import { typeElevation } from '@/components/Shadow/typeElevaion'
 import { IModalMessageProps } from './interfaces'
+import { useTheme } from '@/hooks'
 
 export const ModalMessage = ({ navigation }: IModalMessageProps) => {
+  const [{ BACKGROUNDCOLOR }] = useTheme()
   const width = useWindowDimensions().width
   const height = useWindowDimensions().height
   const modalMessage = useSelector<RootState>(
     state => state.modalMessage,
   ) as IModalMessage
   const [modalVisible, setModalVisible] = useState(false)
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
 
   const dispatch = useDispatch()
   const response = () => {
@@ -68,12 +68,12 @@ export const ModalMessage = ({ navigation }: IModalMessageProps) => {
             <LinearGradient
               style={{
                 ...styles.modalView,
-                backgroundColor: theme.BACKGROUNDCOLOR,
+                backgroundColor: BACKGROUNDCOLOR,
               }}>
               <View
                 style={{
                   ...styles.modalTitleContainer,
-                  backgroundColor: theme.BACKGROUNDCOLOR,
+                  backgroundColor: BACKGROUNDCOLOR,
                 }}>
                 <TextTitle type="title_20b">{modalMessage.title}</TextTitle>
               </View>

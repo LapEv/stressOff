@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, useWindowDimensions } from 'react-native'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { ITheme } from 'theme/interfaces'
 import { LinearGradient, View } from 'components'
 import { Mountaint } from './Mountain'
 import { IFavorites } from '@/store/interfaces'
@@ -16,7 +15,7 @@ import { PlayerControlContainer } from './PlayerControl/PlayerControlContainer'
 import { CheckForFavoriteContent } from '../Favorites/functions/checkForFavoriteContent'
 import { MaterialTopTabNavigationEventMap } from '@react-navigation/material-top-tabs'
 import { NavigationHelpers, ParamListBase } from '@react-navigation/native'
-import { useLanguage } from '@/hooks'
+import { useLanguage, useTheme } from '@/hooks'
 
 type Props = {
   navigation: NavigationHelpers<ParamListBase, MaterialTopTabNavigationEventMap>
@@ -25,10 +24,10 @@ type Props = {
 export const PlayerScreen = ({ navigation }: Props) => {
   const width = useWindowDimensions().width
   const [{ headerTitle }] = useLanguage()
+  const [{ ITEM_COLOR }] = useTheme()
   const playingMusicId = useSelector<RootState>(
     state => state.music.id,
   ) as number
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
   const faves = useSelector<RootState>(state => state.favorites) as IFavorites
   const playingDataSound = useSelector<RootState>(
     state => state.sound.mixedSound,
@@ -82,7 +81,7 @@ export const PlayerScreen = ({ navigation }: Props) => {
           width={width * 0.95}
           navigation={navigation}
           favesLength={faves.favorites.length}
-          itemColor={theme.ITEM_COLOR}
+          itemColor={ITEM_COLOR}
           title={headerTitle.library}
         />
         <PlayerContainer navigation={navigation} />

@@ -1,8 +1,5 @@
 import { StyleSheet } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { useSelector } from 'react-redux'
-import { RootState } from '@/store'
-import { ITheme } from '@/theme/interfaces'
 import { CustomBottomTab } from '@/screens/components'
 import {
   HeartSVGforSection,
@@ -15,13 +12,13 @@ import { SoundsTabNavigation } from './SoundsTabNavigation'
 import { SettingsScreen } from '@/screens'
 import { MusicsTabNavigation } from './MusicsTabNavigation'
 import { FavouritesTabNavigation } from './FavouritesTabNavigation'
-import { useLanguage } from '@/hooks'
+import { useLanguage, useTheme } from '@/hooks'
 
 const SectionsTab = createBottomTabNavigator()
 
 export const SectionsTabNavigation = () => {
   const [{ headerTitle, section }] = useLanguage()
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
+  const [{ ITEM_COLOR }] = useTheme()
 
   return (
     <SectionsTab.Navigator
@@ -41,7 +38,7 @@ export const SectionsTabNavigation = () => {
               <HeartSVGforSection
                 width="100%"
                 height="100%"
-                fill={theme.ITEM_COLOR}
+                fill={ITEM_COLOR}
               />
             </View>
           ),
@@ -55,7 +52,7 @@ export const SectionsTabNavigation = () => {
           tabBarLabel: section.sounds,
           tabBarIcon: () => (
             <View style={styles.view30}>
-              <SoundSVG width="100%" height="100%" fill={theme.ITEM_COLOR} />
+              <SoundSVG width="100%" height="100%" fill={ITEM_COLOR} />
             </View>
           ),
 
@@ -69,7 +66,7 @@ export const SectionsTabNavigation = () => {
           tabBarLabel: section.musics,
           tabBarIcon: () => (
             <View style={styles.view30}>
-              <MusicSVG width="100%" height="100%" fill={theme.ITEM_COLOR} />
+              <MusicSVG width="100%" height="100%" fill={ITEM_COLOR} />
             </View>
           ),
           headerShown: false,
@@ -82,7 +79,7 @@ export const SectionsTabNavigation = () => {
           tabBarLabel: section.settings,
           tabBarIcon: () => (
             <View style={styles.view25}>
-              <SettingsSVG width="100%" height="100%" fill={theme.ITEM_COLOR} />
+              <SettingsSVG width="100%" height="100%" fill={ITEM_COLOR} />
             </View>
           ),
           headerShown: false,

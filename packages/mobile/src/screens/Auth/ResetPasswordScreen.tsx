@@ -8,7 +8,6 @@ import {
 import { useSelector } from 'react-redux'
 import { IResetPassword } from './interfaces'
 import { RootState } from '@/store'
-import { ITheme } from '@/theme/interfaces'
 import {
   FloatLabelInput,
   LinearGradient,
@@ -25,12 +24,12 @@ import { addError } from '@/store/actions/error'
 import { resetPassword } from '@/api/userAPI'
 import { modalShowMessage } from '@/store/actions/modalMessage'
 import { checkAnonymousData } from '@/functions'
-import { useLanguage } from '@/hooks'
+import { useLanguage, useTheme } from '@/hooks'
 
 export const ResetPasswordScreen = ({ navigation }: IResetPassword) => {
   const [{ headerTitle, buttons, Messages }] = useLanguage()
+  const [{ TEXT_COLOR, CHECK_COLOR }] = useTheme()
   const width = useWindowDimensions().width
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
   const error = useSelector<RootState>(state => state.error) as IError
   const [reset, setResetPassword] = useState('')
   const dispatch = useDispatch()
@@ -80,7 +79,7 @@ export const ResetPasswordScreen = ({ navigation }: IResetPassword) => {
               isPassword={false}
               label="Email"
               value={reset}
-              hintTextColor={theme.TEXT_COLOR}
+              hintTextColor={TEXT_COLOR}
               containerStyles={styles.fliContainerStyles}
               onChangeText={setResetPassword}
             />
@@ -98,7 +97,7 @@ export const ResetPasswordScreen = ({ navigation }: IResetPassword) => {
           <View style={styles.buttonContainer}>
             <ShadowTouchable
               background={null}
-              styleshadow={{ ...styles.shadow, borderColor: theme.CHECK_COLOR }}
+              styleshadow={{ ...styles.shadow, borderColor: CHECK_COLOR }}
               style={{
                 ...styles.touchChange,
                 width: width / dataApp.timer.numberColumns,
@@ -115,7 +114,7 @@ export const ResetPasswordScreen = ({ navigation }: IResetPassword) => {
                 styleshadow={{
                   ...styles.shadow,
                   width: width * 0.45 > 120 ? width * 0.45 : 120,
-                  borderColor: theme.CHECK_COLOR,
+                  borderColor: CHECK_COLOR,
                 }}
                 style={styles.touchChange}
                 containerStyle={styles.shadow2Container}
@@ -133,7 +132,7 @@ export const ResetPasswordScreen = ({ navigation }: IResetPassword) => {
                 styleshadow={{
                   ...styles.shadow,
                   width: width * 0.45 > 120 ? width * 0.45 : 120,
-                  borderColor: theme.CHECK_COLOR,
+                  borderColor: CHECK_COLOR,
                 }}
                 style={styles.touchChange}
                 containerStyle={styles.shadow2Container}

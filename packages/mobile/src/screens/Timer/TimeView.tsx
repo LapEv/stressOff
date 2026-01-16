@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ITimeView } from './interfaces'
 import { ITimerState } from '@/store/interfaces'
 import { RootState } from '@/store'
-import { ITheme } from '@/theme/interfaces'
 import { checkCloseApp, timerStop } from '@/store/actions/timer'
 import {
   Shadow,
@@ -20,12 +19,12 @@ import {
   ViewStyle,
 } from '@/components'
 import { dataApp } from '@/data/dataApp'
-import { useLanguage } from '@/hooks'
+import { useLanguage, useTheme } from '@/hooks'
 
 export const TimeView = ({ screen, on }: ITimeView) => {
   const timer = useSelector<RootState>(state => state.timer) as ITimerState
   const [language] = useLanguage()
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
+  const [{ BACKGROUNDCOLOR, borderColor, ITEM_COLOR, CHECK_COLOR }] = useTheme()
   const width = useWindowDimensions().width
   const [time, setTime] = useState<number>(0)
   const [show, setShow] = useState<boolean>(false)
@@ -88,7 +87,7 @@ export const TimeView = ({ screen, on }: ITimeView) => {
       borderRadius: 15,
       justifyContent: 'center',
       alignItems: 'center',
-      borderColor: theme.borderColor,
+      borderColor: borderColor,
       borderWidth: 1,
     },
   }
@@ -118,11 +117,11 @@ export const TimeView = ({ screen, on }: ITimeView) => {
             <Text type="text_14">{language.timer.timerExitApp}</Text>
             <Switch
               trackColor={{
-                false: theme.BACKGROUNDCOLOR,
-                true: theme.CHECK_COLOR,
+                false: BACKGROUNDCOLOR,
+                true: CHECK_COLOR,
               }}
-              thumbColor={isEnabled ? theme.ITEM_COLOR : theme.ITEM_COLOR}
-              ios_backgroundColor={theme.BACKGROUNDCOLOR}
+              thumbColor={isEnabled ? ITEM_COLOR : ITEM_COLOR}
+              ios_backgroundColor={BACKGROUNDCOLOR}
               onValueChange={() => (
                 setIsEnabled(previousState => !previousState),
                 dispatch(checkCloseApp(!isEnabled))

@@ -1,23 +1,21 @@
 import { Text as DefaultText } from 'react-native'
 import { IText } from './interfaces'
-import { RootState } from 'store'
-import { ITheme } from 'theme/interfaces'
-import { useSelector } from 'react-redux'
 import theme from '@/theme/Theme'
+import { useTheme } from '@/hooks'
 
 export const TextTitle = (props: IText) => {
   const { style, type, colorType, ...otherProps } = props
-  const themeCurrent = useSelector<RootState>(state => state.theme) as ITheme
+  const [{ DANGER_COLOR, TEXT_COLOR, CHECK_COLOR }] = useTheme()
   const styleTextkey = Object.keys(theme).find(key => key === type) as string
   const styleText = theme[styleTextkey as keyof typeof theme] as
     | Record<string, unknown>
     | undefined
   const textColor =
     colorType === 'error'
-      ? themeCurrent.DANGER_COLOR
+      ? DANGER_COLOR
       : colorType === 'check'
-        ? themeCurrent.CHECK_COLOR
-        : themeCurrent.TEXT_COLOR
+        ? CHECK_COLOR
+        : TEXT_COLOR
   return (
     <DefaultText
       style={[styleText, { color: textColor }, style]}

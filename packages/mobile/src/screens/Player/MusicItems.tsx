@@ -25,11 +25,11 @@ import {
   CheckSVG,
   CloseItemSVG,
 } from '@/assets/icons/SVG'
-import { ITheme } from '@/theme/interfaces'
-import { useLanguage } from '@/hooks'
+import { useLanguage, useTheme } from '@/hooks'
 
 export const MusicItems = ({ id, booked }: IMusicItems) => {
   const [{ modalMessages, Messages, name }] = useLanguage()
+  const [theme] = useTheme()
   const width = useWindowDimensions().width
   const playingMusic = useSelector<RootState>(
     state => state.music,
@@ -39,7 +39,6 @@ export const MusicItems = ({ id, booked }: IMusicItems) => {
     playingMusic.volume as number,
   )
   const [sound, setMusic] = useState<Sound | null>(null)
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
   const musicDB = useSelector<RootState>(state => state.db.musics) as IMUSICS[]
 
   const dispatch = useDispatch()
@@ -284,7 +283,7 @@ export const MusicItems = ({ id, booked }: IMusicItems) => {
                     <BookedSVGYes
                       width="100%"
                       height="100%"
-                      fill={theme.booked}
+                      fill={theme.bookedColor}
                     />
                   </View>
                 ) : (
@@ -296,7 +295,7 @@ export const MusicItems = ({ id, booked }: IMusicItems) => {
                     <BookedSVGNo
                       width="100%"
                       height="100%"
-                      fill={theme.booked}
+                      fill={theme.bookedColor}
                     />
                   </View>
                 )}

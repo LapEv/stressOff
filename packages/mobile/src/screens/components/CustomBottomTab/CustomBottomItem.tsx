@@ -1,10 +1,8 @@
 import { Shadow, Touchable, View } from '@/components'
-import { RootState } from '@/store'
-import { ITheme } from '@/theme/interfaces'
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { Animated, StyleSheet } from 'react-native'
-import { useSelector } from 'react-redux'
 import { ICustomBottomItem, IOptionsBottomStyle } from './interfaces'
+import { useTheme } from '@/hooks'
 
 export const CustomBottomItem = ({
   state,
@@ -14,7 +12,8 @@ export const CustomBottomItem = ({
   options,
   myList,
 }: ICustomBottomItem) => {
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
+  const [{ TEXT_COLOR, CHECK_COLOR, BACKGROUNDCOLOR, borderColorRGBA }] =
+    useTheme()
   const fadeAnim = useRef(new Animated.Value(0.6)).current
   const [isFocused, setIsFocused] = useState<boolean>(false)
   const [optionsStyle, setOptionsStyle] = useState<IOptionsBottomStyle>({
@@ -56,19 +55,17 @@ export const CustomBottomItem = ({
     const styleOptions = {
       buttonMain: {
         ...styles.shadowBottomTabItemMain,
-        color:
-          state.index == id - 1 ? theme.CHECK_COLOR : theme.BACKGROUNDCOLOR,
+        color: state.index == id - 1 ? CHECK_COLOR : BACKGROUNDCOLOR,
       },
       button: {
         ...styles.shadowBottomTabItem,
-        color:
-          state.index == id - 1 ? theme.CHECK_COLOR : theme.BACKGROUNDCOLOR,
+        color: state.index == id - 1 ? CHECK_COLOR : BACKGROUNDCOLOR,
       },
       touch: {
         ...styles.bottomTabItemTouch,
         width: id === 1 || id === 4 ? 70 : 90,
         height: id === 1 || id === 4 ? 60 : 80,
-        borderColor: theme.borderColorRGBA,
+        borderColor: borderColorRGBA,
         borderWidth: state.index != id - 1 ? 1 : 2,
       },
       container: {
@@ -112,7 +109,7 @@ export const CustomBottomItem = ({
         <Animated.Text
           style={{
             opacity: fadeAnim,
-            color: theme.TEXT_COLOR,
+            color: TEXT_COLOR,
             fontSize: id === 1 || id === 4 ? 9 : 12,
           }}>
           {options.tabBarLabel as string}

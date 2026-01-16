@@ -1,15 +1,13 @@
 import { TouchableOpacity as DefaultTouchable } from 'react-native'
 import { ITouchable } from './interfaces'
-import { useSelector } from 'react-redux'
-import { RootState } from 'store'
-import { ITheme } from 'theme/interfaces'
+import { useTheme } from '@/hooks'
 
 export const Touchable = (props: ITouchable) => {
   const { style, activeOpacity, background, ...otherProps } = props
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
+  const [{ BACKGROUNDCOLOR, borderColorRGBA }] = useTheme()
   const backgroundColor =
-    background !== undefined ? background : theme.BACKGROUNDCOLOR
-  const borderColor = theme.borderColorRGBA
+    background !== undefined ? background : BACKGROUNDCOLOR
+  const borderColor = borderColorRGBA
   return (
     <DefaultTouchable
       activeOpacity={activeOpacity}

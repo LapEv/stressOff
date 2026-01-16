@@ -103,7 +103,7 @@ export const dataApp = {
     ITEM_COLOR: 'white',
     CHECK_COLOR: '#15a522',
     DANGER_COLOR: '#d81b60',
-    name: 'MAIN_THEME',
+    nameTheme: 'MAIN_THEME',
     TITLE_FONT_SIZE: 22,
   },
   MAIN_BACKGROUNDSTYLES: {

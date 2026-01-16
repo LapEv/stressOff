@@ -1,6 +1,5 @@
 import { RootState } from '@/store'
 import { IMUSICSDB, ISOUNDSDB, IUser } from '@/store/interfaces'
-import { ITheme } from '@/theme/interfaces'
 import React, { useEffect, useState } from 'react'
 import { useWindowDimensions, StyleSheet } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
@@ -12,13 +11,13 @@ import { ChangeLanguage } from '@/store/actions/language'
 import { Shadow, Text, Touchable, View } from '@/components'
 import { CheckSVG } from '@/assets/icons/SVG'
 import * as SecureStore from 'expo-secure-store'
-import { useLanguage } from '@/hooks'
+import { useLanguage, useTheme } from '@/hooks'
 
 export const LanguageTiles = ({ title, nameTiles }: ILanguageTiles) => {
   const [{ name }, { UpdateLanguage }] = useLanguage()
+  const [{ borderColor, ITEM_COLOR }] = useTheme()
   const user = useSelector<RootState>(state => state.user) as IUser
   const width = useWindowDimensions().width
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
   const [active, setActive] = useState<boolean>(
     nameTiles === name ? true : false,
   )
@@ -46,7 +45,7 @@ export const LanguageTiles = ({ title, nameTiles }: ILanguageTiles) => {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      borderColor: theme.borderColor,
+      borderColor: borderColor,
       borderWidth: 1,
     },
   }
@@ -109,7 +108,7 @@ export const LanguageTiles = ({ title, nameTiles }: ILanguageTiles) => {
         _categoryFavorites: LANGUAGE[name].categoryFavorites,
       }),
     )
-    await UpdateLanguage({ name, _id: user._id })
+    UpdateLanguage({ name, _id: user._id })
   }
 
   return (
@@ -121,7 +120,7 @@ export const LanguageTiles = ({ title, nameTiles }: ILanguageTiles) => {
             <CheckSVG
               width={active ? '70%' : '0'}
               height={active ? '70%' : '0'}
-              fill={theme.ITEM_COLOR}
+              fill={ITEM_COLOR}
             />
           </View>
         ) : null}

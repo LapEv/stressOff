@@ -1,16 +1,14 @@
 import React from 'react'
 import { StyleSheet, useWindowDimensions } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { ITimeTiles } from './interfaces'
-import { RootState } from '@/store'
-import { ITheme } from '@/theme/interfaces'
 import { individualStart } from '@/store/actions/individualTimer'
 import { Shadow, TextTitle, Touchable } from '@/components'
 import { dataApp } from '@/data/dataApp'
-import { useLanguage } from '@/hooks'
+import { useLanguage, useTheme } from '@/hooks'
 
 export const TimerTiles = ({ title, duration }: ITimeTiles) => {
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
+  const [{ BACKGROUNDCOLOR, borderColor }] = useTheme()
   const [{ timer }] = useLanguage()
   const width = useWindowDimensions().width
 
@@ -38,12 +36,12 @@ export const TimerTiles = ({ title, duration }: ITimeTiles) => {
   const shadowOpt = {
     width: (width / 2) * 0.8,
     height: 60,
-    color: theme.BACKGROUNDCOLOR,
+    color: BACKGROUNDCOLOR,
     border: 5,
     style: {
       margin: 20,
       borderRadius: 15,
-      borderColor: theme.borderColor,
+      borderColor: borderColor,
       borderWidth: 1,
       justifyContent: 'center',
       alignItems: 'center',

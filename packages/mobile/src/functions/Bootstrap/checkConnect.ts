@@ -9,7 +9,6 @@ export const checkNetwork = async ({ setIsConnected }: ICheckNetwork) => {
   const listener = Network.addNetworkStateListener(
     ({ isConnected, isInternetReachable }) => {
       const checkInternet = (isConnected && isInternetReachable) ?? false
-      console.log('checkInternet = ', checkInternet)
       setIsConnected(checkInternet)
     },
   )

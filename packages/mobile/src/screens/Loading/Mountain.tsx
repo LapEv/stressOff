@@ -5,7 +5,7 @@ import { StyleSheet } from 'react-native'
 export const Mountaint = () => {
   return (
     <ViewStyle style={styles.container}>
-      <MountainSVG width="100%" height="100%" opacity="0.7" fill={'black'} />
+      <MountainSVG width="100%" height="100%" opacity="1" fill={'black'} />
     </ViewStyle>
   )
 }

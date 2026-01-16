@@ -1,20 +1,16 @@
 import { LinearGradient as DefaultLinearGradient } from 'expo-linear-gradient'
 import { ILinearGradient } from './interfaces'
-import { RootState } from 'store'
-import { ITheme } from 'theme/interfaces'
-import { useSelector } from 'react-redux'
 import { dataApp } from '@/data/dataApp'
+import { useTheme } from '@/hooks'
 
 export const LinearGradient = (props: ILinearGradient) => {
+  const [{ BACKGROUNDCOLOR_LG, BACKGROUNDCOLOR_LG_Disabled }] = useTheme()
   const { style, type, ...otherProps } = props
   const mainStyle = dataApp.MAIN_BACKGROUNDSTYLES as
     | Record<string, unknown>
     | undefined
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
   const colors =
-    type === 'disabled'
-      ? theme.BACKGROUNDCOLOR_LG_Disabled
-      : theme.BACKGROUNDCOLOR_LG
+    type === 'disabled' ? BACKGROUNDCOLOR_LG_Disabled : BACKGROUNDCOLOR_LG
   return (
     <DefaultLinearGradient
       colors={colors}

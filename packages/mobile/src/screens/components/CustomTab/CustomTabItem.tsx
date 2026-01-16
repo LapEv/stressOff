@@ -1,11 +1,9 @@
 import { Shadow, Touchable, View } from '@/components'
-import { RootState } from '@/store'
-import { ITheme } from '@/theme/interfaces'
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { Animated, StyleSheet } from 'react-native'
-import { useSelector } from 'react-redux'
 import { ICustomTabItem, IOptionsTabStyle } from './interfaces'
 import Theme from '@/theme/Theme'
+import { useTheme } from '@/hooks'
 
 export const CustomTabItem = ({
   state,
@@ -15,7 +13,7 @@ export const CustomTabItem = ({
   options,
   myList,
 }: ICustomTabItem) => {
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
+  const [{ TEXT_COLOR, CHECK_COLOR, BACKGROUNDCOLOR }] = useTheme()
   const fadeAnim = useRef(new Animated.Value(0.6)).current
   const [isFocused, setIsFocused] = useState<boolean>(false)
   const [optionsStyle, setOptionsStyle] = useState<IOptionsTabStyle>({
@@ -57,8 +55,7 @@ export const CustomTabItem = ({
     const styleOptions = {
       button: {
         ...styles.buttonMain,
-        color:
-          state.index == id - 1 ? theme.CHECK_COLOR : theme.BACKGROUNDCOLOR,
+        color: state.index == id - 1 ? CHECK_COLOR : BACKGROUNDCOLOR,
         opacity: 1,
       },
       touch: {
@@ -110,7 +107,7 @@ export const CustomTabItem = ({
             Theme.text_12,
             {
               opacity: fadeAnim,
-              color: theme.TEXT_COLOR,
+              color: TEXT_COLOR,
               paddingTop: 5,
             },
           ]}>

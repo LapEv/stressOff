@@ -40,8 +40,8 @@ export interface ITheme {
   ITEM_COLOR: string
   CHECK_COLOR: string
   DANGER_COLOR: string
-  name: string
-  booked: string
+  nameTheme: string
+  bookedColor: string
   borderColor: string
   borderColor2: string
   borderColorRGBA2: string

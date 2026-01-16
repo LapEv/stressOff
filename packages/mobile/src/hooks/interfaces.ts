@@ -1,4 +1,5 @@
 import { IMUSICSDB, ISOUNDSDB } from '@/store/interfaces'
+import { ITheme } from '@/theme/interfaces'
 
 export interface useICategoryFilter {
   data: ISOUNDSDB[] | IMUSICSDB[]
@@ -17,5 +18,10 @@ export interface IUpdateMusicsStatusDB {
 
 export interface IUpdateLanguage {
   name: string
+  _id: string
+}
+
+export interface IUpdateTheme {
+  newTheme: ITheme
   _id: string
 }

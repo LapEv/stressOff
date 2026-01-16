@@ -3,7 +3,6 @@ import { ImageBackground, StyleSheet, useWindowDimensions } from 'react-native'
 import { useSelector } from 'react-redux'
 import { IMuscisTiles } from './interfaces'
 import { RootState } from '@/store'
-import { ITheme } from '@/theme/interfaces'
 import { CheckFile, CheckFileSize, FileSizeToString } from '@/functions'
 import { ChangeStateMusic } from '@/store/actions/music'
 import { ToggleAllSound } from '@/store/actions/sounds'
@@ -15,7 +14,7 @@ import { dataApp } from '@/data/dataApp'
 import { Shadow, Text, TextTitle, Touchable, View } from '@/components'
 import { icons } from '@/data/contentApp'
 import { BookedSVGNo, BookedSVGYes, Cloud, Mobile } from '@/assets/icons/SVG'
-import { useDB, useLanguage } from '@/hooks'
+import { useDB, useLanguage, useTheme } from '@/hooks'
 
 export const MusicTiles = ({
   id,
@@ -32,16 +31,15 @@ export const MusicTiles = ({
   globalCategory,
   newSound,
 }: IMuscisTiles) => {
-  const [{ musics }, { UpdateMusicsStatusDB }] = useDB()
-  console.log('musics = ', musics[0])
+  const [, { UpdateMusicsStatusDB }] = useDB()
   const [{ modalMessages, newSoundText, Messages }] = useLanguage()
+  const [{ bookedColor, CHECK_COLOR }] = useTheme()
   const musicStart = useSelector<RootState>(
     state => state.music.musicStart,
   ) as boolean
   const playAll = useSelector<RootState>(
     state => state.sound.playAll,
   ) as boolean
-  const theme = useSelector<RootState>(state => state.theme) as ITheme
   const currentPlayingMusicId = useSelector<RootState>(
     state => state.music.id,
   ) as number
@@ -181,39 +179,39 @@ export const MusicTiles = ({
         <Touchable
           style={styles.location}
           onPressIn={() => downloadFromCloud(storage, name, globalCategory)}>
-          <Cloud width="60%" height="60%" fill={theme.CHECK_COLOR} />
+          <Cloud width="60%" height="60%" fill={CHECK_COLOR} />
         </Touchable>
       )}
       {location === 'device' && (
         <Touchable
           style={styles.location}
           onPressIn={() => deleteFromDevice(item, name, id, globalCategory)}>
-          <Mobile width="60%" height="60%" fill={theme.CHECK_COLOR} />
+          <Mobile width="60%" height="60%" fill={CHECK_COLOR} />
         </Touchable>
       )}
       {booked ? (
         <Touchable
           style={styles.booked}
           onPressIn={() => ToggleBookedMusics(id, booked)}>
-          <BookedSVGYes width="60%" height="60%" fill={theme.booked} />
+          <BookedSVGYes width="60%" height="60%" fill={booked} />
         </Touchable>
       ) : (
         <Touchable
           style={styles.booked}
           onPressIn={() => ToggleBookedMusics(id, booked)}>
-          <BookedSVGNo width="60%" height="60%" fill={theme.booked} />
+          <BookedSVGNo width="60%" height="60%" fill={bookedColor} />
         </Touchable>
       )}
       {description.length > 0 && (
         <View
           style={{
             ...styles.descriptionViewMain,
-            borderColor: theme.CHECK_COLOR,
+            borderColor: CHECK_COLOR,
           }}>
           <View
             style={{
               ...styles.descriptionView,
-              borderColor: theme.CHECK_COLOR,
+              borderColor: CHECK_COLOR,
             }}></View>
         </View>
       )}
@@ -225,7 +223,7 @@ export const MusicTiles = ({
             description.length > 0 ? OpenDescription(description, title) : null
           }>
           <Shadow
-            style={{ ...styles.shadow, color: theme.CHECK_COLOR }}
+            style={{ ...styles.shadow, color: CHECK_COLOR }}
             distance={55}>
             <ImageBackground
               source={img}

@@ -1,3 +1,5 @@
+import { IUpdateLanguage } from '../interfaces'
+
 export interface languageActions {
-  UpdateLanguage: (data) => void
+  UpdateLanguage: (data: IUpdateLanguage) => void
 }
