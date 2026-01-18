@@ -5,9 +5,7 @@ import {
   Platform,
   useWindowDimensions,
 } from 'react-native'
-import { useSelector } from 'react-redux'
 import { IResetPassword } from './interfaces'
-import { RootState } from '@/store'
 import {
   FloatLabelInput,
   LinearGradient,
@@ -17,48 +15,33 @@ import {
   View,
 } from '@/components'
 import { dataApp } from '@/data/dataApp'
-import { IError } from '@/store/interfaces'
 import { checkValidation } from '@/utils/validation'
-import { useDispatch } from 'react-redux'
-import { addError } from '@/store/actions/error'
 import { resetPassword } from '@/api/userAPI'
-import { modalShowMessage } from '@/store/actions/modalMessage'
 import { checkAnonymousData } from '@/functions'
-import { useLanguage, useTheme } from '@/hooks'
+import { useError, useLanguage, useModalMeessage, useTheme } from '@/hooks'
 
 export const ResetPasswordScreen = ({ navigation }: IResetPassword) => {
   const [{ headerTitle, buttons, Messages }] = useLanguage()
   const [{ TEXT_COLOR, CHECK_COLOR }] = useTheme()
+  const [error, { clearError }] = useError()
+  const [, { showModalMessage }] = useModalMeessage()
   const width = useWindowDimensions().width
-  const error = useSelector<RootState>(state => state.error) as IError
   const [reset, setResetPassword] = useState('')
-  const dispatch = useDispatch()
 
   const handleResetPassword = async () => {
     if (!checkValidation('email', reset)) return
     await resetPassword(reset)
-    dispatch(
-      modalShowMessage({
-        typeMessage: 'resetPassWord',
-        message: Messages.resetPassword,
-        show: true,
-        buttonYes: 'OK',
-        title: 'Смена пароля',
-      }),
-    )
+    showModalMessage({
+      typeMessage: 'resetPassWord',
+      message: Messages.resetPassword,
+      show: true,
+      buttonYes: 'OK',
+      title: 'Смена пароля',
+    })
   }
 
   const continueWithoutAccount = () => {
     checkAnonymousData()
-  }
-
-  const clearError = () => {
-    dispatch(
-      addError({
-        status: 0,
-        message: '',
-      }),
-    )
   }
 
   useEffect(() => {

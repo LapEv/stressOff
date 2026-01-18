@@ -7,14 +7,13 @@ import { CheckFile, CheckFileSize, FileSizeToString } from '@/functions'
 import { ChangeStateMusic } from '@/store/actions/music'
 import { ToggleAllSound } from '@/store/actions/sounds'
 import { ChangeCurrentMixPlay } from '@/store/actions/favorites'
-import { modalShowMessage } from '@/store/actions/modalMessage'
 import { UpdateMusicsBookedDB, UpdateMusicsDB } from '@/store/actions/db'
 import { modalShow } from '@/store/actions/modal'
 import { dataApp } from '@/data/dataApp'
 import { Shadow, Text, TextTitle, Touchable, View } from '@/components'
 import { icons } from '@/data/contentApp'
 import { BookedSVGNo, BookedSVGYes, Cloud, Mobile } from '@/assets/icons/SVG'
-import { useDB, useLanguage, useTheme } from '@/hooks'
+import { useDB, useLanguage, useModalMeessage, useTheme } from '@/hooks'
 
 export const MusicTiles = ({
   id,
@@ -34,6 +33,7 @@ export const MusicTiles = ({
   const [, { UpdateMusicsStatusDB }] = useDB()
   const [{ modalMessages, newSoundText, Messages }] = useLanguage()
   const [{ bookedColor, CHECK_COLOR }] = useTheme()
+  const [, { showModalMessage }] = useModalMeessage()
   const musicStart = useSelector<RootState>(
     state => state.music.musicStart,
   ) as boolean
@@ -98,7 +98,7 @@ export const MusicTiles = ({
       : ((modalMessages.error.message = `${Messages.fileNotFound} ${Messages.switchToCloud}`),
         // await updateMusicsLocation('cloud', id, '', user._id),
         dispatch(UpdateMusicsDB({ name: name, sound: '', location: 'cloud' })),
-        dispatch(modalShowMessage(modalMessages.error)))
+        showModalMessage(modalMessages.error))
   }
 
   useEffect(() => {
@@ -108,7 +108,7 @@ export const MusicTiles = ({
   const OpenDescription = (description: string, title: string) => {
     modalMessages.OpenDescription.title = title
     modalMessages.OpenDescription.message = description
-    dispatch(modalShowMessage(modalMessages.OpenDescription))
+    showModalMessage(modalMessages.OpenDescription)
   }
 
   const downloadFromCloud = async (

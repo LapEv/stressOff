@@ -1,7 +1,6 @@
 import { dataApp } from '@/data/dataApp'
 import { RootState } from '@/store'
 import { UpdateSoundsBookedDB } from '@/store/actions/db'
-import { modalShowMessage } from '@/store/actions/modalMessage'
 import { ISoundStateItems } from '@/store/interfaces'
 import React, { useEffect, useState } from 'react'
 import { ImageBackground, StyleSheet, useWindowDimensions } from 'react-native'
@@ -12,7 +11,7 @@ import { modalShow } from '@/store/actions/modal'
 import { Shadow, Text, TextTitle, Touchable, View } from '@/components'
 import { icons } from '@/data/contentApp'
 import { BookedSVGNo, BookedSVGYes, Cloud, Mobile } from '@/assets/icons/SVG'
-import { useDB, useLanguage, useTheme } from '@/hooks'
+import { useDB, useLanguage, useModalMeessage, useTheme } from '@/hooks'
 
 export const SoundsTiles = ({
   id,
@@ -32,6 +31,7 @@ export const SoundsTiles = ({
   const [, { UpdateSoundsStatusDB }] = useDB()
   const [{ newSoundText, modalMessages }] = useLanguage()
   const [{ bookedColor, CHECK_COLOR }] = useTheme()
+  const [, { showModalMessage }] = useModalMeessage()
   const soundStart = useSelector<RootState>(
     state => state.sound.soundStart,
   ) as boolean
@@ -109,9 +109,9 @@ export const SoundsTiles = ({
   const playSound = findPlaySound ? findPlaySound.playing : undefined
 
   const OpenDescription = (description: string, title: string) => {
-    language.modalMessages.OpenDescription.title = title
-    language.modalMessages.OpenDescription.message = description
-    dispatch(modalShowMessage(language.modalMessages.OpenDescription))
+    modalMessages.OpenDescription.title = title
+    modalMessages.OpenDescription.message = description
+    showModalMessage(modalMessages.OpenDescription)
   }
 
   const downloadFromCloud = async (

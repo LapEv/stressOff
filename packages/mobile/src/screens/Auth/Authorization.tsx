@@ -5,8 +5,6 @@ import {
   Platform,
   useWindowDimensions,
 } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '@/store'
 import { IAuthorization } from './interfaces'
 import {
   FloatLabelInput,
@@ -18,24 +16,21 @@ import {
 } from '@/components'
 import { dataApp } from '@/data/dataApp'
 import { login, registration } from '@/api/userAPI'
-import { IError } from '@/store/interfaces'
 import { checkValidation } from '@/utils/validation'
-import { addError } from '@/store/actions/error'
 import { bootstrap } from '@/functions/Bootstrap/bootstrap'
 import { checkAnonymousData } from '@/functions'
-import { useLanguage, useTheme } from '@/hooks'
+import { useError, useLanguage, useTheme } from '@/hooks'
 
 export const Authorization = ({ screen, navigation }: IAuthorization) => {
   const [{ headerTitle, buttons, Messages }] = useLanguage()
   const [{ TEXT_COLOR, CHECK_COLOR }] = useTheme()
+  const [error, { clearError }] = useError()
 
   const width = useWindowDimensions().width
-  const error = useSelector<RootState>(state => state.error) as IError
   const [username, setUsername] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [confirmPassword, setConfirmPassword] = useState<string>('')
-  const dispatch = useDispatch()
 
   const handleLogin = async () => {
     if (!checkValidation('login', username.trim())) return
@@ -63,15 +58,6 @@ export const Authorization = ({ screen, navigation }: IAuthorization) => {
 
   const continueWithoutAccount = () => {
     checkAnonymousData()
-  }
-
-  const clearError = () => {
-    dispatch(
-      addError({
-        status: 0,
-        message: '',
-      }),
-    )
   }
 
   useEffect(() => {

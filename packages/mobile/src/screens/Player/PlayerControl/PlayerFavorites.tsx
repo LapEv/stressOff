@@ -15,9 +15,8 @@ import {
 import { CheckForFavoriteContent } from '../../Favorites/functions/checkForFavoriteContent'
 import { useDispatch } from 'react-redux'
 import { modalShow } from '@/store/actions/modal'
-import { modalShowMessage } from '@/store/actions/modalMessage'
 import * as SecureStore from 'expo-secure-store'
-import { useLanguage, useTheme } from '@/hooks'
+import { useLanguage, useModalMeessage, useTheme } from '@/hooks'
 
 export const PlayerFavorites = ({
   disabledControl,
@@ -27,6 +26,7 @@ export const PlayerFavorites = ({
 }: IPlayerFavorites) => {
   const [{ modalMessages }] = useLanguage()
   const [{ ITEM_COLOR, CHECK_COLOR, toFavoritesScreen }] = useTheme()
+  const [, { showModalMessage }] = useModalMeessage()
   const StateMusic = useSelector<RootState>(state => state.music) as IMusicState
   const StateSound = useSelector<RootState>(state => state.music) as ISoundState
   const favorites = useSelector<RootState>(
@@ -55,7 +55,7 @@ export const PlayerFavorites = ({
       : ((modalMessages.sameMixFound.message = `${
           modalMessages.sameMixFound.message1
         } "${result.trim()}"`),
-        dispatch(modalShowMessage(modalMessages.sameMixFound)),
+        showModalMessage(modalMessages.sameMixFound),
         setFavorite(true))
   }
 

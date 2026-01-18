@@ -14,7 +14,6 @@ import {
 } from '@/store/actions/sounds'
 import { ChangeCurrentMixPlay } from '@/store/actions/favorites'
 import { GetImage } from '@/functions/getImage'
-import { modalShowMessage } from '@/store/actions/modalMessage'
 import {
   Shadow,
   SlideButton,
@@ -30,12 +29,13 @@ import {
   CloseItemSVG,
 } from '@/assets/icons/SVG'
 import { curLanguage } from '@/localization/language'
-import { useLanguage, useTheme } from '@/hooks'
+import { useLanguage, useModalMeessage, useTheme } from '@/hooks'
 // import { SlideButton, SlideDirection } from 'react-native-slide-button';
 
 export const SoundItems = ({ item, booked }: ISoundsItems) => {
   const [{ modalMessages, Messages }] = useLanguage()
   const [theme] = useTheme()
+  const [, { showModalMessage }] = useModalMeessage()
   const currentLanguage = useSelector<RootState>(
     state => state.language.name,
   ) as curLanguage
@@ -139,7 +139,7 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
           .catch(error => {
             removeSound(item.id)
             modalMessages.error.message = `${error.code}\n${error}`
-            dispatch(modalShowMessage(modalMessages.error))
+            showModalMessage(modalMessages.error)
           })
   }, [])
 

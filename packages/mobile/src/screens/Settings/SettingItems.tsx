@@ -7,11 +7,10 @@ import { RootState } from '@/store'
 import { IUser } from '@/store/interfaces'
 import { ChangeTheme } from '@/store/actions/theme'
 import { FileSizeToString, MusicsSizes, SoundSizes } from '@/functions'
-import { modalShowMessage } from '@/store/actions/modalMessage'
 import { modalShow } from '@/store/actions/modal'
 import { Shadow, Text, Touchable, View } from '@/components'
 import { ArrowRightSVG } from '@/assets/icons/SVG'
-import { useLanguage, useTheme } from '@/hooks'
+import { useLanguage, useModalMeessage, useTheme } from '@/hooks'
 
 export const SettingItems = ({
   name,
@@ -21,10 +20,11 @@ export const SettingItems = ({
 }: ISettingsItems) => {
   const [{ modalMessages }] = useLanguage()
   const [theme, { UpdateTheme }] = useTheme()
+  const [, { showModalMessage }] = useModalMeessage()
   const user = useSelector<RootState>(state => state.user) as IUser
   const width = useWindowDimensions().width
   const [isEnabled, setIsEnabled] = useState<boolean>(
-    theme.name !== Theme.dark.name ? true : false,
+    theme.nameTheme !== Theme.dark.nameTheme ? true : false,
   )
 
   const dispatch = useDispatch()
@@ -36,8 +36,8 @@ export const SettingItems = ({
 
   const changeThemeHandler = async () => {
     const newTheme = isEnabled ? Theme.dark : Theme.light
-    if (theme.name !== newTheme.name) {
-      dispatch(ChangeTheme(newTheme.name))
+    if (theme.nameTheme !== newTheme.nameTheme) {
+      dispatch(ChangeTheme(newTheme.nameTheme))
       UpdateTheme({ newTheme, _id: user._id })
     }
   }
@@ -54,7 +54,7 @@ export const SettingItems = ({
       const musicSizeString = FileSizeToString(musicSize)
       const totalSizeString = FileSizeToString(totalSize)
       modalMessages.TotalSize.message = `${modalMessages.TotalSize.message1}${soundSizeString} \n${modalMessages.TotalSize.message2}${musicSizeString} \n\n${modalMessages.TotalSize.message4}${totalSizeString}`
-      dispatch(modalShowMessage(modalMessages.TotalSize))
+      showModalMessage(modalMessages.TotalSize)
     }
     if (_key === settingItemsData[1].data[1]._key) {
       dispatch(modalShow(modalMessages.deleteAllFromDevice))

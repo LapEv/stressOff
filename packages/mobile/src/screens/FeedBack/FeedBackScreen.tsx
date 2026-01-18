@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { IFeedBack } from './interfaces'
 import { RootState } from '@/store'
 import { dataApp } from '@/data/dataApp'
-import { modalShowMessage } from '@/store/actions/modalMessage'
 import { IntervalFeedback } from '@/store/actions/intervalFeedback'
 import {
   FloatLabelInput,
@@ -23,12 +22,13 @@ import {
 import { CustomHeader } from '../components'
 import { checkValidation } from '@/utils/validation'
 import * as SecureStore from 'expo-secure-store'
-import { useLanguage } from '@/hooks'
+import { useLanguage, useModalMeessage } from '@/hooks'
 import { useTheme } from '@/hooks'
 
 export const FeedBackScreen = ({ navigation }: IFeedBack) => {
   const [{ feedback, modalMessages, headerTitle }] = useLanguage()
   const [{ TEXT_COLOR, borderColor, ITEM_COLOR }] = useTheme()
+  const [, { showModalMessage }] = useModalMeessage()
   const dateFeedback = useSelector<RootState>(
     state => state.intervalFeedback.date,
   ) as Date
@@ -135,7 +135,7 @@ export const FeedBackScreen = ({ navigation }: IFeedBack) => {
       сlearFields()
       modalMessages.feedbackSuccess.message =
         feedback.resultSuccess + numberRequest.request
-      dispatch(modalShowMessage(modalMessages.feedbackSuccess))
+      showModalMessage(modalMessages.feedbackSuccess)
       setTimeStmp(new Date())
       setAsyncStorageTimeRequest()
       dispatch(IntervalFeedback(new Date()))
@@ -143,7 +143,7 @@ export const FeedBackScreen = ({ navigation }: IFeedBack) => {
       return
     }
     modalMessages.error.message = feedback.resultError + `${numberRequest}`
-    dispatch(modalShowMessage(modalMessages.error))
+    showModalMessage(modalMessages.error)
   }
 
   const shadowitems = {

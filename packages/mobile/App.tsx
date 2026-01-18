@@ -38,6 +38,7 @@ export default function App() {
   }, [])
 
   useEffect(() => {
+    console.log('посмотреть clearErr useefect')
     console.log('Изменение в подключении. isConnected = ', isConnected)
     console.log('Поставить 3000 секунд')
     store.dispatch(changeConnect(isConnected))

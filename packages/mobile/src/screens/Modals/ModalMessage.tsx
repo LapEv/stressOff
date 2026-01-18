@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import {
   StyleSheet,
   Modal,
@@ -7,26 +6,20 @@ import {
   ScrollView,
 } from 'react-native'
 import { BlurView } from 'expo-blur'
-import { RootState } from '@/store'
-import { IModalMessage } from '@/store/interfaces'
-import { modalShowMessage } from '@/store/actions/modalMessage'
 import { LinearGradient, Text, TextTitle, Touchable, View } from '@/components'
 import { typeElevation } from '@/components/Shadow/typeElevaion'
 import { IModalMessageProps } from './interfaces'
-import { useTheme } from '@/hooks'
+import { useModalMeessage, useTheme } from '@/hooks'
 
 export const ModalMessage = ({ navigation }: IModalMessageProps) => {
   const [{ BACKGROUNDCOLOR }] = useTheme()
+  const [modalMessage, { showModalMessage }] = useModalMeessage()
   const width = useWindowDimensions().width
   const height = useWindowDimensions().height
-  const modalMessage = useSelector<RootState>(
-    state => state.modalMessage,
-  ) as IModalMessage
   const [modalVisible, setModalVisible] = useState(false)
 
-  const dispatch = useDispatch()
   const response = () => {
-    dispatch(modalShowMessage({ show: false }))
+    showModalMessage({ show: false })
     console.log('modalMessage = ', modalMessage.typeMessage)
 
     if (modalMessage.typeMessage === 'resetPassWord') {

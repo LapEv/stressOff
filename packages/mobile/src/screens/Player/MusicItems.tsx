@@ -17,7 +17,6 @@ import {
   View,
   ViewStyle,
 } from '@/components'
-import { modalShowMessage } from '@/store/actions/modalMessage'
 import { GetImage } from '@/functions/getImage'
 import {
   BookedSVGNo,
@@ -25,11 +24,12 @@ import {
   CheckSVG,
   CloseItemSVG,
 } from '@/assets/icons/SVG'
-import { useLanguage, useTheme } from '@/hooks'
+import { useLanguage, useModalMeessage, useTheme } from '@/hooks'
 
 export const MusicItems = ({ id, booked }: IMusicItems) => {
   const [{ modalMessages, Messages, name }] = useLanguage()
   const [theme] = useTheme()
+  const [, { showModalMessage }] = useModalMeessage()
   const width = useWindowDimensions().width
   const playingMusic = useSelector<RootState>(
     state => state.music,
@@ -143,7 +143,7 @@ export const MusicItems = ({ id, booked }: IMusicItems) => {
           .catch(error => {
             removeSound()
             modalMessages.error.message = `${error.code}\n${error}`
-            dispatch(modalShowMessage(modalMessages.error))
+            showModalMessage(modalMessages.error)
           })
   }, [playingMusic.id])
 
