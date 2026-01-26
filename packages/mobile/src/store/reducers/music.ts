@@ -3,6 +3,7 @@ import { IActionMusicState, IMusicState } from '../interfaces'
 import { CHANGE_STATE_MUSIC } from '../types'
 
 const initialState = {
+  _id: '',
   id: 0,
   playing: false,
   volume: 1.0,

@@ -1,6 +1,6 @@
 import store from '@/store'
 import { AddFavoritesMixes } from '@/store/actions/favorites'
-import { modalShow } from '@/store/actions/modal'
+import { showModal } from '@/store/actions/modal'
 import { IMusicState, ISoundState } from '@/store/interfaces'
 
 export const dispatchAddFavoritesMix = (
@@ -20,5 +20,5 @@ export const dispatchAddFavoritesMix = (
       category: category,
     }),
   )
-  store.dispatch(modalShow({ show: false }))
+  store.dispatch(showModal({ show: false }))
 }

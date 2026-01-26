@@ -1,4 +1,4 @@
-import { IUser } from '@/store/interfaces'
+import { IUser, IUserFB } from '@/store/interfaces'
 import * as SQLite from 'expo-sqlite'
 
 export const createPersonalData = async ({
@@ -9,7 +9,7 @@ export const createPersonalData = async ({
   type,
   roles,
   createdAt,
-}: IUser) => {
+}: IUserFB) => {
   const db = await SQLite.openDatabaseAsync('stressOff')
   try {
     return await db.execAsync(`
@@ -29,7 +29,7 @@ export const createPersonalData = async ({
 export const getPesonalData = async () => {
   const db = await SQLite.openDatabaseAsync('stressOff')
   try {
-    return await db.getAllAsync('SELECT * FROM personalData')
+    return (await db.getAllAsync('SELECT * FROM personalData')) as IUser[]
   } catch (e) {
     console.log('getPesonalData error = ', e)
   } finally {

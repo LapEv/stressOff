@@ -14,7 +14,7 @@ export interface IFavorites {
 
 export interface IFavoritesContent {
   name: string
-  id: string | number
+  _id: string
   emptyMixName?: string
 }
 
@@ -22,8 +22,8 @@ export interface IActionLanguage {
   type: string
   payload: {
     _name: string
-    _categorySounds: ISOUNDCategories[]
-    _categoriesMusic: IMUSICCategories[]
+    _categorySounds: ICategories[]
+    _categoriesMusic: ICategories[]
     _categoryFavorites: ICategoryFavorites
   }
 }
@@ -33,76 +33,85 @@ export interface IActionTheme {
   payload: IConstantsTheme
 }
 
-export interface IMusicState {
-  id: number
-  playing: boolean
-  volume?: number
-  musicStart?: boolean
-  startApp: boolean
-  use?: boolean
-  booked?: boolean
+export interface IPlayState {
+  musicPlay: IMusicState
+  soundsPlay: ISoundState
+  playAll: boolean
 }
 
-export interface IActionMusicState {
+export interface IPlayStateAction {
   type: string
-  payload: IMusicState
+  payload: ISoundStateItemsAction & ISoundStateItems
 }
+
+// export interface IPlayAction {
+//   musicPlay: IMusicState
+//   soundsPlay: ISoundStateAction
+//   playAll: boolean
+//   startApp: boolean
+// }
+
+export interface IMusicState {
+  _id: string
+  id: number
+  playing: boolean
+  volume: number
+  musicStart: boolean
+}
+
+// export interface IActionMusicState {
+//   type: string
+//   payload: IMusicState
+// }
 
 export interface ISoundState {
   mixedSound: ISoundStateItems[]
-  playAll: boolean
   soundStart: boolean
-  startApp: boolean
   musicControl: boolean
   volume: number
   playing: boolean
 }
 
-export interface ISoundStateAction {
-  mixedSound?: ISoundStateItems[]
-  playAll?: boolean
-  soundStart?: boolean
-  startApp?: boolean
-  musicControl?: boolean
-  volume?: number
-  playing?: boolean
-  id?: string
-  booked?: boolean
-}
+// export interface ISoundStateAction {
+//   mixedSound: ISoundStateItemsAction[]
+//   soundStart: boolean
+//   musicControl: boolean
+//   volume: number
+//   playing: boolean
+// }
 
-export interface IActionSoundState {
-  type: string
-  payload: ISoundStateItems & ISoundState
-}
+// export interface IActionSoundState {
+//   type: string
+//   payload: ISoundStateItemsAction & ISoundStateAction
+// }
 
 export interface ISoundStateItems {
-  id: number
+  _id: string
+  id: string
   playing: boolean
   volume: number
   booked: boolean
-  soundStart: boolean
+  soundStart?: boolean
+}
+
+export interface ISoundStateItemsAction {
+  _id?: string
+  id?: string
+  playing?: boolean
+  volume?: number
+  booked?: boolean
+  soundStart?: boolean
+}
+
+export interface IPlayAll {
   playAll: boolean
 }
 
-export interface ISOUNDS {
+export interface IPlay_ID {
   _id: string
-  id: string
-  name: string
-  globalCategory: string
-  booked: boolean
-  sound: string
-  storage: string
-  img: string
-  imgStorage: string
-  location: string
-  payment: boolean
-  category: string
-  title: string
-  description: string
-  newSound: boolean
 }
 
-export interface ISOUNDSDB {
+export interface ISOUNDS {
   _id: string
   id: string
   name: string
@@ -118,6 +127,30 @@ export interface ISOUNDSDB {
   title: string
   description: string
   newSound: string
+}
+
+export interface ISOUNDSFB {
+  _id: string
+  id: string
+  name: string
+  globalCategory: string
+  booked: boolean
+  sound: string
+  storage: string
+  img: string
+  imgStorage: string
+  location: string
+  payment: boolean
+  category: {
+    RUS: string
+    ENG: string
+  }
+  title: {
+    RUS: string
+    ENG: string
+  }
+  description: string
+  newSound: boolean
 }
 
 export interface IUpdateSOUNDS {
@@ -147,70 +180,7 @@ export interface IUpdateSOUNDS {
   new?: boolean
 }
 
-export interface IMUSICS {
-  _id: string
-  id: string
-  name: string
-  globalCategory: string
-  booked: boolean
-  sound: string
-  storage: string
-  img: string
-  imgStorage: string
-  location: string
-  payment: boolean
-  category: string
-  title: string
-  description: string
-  newSound: boolean
-}
-
-export interface IMUSICSDB {
-  _id: string
-  id: string
-  name: string
-  globalCategory: string
-  booked: string
-  sound: string
-  storage: string
-  img: string
-  imgStorage: string
-  location: string
-  payment: string
-  category: string
-  title: string
-  description: string
-  newSound: string
-}
-
-export interface IUpdateMUSICS {
-  _id?: string
-  id?: string
-  name?: string
-  globalCategory?: string
-  booked?: boolean
-  sound?: string
-  storage?: string
-  img?: string
-  imgStorage?: string
-  location?: string
-  payment?: boolean
-  category?: {
-    RUS: string
-    ENG: string
-  }
-  title?: {
-    RUS: string
-    ENG: string
-  }
-  description?: {
-    RUS: string
-    ENG: string
-  }
-  new?: boolean
-}
-
-export interface ISOUNDCategories {
+export interface ICategories {
   _id: string
   id: string
   globalCategory: string
@@ -223,11 +193,14 @@ export interface ISOUNDCategories {
   name?: string
 }
 
-export interface IMUSICCategories {
+export interface ICategoriesFB {
   _id: string
   id: string
   globalCategory: string
-  title: string
+  title: {
+    RUS: string
+    ENG: string
+  }
   img: string
   imgStorage: string
   img_lt: string
@@ -235,8 +208,7 @@ export interface IMUSICCategories {
   category: string
   name?: string
 }
-
-export interface INOTIFICATIONS {
+export interface INOTIFICATIONSFB {
   _id: string
   anonymousUsers: boolean
   body: {
@@ -257,6 +229,21 @@ export interface INOTIFICATIONS {
   globalCategory: string
 }
 
+export interface INOTIFICATIONS {
+  _id: string
+  anonymousUsers: boolean
+  body: string
+  date: string
+  id: string
+  img: string
+  name: string
+  push: string
+  title: string
+  unread: string
+  premiumUsers: string
+  globalCategory: string
+}
+
 export interface IUpdateNotification {
   id: string
 }
@@ -264,29 +251,37 @@ export interface IUpdateNotification {
 export interface IActionDB {
   type: string
   payload:
-    | ISOUNDSDB
-    | ISOUNDSDB[]
-    | IMUSICSDB
-    | IMUSICSDB[]
-    | ISOUNDCategories
-    | ISOUNDCategories[]
-    | IMUSICCategories
-    | IMUSICCategories[]
+    | ISOUNDS
+    | ICategories
+    | ISOUNDS[]
+    | ICategories[]
     | INOTIFICATIONS
     | INOTIFICATIONS[]
 }
 
 export interface IDBState {
-  sounds: ISOUNDSDB[]
-  musics: IMUSICSDB[]
-  soundCategories: ISOUNDCategories[]
-  musicCategories: IMUSICCategories[]
+  sounds: ISOUNDS[]
+  musics: ISOUNDS[]
+  soundCategories: ICategories[]
+  musicCategories: ICategories[]
   notifications: INOTIFICATIONS[]
 }
 
 export interface IUser {
   _id: string
-  id?: string
+  id: string
+  createdAt: string
+  username: string
+  email: string
+  name: string
+  type: string
+  token?: string
+  roles: string
+}
+
+export interface IUserFB {
+  _id?: string
+  id: string
   createdAt: string
   username: string
   email: string
@@ -297,13 +292,25 @@ export interface IUser {
 }
 
 export interface IUserData {
-  SOUNDS_Categories: ISOUNDCategories[]
-  MUSICS_Categories: IMUSICCategories[]
-  DATA_SOUNDS: ISOUNDSDB[]
-  DATA_MUSICS: IMUSICSDB[]
+  SOUNDS_Categories: ISOUNDS[]
+  MUSICS_Categories: ISOUNDS[]
+  DATA_SOUNDS: ISOUNDS[]
+  DATA_MUSICS: ISOUNDS[]
   Notification: INOTIFICATIONS[]
   personalData: IUser
   appData: IAppData_
+  favoritesPlay: IFavorites[]
+  _id?: string
+}
+
+export interface IUserDataFB {
+  SOUNDS_Categories: ICategoriesFB[]
+  MUSICS_Categories: ICategoriesFB[]
+  DATA_SOUNDS: ISOUNDSFB[]
+  DATA_MUSICS: ISOUNDSFB[]
+  Notification: INOTIFICATIONSFB[]
+  personalData: IUserFB
+  appData: IAppDataFB_
   favoritesPlay: IFavorites[]
   _id?: string
 }
@@ -321,10 +328,16 @@ export interface IActionUser {
   }
 }
 
-export interface IAppData_ {
+export interface IAppDataFB_ {
   language: string
   theme: string
   notificationsByEmail: INotificationsByEmail
+}
+
+export interface IAppData_ {
+  language: string
+  theme: string
+  notificationsByEmail: string
 }
 
 export interface INotificationsByEmail {
@@ -361,7 +374,7 @@ export interface IRemoveSound {
 
 export interface IChangeCurrentMixPlay {
   name: string
-  id?: number
+  _id: string
 }
 
 export interface IActionModal {
@@ -484,4 +497,16 @@ export interface IConnect {
 export interface IActionConnect {
   type: string
   payload: boolean
+}
+
+export interface IUnsentData {
+  type: string
+  data: Record<string, unknown>
+}
+
+export interface IUnsentData_ {
+  type: string
+  data: string
+  status: string
+  id: string
 }

@@ -1,5 +1,4 @@
-import { IMUSICCategories, ISOUNDCategories } from '@/store/interfaces'
-import { ImageSourcePropType } from 'react-native'
+import { ICategories } from '@/store/interfaces'
 
 export interface ILocalization {
   RUS: ILocalizationOptions
@@ -7,10 +6,10 @@ export interface ILocalization {
 }
 
 export interface ILocalizationOptions {
-  name: string
-  currentMix: string
-  categorySounds: ISOUNDCategories[]
-  categoryMusics: IMUSICCategories[]
+  nameLanguage: string
+  currentMixLabel: string
+  categorySounds: ICategories[]
+  categoryMusics: ICategories[]
   categoryFavorites: ICategoryFavorites[]
   section: ISectonLabel
   headerTitle: IHeaderTitle
@@ -23,7 +22,7 @@ export interface ILocalizationOptions {
   timer: ITimerMessages
   Messages: ILanguageMessages
   feedback: IFeedbackMessages
-  favoritesCat: ImageSourcePropType[]
+  // favoritesCat: ImageSourcePropType[]
 }
 
 export interface ICategoryFavorites {

@@ -7,10 +7,10 @@ export enum curLanguage {
 
 export const LANGUAGE = {
   RUS: {
-    name: 'RUS',
-    currentMix: 'Текущий микс',
-    categorySounds: {},
-    categoryMusics: {},
+    nameLanguage: 'RUS',
+    currentMixLabel: 'Текущий микс',
+    categorySounds: [],
+    categoryMusics: [],
     categoryFavorites: [
       {
         id: 1,
@@ -328,9 +328,10 @@ export const LANGUAGE = {
     },
   },
   ENG: {
-    name: 'ENG',
-    currentMix: 'Current Mix',
-    categorySounds: {},
+    nameLanguage: 'ENG',
+    currentMixLabel: 'Current Mix',
+    categorySounds: [],
+    categoryMusics: [],
     categoryFavorites: [
       {
         id: 1,

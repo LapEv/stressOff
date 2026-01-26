@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, ImageBackground, useWindowDimensions } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import Slider from '@react-native-community/slider'
 import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from 'expo-av'
-import { RootState } from '@/store'
 import { ISoundsItems, URI } from './interfaces'
-import { ISOUNDSDB } from '@/store/interfaces'
 import {
   RemoveSound,
   TogglePlaySound,
@@ -28,27 +26,23 @@ import {
   CheckSVG,
   CloseItemSVG,
 } from '@/assets/icons/SVG'
-import { curLanguage } from '@/localization/language'
-import { useLanguage, useModalMeessage, useTheme } from '@/hooks'
+import {
+  useDB,
+  useLanguage,
+  useModalMeessage,
+  usePlay,
+  useTheme,
+} from '@/hooks'
 // import { SlideButton, SlideDirection } from 'react-native-slide-button';
 
 export const SoundItems = ({ item, booked }: ISoundsItems) => {
-  const [{ modalMessages, Messages }] = useLanguage()
+  const [{ modalMessages, Messages, nameLanguage }] = useLanguage()
+  const [{ sounds }] = useDB()
   const [theme] = useTheme()
   const [, { showModalMessage }] = useModalMeessage()
-  const currentLanguage = useSelector<RootState>(
-    state => state.language.name,
-  ) as curLanguage
   const width = useWindowDimensions().width
-  const soundDB = useSelector<RootState>(
-    state => state.db.sounds,
-  ) as ISOUNDSDB[]
-  const playSoundsAll = useSelector<RootState>(
-    state => state.sound.playAll,
-  ) as boolean
-  const startApp = useSelector<RootState>(
-    state => state.sound.startApp,
-  ) as boolean
+  const [{ playAll, soundsPlay }] = usePlay()
+
   const [volume, setVolumeState] = useState<number>(item.volume)
   // eslint-disable-next-line
   const [sound, setSound] = useState<any>()
@@ -72,7 +66,7 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
         soundStart: false,
       }),
     )
-    !startApp ? await sound.playAsync() : sound.pauseAsync()
+    !soundsPlay.soundStart ? await sound.playAsync() : sound.pauseAsync()
   }
 
   const setStatePlaying = async (status: boolean) => {
@@ -95,7 +89,7 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
         id: id,
       }),
     )
-    playSoundsAll && sound
+    playAll && sound
       ? item.playing
         ? setStatePlaying(true)
         : setStatePlaying(false)
@@ -111,14 +105,14 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
     dispatch(
       ChangeCurrentMixPlay({
         name: Messages.currentMix,
-        id: 0,
+        _id: '',
       }),
     )
   }
 
   useEffect(() => {
     sound
-      ? playSoundsAll
+      ? playAll
         ? item.playing
           ? setStatePlaying(true)
           : null
@@ -126,13 +120,13 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
           ? setStatePlaying(false)
           : null
       : null
-  }, [playSoundsAll])
+  }, [playAll])
 
   useEffect(() => {
-    soundDB[item.id - 1].location === 'device' ||
-    soundDB[item.id - 1].location === 'app'
-      ? playSound({ uri: soundDB[item.id - 1].sound })
-      : GetImage(soundDB[item.id - 1].storage)
+    sounds[item.id - 1].location === 'device' ||
+    sounds[item.id - 1].location === 'app'
+      ? playSound({ uri: sounds[item.id - 1].sound })
+      : GetImage(sounds[item.id - 1].storage)
           .then(url => {
             playSound({ uri: url as string })
           })
@@ -238,13 +232,13 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
                   : theme.borderColorRGBA,
               }}>
               <ImageBackground
-                source={{ uri: soundDB[item.id - 1].img }}
+                source={{ uri: sounds[item.id - 1].img }}
                 imageStyle={{ borderRadius: 5 }}
-                style={[styles.image, { opacity: playSoundsAll ? 1 : 0.5 }]}
+                style={[styles.image, { opacity: playAll ? 1 : 0.5 }]}
               />
               <View style={{ ...styles.viewImage, width: width * 0.5 }}>
                 <Text type="text_14" style={styles.textMessages}>
-                  {JSON.parse(soundDB[item.id - 1].title)[currentLanguage]}
+                  {JSON.parse(sounds[item.id - 1].title)[nameLanguage]}
                 </Text>
                 <Slider
                   style={{ width: '100%', height: 30 }}

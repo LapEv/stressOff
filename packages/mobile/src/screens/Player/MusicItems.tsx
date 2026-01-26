@@ -4,11 +4,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import Slider from '@react-native-community/slider'
 import { IMusicItems, URI } from './interfaces'
 import { RootState } from 'store'
-import { IMUSICS, IMusicState } from '@/store/interfaces'
+import { IMusicState, ISOUNDS } from '@/store/interfaces'
 import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from 'expo-av'
 import { Sound } from 'expo-av/build/Audio'
 import { ChangeStateMusic } from '@/store/actions/music'
-import { ChangeCurrentMixPlay } from '@/store/actions/favorites'
 import {
   Shadow,
   SlideButton,
@@ -24,22 +23,23 @@ import {
   CheckSVG,
   CloseItemSVG,
 } from '@/assets/icons/SVG'
-import { useLanguage, useModalMeessage, useTheme } from '@/hooks'
+import { useLanguage, useModalMeessage, usePlay, useTheme } from '@/hooks'
 
 export const MusicItems = ({ id, booked }: IMusicItems) => {
-  const [{ modalMessages, Messages, name }] = useLanguage()
+  const [{ modalMessages, nameLanguage }] = useLanguage()
   const [theme] = useTheme()
   const [, { showModalMessage }] = useModalMeessage()
   const width = useWindowDimensions().width
   const playingMusic = useSelector<RootState>(
     state => state.music,
   ) as IMusicState
-  const playSoundsAll = useSelector<RootState>(state => state.sound.playAll)
+  const [{ playAll }] = usePlay()
+
   const [volume, setVolumeState] = useState<number>(
     playingMusic.volume as number,
   )
   const [sound, setMusic] = useState<Sound | null>(null)
-  const musicDB = useSelector<RootState>(state => state.db.musics) as IMUSICS[]
+  const musicDB = useSelector<RootState>(state => state.db.musics) as ISOUNDS[]
 
   const dispatch = useDispatch()
 
@@ -98,7 +98,7 @@ export const MusicItems = ({ id, booked }: IMusicItems) => {
         musicStart: playingMusic.musicStart,
       }),
     )
-    playSoundsAll && sound
+    playAll && sound
       ? playingMusic.playing
         ? setStatePlaying(false)
         : setStatePlaying(true)
@@ -115,23 +115,23 @@ export const MusicItems = ({ id, booked }: IMusicItems) => {
         musicStart: playingMusic.musicStart,
       }),
     )
-    dispatch(
-      ChangeCurrentMixPlay({
-        name: Messages.currentMix,
-        id: 0,
-      }),
-    )
+    // dispatch(
+    //   ChangeCurrentMixPlay({
+    //     name: Messages.currentMix,
+    //     _id: '',
+    //   }),
+    // )
   }
 
   useEffect(() => {
     sound
-      ? playSoundsAll
+      ? playAll
         ? playingMusic.playing
           ? setStatePlaying(true)
           : null
         : setStatePlaying(false)
       : null
-  }, [playSoundsAll])
+  }, [playAll])
 
   useEffect(() => {
     musicDB[id - 1].location === 'device' || musicDB[id - 1].location === 'app'
@@ -241,11 +241,11 @@ export const MusicItems = ({ id, booked }: IMusicItems) => {
               <ImageBackground
                 source={{ uri: musicDB[id - 1].img }}
                 imageStyle={{ borderRadius: 5 }}
-                style={[styles.image, { opacity: playSoundsAll ? 1 : 0.5 }]}
+                style={[styles.image, { opacity: playAll ? 1 : 0.5 }]}
               />
               <View style={{ ...styles.viewImage, width: width * 0.5 }}>
                 <Text type="text_14" style={styles.textMessages}>
-                  {JSON.parse(musicDB[id - 1].title)[name]}
+                  {JSON.parse(musicDB[id - 1].title)[nameLanguage]}
                 </Text>
                 <Slider
                   style={{ width: '100%', height: 30 }}

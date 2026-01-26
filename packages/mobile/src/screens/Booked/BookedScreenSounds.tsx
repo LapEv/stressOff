@@ -1,30 +1,22 @@
 import React, { useRef } from 'react'
 import { StyleSheet, FlatList } from 'react-native'
-import { useSelector } from 'react-redux'
 import { Props } from './interfaces'
-import { RootState } from '@/store'
-import { ISOUNDS, ISOUNDSDB, ISoundStateItems } from '@/store/interfaces'
+import { ISOUNDS } from '@/store/interfaces'
 import { SoundsTiles } from '../Sounds/SoundTiles'
 import { LinearGradient, TextTitle, View } from '@/components'
 import { dataApp } from '@/data/dataApp'
 import { DATA_SOUNDS } from '@/data/contentApp'
-import { useLanguage, useTheme } from '@/hooks'
+import { useDB, useLanguage, usePlay, useTheme } from '@/hooks'
 
 export const BookedScreenSounds = ({ route }: Props) => {
-  const [{ name, Messages }] = useLanguage()
+  const [{ nameLanguage, Messages }] = useLanguage()
+  const [{ sounds }] = useDB()
+  const [play] = usePlay()
   const [{ TEXT_COLOR }] = useTheme()
-  const soundDB = useSelector<RootState>(
-    state => state.db.sounds,
-  ) as ISOUNDSDB[]
-  const playingDataSound = (
-    useSelector<RootState>(
-      state => state.sound.mixedSound,
-    ) as ISoundStateItems[]
-  ).map(value => (value.id ? value.id : ''))
-
-  const data = soundDB.filter(value => value.booked)
+  const data = sounds.filter(value => value.booked)
 
   const flatlistRef = useRef<FlatList | null>(null)
+
   const scroll = () => {
     // if (route.params && route.params.scrollToEnd) {
     if (route.params) {
@@ -40,13 +32,25 @@ export const BookedScreenSounds = ({ route }: Props) => {
   //   }, 1000)
   // }
 
-  const renderItem = ({ id, _id, sound }: ISOUNDS) => {
-    const findUseSound = playingDataSound.findIndex(value => value === id)
-    const description = JSON.parse(soundDB[Number(id) - 1].description)[name]
-    const title = JSON.parse(soundDB[Number(id) - 1].title)[name]
-    const img = DATA_SOUNDS.find(
-      item => item.name === soundDB[Number(id) - 1].name,
-    )?.img
+  const renderItem = ({
+    id,
+    _id,
+    sound,
+    title,
+    description,
+    location,
+    storage,
+    name,
+    booked,
+    globalCategory,
+    newSound,
+  }: ISOUNDS) => {
+    const findUseSound = play.soundsPlay.mixedSound.findIndex(
+      value => value._id === _id,
+    )
+    const _description = JSON.parse(description)[nameLanguage]
+    const _title = JSON.parse(title)[nameLanguage]
+    const img = DATA_SOUNDS.find(item => item.name === name)?.img
     return (
       <SoundsTiles
         id={id}
@@ -54,14 +58,14 @@ export const BookedScreenSounds = ({ route }: Props) => {
         findUseSound={findUseSound < 0 ? false : true}
         item={sound}
         img={img}
-        title={title}
-        description={description}
-        location={soundDB[Number(id) - 1].location}
-        storage={soundDB[Number(id) - 1].storage}
-        name={soundDB[Number(id) - 1].name}
-        booked={soundDB[Number(id) - 1].booked}
-        globalCategory={soundDB[Number(id) - 1].globalCategory}
-        newSound={soundDB[Number(id) - 1].newSound}
+        title={_title}
+        description={_description}
+        location={location}
+        storage={storage}
+        name={name}
+        booked={JSON.parse(booked)}
+        globalCategory={globalCategory}
+        newSound={newSound}
       />
     )
   }

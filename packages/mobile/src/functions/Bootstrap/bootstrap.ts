@@ -3,11 +3,11 @@ import store from 'store'
 import * as Font from 'expo-font'
 import * as SecureStore from 'expo-secure-store'
 import {
-  LoadMusicCategoriesFromDB,
-  LoadMusicFromDB,
+  LoadMusicCategories,
+  LoadMusic,
   LoadNotificationsFromFB,
-  LoadSoundCategoriesFromDB,
-  LoadSoundFromDB,
+  LoadSoundCategories,
+  LoadSound,
 } from '@/store/actions/db'
 import { errorHandler } from 'utils/errorHandler'
 import { check, findUserData, login } from 'api/userAPI'
@@ -23,20 +23,25 @@ import { IntervalFeedback } from '@/store/actions/intervalFeedback'
 import { getPesonalData } from '@/db/personalData'
 import { createDataFromCloud } from './createDataFromCloud'
 import {
+  // delAppData,
+  // delDataMusics,
+  // delDataSounds,
+  // delMUSICS_Categories,
+  // delNotifications,
+  // delSOUNDS_Categories,
   getAppData,
   getDataMusics,
   getDataSounds,
   getMUSICS_Categories,
   getNotifications,
   getSOUNDS_Categories,
+  // updateDataSound,
 } from '@/db'
 import {
   IAppData_,
-  IMUSICCategories,
-  IMUSICSDB,
+  ICategories,
   INOTIFICATIONS,
-  ISOUNDCategories,
-  ISOUNDSDB,
+  ISOUNDS,
   IUser,
 } from '@/store/interfaces'
 import { addAppData } from '@/store/actions/appData'
@@ -70,6 +75,17 @@ export const bootstrap = async ({ isConnected, token, user }: IBootstrap) => {
         newError: 'No Connected, no token',
       }
     }
+    // await delDataSounds()
+    // await delDataMusics()
+    // await delSOUNDS_Categories()
+    // await delMUSICS_Categories()
+    // await delPesonalData()
+    // await delAppData()
+    // await delNotifications()
+    // return {
+    //   status: false,
+    //   newError: 'Deleted',
+    // }
 
     const personal = (await getPesonalData()) as IUser[]
     const appData = (await getAppData()) as IAppData_[]
@@ -105,6 +121,7 @@ export const bootstrap = async ({ isConnected, token, user }: IBootstrap) => {
       const _id = userToken?.user._id ?? (user?.id as string)
       const userData = await findUserData(_id)
       const result = await createDataFromCloud(userData)
+
       if (!result) {
         return {
           status: false,
@@ -115,24 +132,28 @@ export const bootstrap = async ({ isConnected, token, user }: IBootstrap) => {
     }
 
     if (!createData) {
-      store.dispatch(addUserData(personal[0]))
-      const soundCategoriesDB =
-        (await getSOUNDS_Categories()) as ISOUNDCategories[]
-      const musicCategoriesDB =
-        (await getMUSICS_Categories()) as IMUSICCategories[]
-      store.dispatch(LoadSoundCategoriesFromDB(soundCategoriesDB))
-      store.dispatch(LoadMusicCategoriesFromDB(musicCategoriesDB))
-      const soundDB = (await getDataSounds()) as ISOUNDSDB[]
-      const musicDB = (await getDataMusics()) as IMUSICSDB[]
-      store.dispatch(LoadSoundFromDB(soundDB))
-      store.dispatch(LoadMusicFromDB(musicDB))
+      if (!personal) (await getPesonalData()) as IUser[]
+      store.dispatch(
+        addUserData(
+          !personal ? ((await getPesonalData()) as IUser[]) : personal[0],
+        ),
+      )
+      const soundCategoriesDB = (await getSOUNDS_Categories()) as ICategories[]
+      const musicCategoriesDB = (await getMUSICS_Categories()) as ICategories[]
+      store.dispatch(LoadSoundCategories(soundCategoriesDB))
+      store.dispatch(LoadMusicCategories(musicCategoriesDB))
+      const soundDB = (await getDataSounds()) as ISOUNDS[]
+      const musicDB = (await getDataMusics()) as ISOUNDS[]
+      store.dispatch(LoadSound(soundDB))
+      store.dispatch(LoadMusic(musicDB))
       const notifications = (await getNotifications()) as INOTIFICATIONS[]
       store.dispatch(LoadNotificationsFromFB(notifications))
       store.dispatch(addAppData(appData[0]))
     }
 
-    store.dispatch(ChangeLanguage(appData[0].language))
-    store.dispatch(ChangeTheme(appData[0].theme))
+    const _appData = !appData ? ((await getAppData()) as IAppData_[]) : appData
+    store.dispatch(ChangeLanguage(_appData[0].language))
+    store.dispatch(ChangeTheme(_appData[0].theme))
 
     // добавить favorite Play в облако и SQLite
     // if (favoritesPlay.length > 0) {
@@ -147,8 +168,8 @@ export const bootstrap = async ({ isConnected, token, user }: IBootstrap) => {
 
     if (currentPlay) {
       currentPlay.sound.playAll = false
-      currentPlay.sound.startApp = true
-      currentPlay.music.startApp = true
+      currentPlay.startApp = true
+      currentPlay.startApp = true
       currentPlay.sound
         ? store.dispatch(AddFavoritesSound(currentPlay.sound))
         : null
@@ -159,7 +180,7 @@ export const bootstrap = async ({ isConnected, token, user }: IBootstrap) => {
         ? store.dispatch(
             ChangeCurrentMixPlay({
               name: currentPlay.favorites.currentMix,
-              id: currentPlay.favorites.id,
+              _id: currentPlay.favorites._id,
             }),
           )
         : null

@@ -1,8 +1,8 @@
-import { IMUSICCategories, ISOUNDCategories } from '@/store/interfaces'
+import { ICategories, ICategoriesFB } from '@/store/interfaces'
 import * as SQLite from 'expo-sqlite'
 
 export const createSOUNDS_Categories = async (
-  SOUNDS_Categories: ISOUNDCategories[],
+  SOUNDS_Categories: ICategoriesFB[],
 ) => {
   const db = await SQLite.openDatabaseAsync('stressOff')
   try {
@@ -33,7 +33,7 @@ export const createSOUNDS_Categories = async (
 }
 
 export const createMUSICS_Categories = async (
-  MUSICS_Categories: IMUSICCategories[],
+  MUSICS_Categories: ICategoriesFB[],
 ) => {
   const db = await SQLite.openDatabaseAsync('stressOff')
   try {
@@ -68,7 +68,7 @@ export const getSOUNDS_Categories = async () => {
   try {
     return (await db.getAllAsync(
       'SELECT * FROM SOUNDS_Categories',
-    )) as ISOUNDCategories[]
+    )) as ICategories[]
   } catch (e) {
     console.log('getSOUNDS_Categories error = ', e)
   } finally {
@@ -81,7 +81,9 @@ export const getSOUNDS_Categories = async () => {
 export const getMUSICS_Categories = async () => {
   const db = await SQLite.openDatabaseAsync('stressOff')
   try {
-    return await db.getAllAsync('SELECT * FROM MUSICS_Categories')
+    return (await db.getAllAsync(
+      'SELECT * FROM MUSICS_Categories',
+    )) as ICategories[]
   } catch (e) {
     console.log('getMUSICS_Categories error = ', e)
   } finally {

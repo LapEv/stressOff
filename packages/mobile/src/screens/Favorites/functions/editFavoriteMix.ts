@@ -1,7 +1,7 @@
 import store from '@/store'
 import { CheckForFavoritesName } from './checkForFavoritesName'
 import { ILocalizationOptions } from '@/localization/interfaces'
-import { modalShowMessage } from '@/store/actions/modalMessage'
+import { showModalMessage } from '@/store/actions/modalMessage'
 import { dispatchEditFavoritesMix } from './dispatchEditMix'
 
 export const EditFavoriteMix = (id: number, name: string) => {
@@ -10,6 +10,6 @@ export const EditFavoriteMix = (id: number, name: string) => {
   !result
     ? name.length
       ? dispatchEditFavoritesMix(id, name)
-      : store.dispatch(modalShowMessage(language.modalMessages.emptyName))
-    : store.dispatch(modalShowMessage(language.modalMessages.sameNameFound))
+      : store.dispatch(showModalMessage(language.modalMessages.emptyName))
+    : store.dispatch(showModalMessage(language.modalMessages.sameNameFound))
 }

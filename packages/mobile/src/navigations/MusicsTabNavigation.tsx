@@ -9,11 +9,11 @@ import { useDB, useLanguage, useTheme } from '@/hooks'
 const MusicsTab = createMaterialTopTabNavigator()
 
 export const MusicsTabNavigation = () => {
-  const [{ headerTitle, name }] = useLanguage()
+  const [{ headerTitle, nameLanguage }] = useLanguage()
   const [{ musicCategories }] = useDB()
   const [{ nameTheme }] = useTheme()
 
-  function CategoriesScreens() {
+  const CategoriesScreens = () => {
     return musicCategories.map(({ category, title, _id }) => {
       const imgURI = musicCat.find(({ name }) => name === category)
       const img =
@@ -24,15 +24,15 @@ export const MusicsTabNavigation = () => {
         <MusicsTab.Screen
           name={category}
           key={_id}
-          initialParams={{ category: JSON.parse(title)[name] }}
+          initialParams={{ category: JSON.parse(title)[nameLanguage] }}
           component={MusicsScreen}
           options={{
             tabBarShowIcon: true,
-            tabBarLabel: JSON.parse(title)[name],
+            tabBarLabel: JSON.parse(title)[nameLanguage],
             tabBarIcon: () => (
               <Image source={img} resizeMode="stretch" style={styles.img} />
             ),
-            title: JSON.parse(title)[name],
+            title: JSON.parse(title)[nameLanguage],
           }}
         />
       )
@@ -41,6 +41,8 @@ export const MusicsTabNavigation = () => {
 
   return (
     <MusicsTab.Navigator
+      initialRouteName={musicCategories[0].category}
+      backBehavior="initialRoute"
       tabBar={props => {
         return (
           <CustomTab

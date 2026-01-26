@@ -1,4 +1,4 @@
-import { INOTIFICATIONS } from '@/store/interfaces'
+import { INOTIFICATIONS, INOTIFICATIONSFB } from '@/store/interfaces'
 import * as SQLite from 'expo-sqlite'
 
 export const createNotification = async ({
@@ -13,7 +13,7 @@ export const createNotification = async ({
   title,
   unread,
   globalCategory,
-}: INOTIFICATIONS) => {
+}: INOTIFICATIONSFB) => {
   const db = await SQLite.openDatabaseAsync('stressOff')
   try {
     await db.execAsync(`
@@ -44,7 +44,9 @@ export const createNotification = async ({
 export const getNotifications = async () => {
   const db = await SQLite.openDatabaseAsync('stressOff')
   try {
-    return await db.getAllAsync('SELECT * FROM NOTIFICATIONS')
+    return (await db.getAllAsync(
+      'SELECT * FROM NOTIFICATIONS',
+    )) as INOTIFICATIONS[]
   } catch (e) {
     console.log('getNotifications error = ', e)
   } finally {

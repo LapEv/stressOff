@@ -1,29 +1,22 @@
 import React, { useRef } from 'react'
 import { FlatList, StyleSheet, View } from 'react-native'
-import { useSelector } from 'react-redux'
-import { RootState } from '@/store'
-import { ISOUNDSDB, ISoundStateItems } from '@/store/interfaces'
+import { ISOUNDS } from '@/store/interfaces'
 import { LinearGradient } from '@/components'
 import { dataApp } from '@/data/dataApp'
 import { SoundsTiles } from './SoundTiles'
 import { ISoundsScreenProps } from './interfaces'
-import { useCategoryFilter, useDB, useLanguage } from '@/hooks'
+import { useCategoryFilter, useDB, useLanguage, usePlay } from '@/hooks'
 import { DATA_SOUNDS } from '@/data/contentApp'
 
 export const SoundsScreen = ({ route }: ISoundsScreenProps) => {
   const [{ sounds }] = useDB()
-  const [{ name }] = useLanguage()
-
-  const playingDataSound = (
-    useSelector<RootState>(
-      state => state.sound.mixedSound,
-    ) as ISoundStateItems[]
-  ).map(value => (value.id ? value.id : ''))
+  const [{ nameLanguage }] = useLanguage()
+  const [play] = usePlay()
+  const flatlistRef = useRef<FlatList | null>(null)
   const data = useCategoryFilter({
     data: sounds,
     filter: route?.params.category as string,
   })
-  const flatlistRef = useRef<FlatList | null>(null)
 
   const scroll = () => {
     // if (route.params && route.params.scrollToEnd) {
@@ -35,13 +28,25 @@ export const SoundsScreen = ({ route }: ISoundsScreenProps) => {
     }
   }
 
-  const renderItem = ({ id, _id, sound }: ISOUNDSDB) => {
-    const findUseSound = playingDataSound.findIndex(value => value === id)
-    const description = JSON.parse(sounds[Number(id) - 1].description)[name]
-    const title = JSON.parse(sounds[Number(id) - 1].title)[name]
-    const img = DATA_SOUNDS.find(
-      item => item.name === sounds[Number(id) - 1].name,
-    )?.img
+  const renderItem = ({
+    id,
+    _id,
+    sound,
+    title,
+    description,
+    location,
+    storage,
+    name,
+    booked,
+    globalCategory,
+    newSound,
+  }: ISOUNDS) => {
+    const findUseSound = play.soundsPlay.mixedSound.findIndex(
+      value => value._id === _id,
+    )
+    const _description = JSON.parse(description)[nameLanguage]
+    const _title = JSON.parse(title)[nameLanguage]
+    const img = DATA_SOUNDS.find(item => item.name === name)?.img
     return (
       <SoundsTiles
         id={id}
@@ -49,14 +54,14 @@ export const SoundsScreen = ({ route }: ISoundsScreenProps) => {
         findUseSound={findUseSound < 0 ? false : true}
         item={sound}
         img={img}
-        title={title}
-        description={description}
-        location={sounds[Number(id) - 1].location}
-        storage={sounds[Number(id) - 1].storage}
-        name={sounds[Number(id) - 1].name}
-        booked={sounds[Number(id) - 1].booked}
-        globalCategory={sounds[Number(id) - 1].globalCategory}
-        newSound={sounds[Number(id) - 1].newSound}
+        title={_title}
+        description={_description}
+        location={location}
+        storage={storage}
+        name={name}
+        booked={JSON.parse(booked)}
+        globalCategory={globalCategory}
+        newSound={JSON.parse(newSound)}
       />
     )
   }
@@ -75,7 +80,7 @@ export const SoundsScreen = ({ route }: ISoundsScreenProps) => {
           onFocus={scroll}
           data={data}
           renderItem={({ item }) => renderItem(item)}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={item => item._id}
           getItemLayout={(_, index) => ({
             length: 150,
             offset: 150 * index,

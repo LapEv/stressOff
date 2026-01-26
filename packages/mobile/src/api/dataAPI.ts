@@ -1,6 +1,6 @@
 import { authhost } from '.'
 import { api } from './api'
-import { IObject } from './interfaces'
+import { IObject, IUpdateStatusSound } from './interfaces'
 
 export const getData = async (API: string) => {
   const { data } = await authhost.get(API)
@@ -15,4 +15,30 @@ export const getFile = async (object: IObject) => {
     data: window.URL.createObjectURL(new Blob([response.data])),
     info: response.data,
   }
+}
+
+export const updateStatusSound = async ({
+  _id,
+  newSound,
+  userID,
+}: IUpdateStatusSound) => {
+  const { data } = await authhost.post(api.UPDATE_SOUND_STATUS_NEW, {
+    _id,
+    newSound,
+    userID,
+  })
+  return data
+}
+
+export const updateStatusMusic = async ({
+  _id,
+  newSound,
+  userID,
+}: IUpdateStatusSound) => {
+  const { data } = await authhost.post(api.UPDATE_MUSIC_STATUS_NEW, {
+    _id,
+    newSound,
+    userID,
+  })
+  return data
 }

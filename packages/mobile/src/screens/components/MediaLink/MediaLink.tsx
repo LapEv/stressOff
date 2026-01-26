@@ -1,47 +1,29 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, useWindowDimensions } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
 import { IMediaLink } from './interfaces'
-import { RootState } from '@/store'
-import { ToggleAllSound } from '@/store/actions/sounds'
-import { ISoundStateItems } from '@/store/interfaces'
 import { Shadow, Text, Touchable, View, ViewStyle } from '@/components'
 import { ArrowRightSVG, PauseSVG, PlaySVG } from '@/assets/icons/SVG'
-import { useLanguage, useTheme } from '@/hooks'
+import { useLanguage, usePlay, useTheme } from '@/hooks'
+import { useFavorite } from '@/hooks/favorite/useFavorite'
 
 export const MediaLink = ({ navigation }: IMediaLink) => {
   const [{ Messages }] = useLanguage()
   const [{ BACKGROUNDCOLOR, ITEM_COLOR, borderColorRGBA }] = useTheme()
-  const playSoundsAll = useSelector<RootState>(
-    state => state.sound.playAll,
-  ) as boolean
-  const currentMix = useSelector<RootState>(
-    state => state.favorites.currentMix,
-  ) as string
-  const playingDataSound = useSelector<RootState>(
-    state => state.sound.mixedSound,
-  ) as ISoundStateItems[]
-  const playingMusicId = useSelector<RootState>(
-    state => state.music.id,
-  ) as number
+  const [{ currentMix }] = useFavorite()
+  const [{ playAll, soundsPlay, musicPlay }, { ToggleAllSound }] = usePlay()
   const [play, setPlay] = useState(false)
   const width = useWindowDimensions().width
 
   useEffect(() => {
-    !playSoundsAll ? setPlay(false) : setPlay(true)
-  }, [playSoundsAll])
+    !playAll ? setPlay(false) : setPlay(true)
+  }, [playAll])
 
-  const dispatch = useDispatch()
   const setStatusPlay = () => {
-    dispatch(
-      ToggleAllSound({
-        playAll: !play,
-      }),
-    )
+    ToggleAllSound({ playAll: !play })
     setPlay(previousState => !previousState)
   }
 
-  const quantity = playingDataSound.length + (playingMusicId > 0 ? 1 : 0)
+  const quantity = soundsPlay.mixedSound.length + (musicPlay._id ? 1 : 0)
   const quantityMessage = `${Messages.element}: ${quantity}`
 
   return (

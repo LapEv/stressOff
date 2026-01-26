@@ -1,37 +1,24 @@
-import { RootState } from '@/store'
-import { IMUSICSDB, ISOUNDSDB, IUser } from '@/store/interfaces'
 import React, { useEffect, useState } from 'react'
 import { useWindowDimensions, StyleSheet } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
 import { ILanguageTiles } from './interfaces'
 import { LANGUAGE } from '@/localization/language'
-import { ChangeCurrentMixPlay } from '@/store/actions/favorites'
 import { dataApp } from '@/data/dataApp'
-import { ChangeLanguage } from '@/store/actions/language'
 import { Shadow, Text, Touchable, View } from '@/components'
 import { CheckSVG } from '@/assets/icons/SVG'
 import * as SecureStore from 'expo-secure-store'
-import { useLanguage, useTheme } from '@/hooks'
+import { useDB, useLanguage, useTheme, useUser } from '@/hooks'
+// import { useFavorite } from '@/hooks/favorite/useFavorite'
 
 export const LanguageTiles = ({ title, nameTiles }: ILanguageTiles) => {
-  const [{ name }, { UpdateLanguage }] = useLanguage()
+  const [{ nameLanguage }, { UpdateLanguage, ChangeLanguage }] = useLanguage()
   const [{ borderColor, ITEM_COLOR }] = useTheme()
-  const user = useSelector<RootState>(state => state.user) as IUser
+  // const [{ currentMix }, { ChangeCurrentMixPlay }] = useFavorite()
+  const [{ _id }] = useUser()
+  const [{ sounds, musics }] = useDB()
   const width = useWindowDimensions().width
   const [active, setActive] = useState<boolean>(
-    nameTiles === name ? true : false,
+    nameTiles === nameLanguage ? true : false,
   )
-  const currentMix = useSelector<RootState>(
-    state => state.favorites.currentMix,
-  ) as string
-  const soundDB = useSelector<RootState>(
-    state => state.db.sounds,
-  ) as ISOUNDSDB[]
-  const musicDB = useSelector<RootState>(
-    state => state.db.musics,
-  ) as IMUSICSDB[]
-
-  const dispatch = useDispatch()
 
   const shadowOpt = {
     width: width * 0.9,
@@ -62,20 +49,19 @@ export const LanguageTiles = ({ title, nameTiles }: ILanguageTiles) => {
     }
   }
 
-  const ChangeNameOfMediaLink = (name: string) => {
-    Object.keys(LANGUAGE).find(key => {
-      if (LANGUAGE[key as keyof typeof LANGUAGE].currentMix === currentMix) {
-        dispatch(
-          ChangeCurrentMixPlay({
-            name: LANGUAGE[name as keyof typeof LANGUAGE].currentMix,
-          }),
-        )
-      }
-    })
+  const ChangeNameOfMediaLink = () => {
+    // Object.keys(LANGUAGE).find(key => {
+    //   if (currentMixLabel === currentMix) {
+    //     ChangeCurrentMixPlay({
+    //       name: currentMixLabel,
+    //       _id: '',
+    //     })
+    //   }
+    // })
   }
 
   const getCategoriesSounds = (_key: string) => {
-    return soundDB
+    return sounds
       .map(value => value.category[_key as keyof typeof value.category])
       .filter((item, index, arr) => arr.indexOf(item) === index)
       .map((value, index) => ({
@@ -85,7 +71,7 @@ export const LanguageTiles = ({ title, nameTiles }: ILanguageTiles) => {
   }
 
   const getCategoriesMusics = (_key: string) => {
-    return musicDB
+    return musics
       .map(value => value.category[_key as keyof typeof value.category])
       .filter((item, index, arr) => arr.indexOf(item) === index)
       .map((value, index) => ({
@@ -95,20 +81,18 @@ export const LanguageTiles = ({ title, nameTiles }: ILanguageTiles) => {
   }
 
   const ChangeLanguauge = async () => {
-    const categorySounds = getCategoriesSounds(name)
-    const categoriesMusic = getCategoriesMusics(name)
+    const categorySounds = getCategoriesSounds(nameLanguage)
+    const categoriesMusic = getCategoriesMusics(nameLanguage)
     setActive(true)
-    setAsyncStorageValueFor(dataApp.language.key, name)
-    ChangeNameOfMediaLink(name)
-    dispatch(
-      ChangeLanguage({
-        _name: name,
-        _categorySounds: categorySounds,
-        _categoriesMusic: categoriesMusic,
-        _categoryFavorites: LANGUAGE[name].categoryFavorites,
-      }),
-    )
-    UpdateLanguage({ name, _id: user._id })
+    setAsyncStorageValueFor(dataApp.language.key, nameLanguage)
+    ChangeNameOfMediaLink()
+    ChangeLanguage({
+      _name: nameLanguage,
+      _categorySounds: categorySounds,
+      _categoriesMusic: categoriesMusic,
+      _categoryFavorites: LANGUAGE[nameLanguage].categoryFavorites,
+    })
+    UpdateLanguage({ nameLanguage, _id })
   }
 
   return (

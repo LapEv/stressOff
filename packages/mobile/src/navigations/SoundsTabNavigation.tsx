@@ -9,7 +9,7 @@ import { useDB, useLanguage, useTheme } from '@/hooks'
 const SoundsTab = createMaterialTopTabNavigator()
 
 export const SoundsTabNavigation = () => {
-  const [{ headerTitle, name }] = useLanguage()
+  const [{ headerTitle, nameLanguage }] = useLanguage()
   const [{ soundCategories }] = useDB()
   const [{ nameTheme }] = useTheme()
 
@@ -24,15 +24,15 @@ export const SoundsTabNavigation = () => {
         <SoundsTab.Screen
           name={category}
           key={_id}
-          initialParams={{ category: JSON.parse(title)[name] }}
+          initialParams={{ category: JSON.parse(title)[nameLanguage] }}
           component={SoundsScreen}
           options={{
             tabBarShowIcon: true,
-            tabBarLabel: JSON.parse(title)[name],
+            tabBarLabel: JSON.parse(title)[nameLanguage],
             tabBarIcon: () => (
               <Image source={img} resizeMode="stretch" style={styles.img} />
             ),
-            title: JSON.parse(title)[name],
+            title: JSON.parse(title)[nameLanguage],
           }}
         />
       )

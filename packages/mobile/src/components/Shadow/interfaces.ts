@@ -6,4 +6,5 @@ export interface IShadow extends PropsWithChildren {
   containerStyle?: Record<string, unknown>
   type?: string
   distance?: number
+  startColor?: string
 }

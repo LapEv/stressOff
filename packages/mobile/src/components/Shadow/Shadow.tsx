@@ -9,6 +9,7 @@ export const Shadow = (props: IShadow) => {
     borderRadius: 15,
     opacity: 0.7,
   }
+
   return (
     <DefaultShadow
       distance={distance ?? 15}

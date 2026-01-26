@@ -10,7 +10,8 @@ export const checkAnonymousData = async () => {
   if (!personalData) {
     const { user, token } = await setAnonymousUser()
     await createDataFromCloud(user)
-    await bootstrap({ isConnected: true, token, user: user.personalData })
+    const user_ = (await getPesonalData()) as IUser[]
+    await bootstrap({ isConnected: true, token, user: user_[0] })
     return true
   }
   const tokenCheck = await SecureStore.getItemAsync('token')

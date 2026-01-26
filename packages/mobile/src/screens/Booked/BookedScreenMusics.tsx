@@ -3,22 +3,20 @@ import { StyleSheet, FlatList } from 'react-native'
 import { useSelector } from 'react-redux'
 import { Props } from './interfaces'
 import { RootState } from '@/store'
-import { IMUSICSDB } from '@/store/interfaces'
 import { MusicTiles } from '../Music/MusicTiles'
 import { LinearGradient, TextTitle, View } from '@/components'
 import { dataApp } from '@/data/dataApp'
 import { DATA_MUSIC } from '@/data/contentApp'
 import { useLanguage, useTheme } from '@/hooks'
+import { ISOUNDS } from '@/store/interfaces'
 
 export const BookedScreenMusics = ({ route }: Props) => {
-  const [{ name, Messages }] = useLanguage()
+  const [{ nameLanguage, Messages }] = useLanguage()
   const [{ TEXT_COLOR }] = useTheme()
   const playingMusicId = useSelector<RootState>(
     state => state.music.id,
   ) as number
-  const musicDB = useSelector<RootState>(
-    state => state.db.musics,
-  ) as IMUSICSDB[]
+  const musicDB = useSelector<RootState>(state => state.db.musics) as ISOUNDS[]
 
   const data = musicDB.filter(value => value.booked)
 
@@ -33,12 +31,11 @@ export const BookedScreenMusics = ({ route }: Props) => {
     }
   }
 
-  const renderItem = ({ id, _id }: IMUSICSDB) => {
-    const curLanguage = name
+  const renderItem = ({ id, _id }: ISOUNDS) => {
     const description = JSON.parse(musicDB[Number(id) - 1].description)[
-      curLanguage
+      nameLanguage
     ]
-    const title = JSON.parse(musicDB[Number(id) - 1].title)[curLanguage]
+    const title = JSON.parse(musicDB[Number(id) - 1].title)[nameLanguage]
     const img = DATA_MUSIC.find(
       item => item.name === musicDB[Number(id) - 1].name,
     )?.img

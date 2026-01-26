@@ -1,7 +1,7 @@
-import { IMUSICS, ISOUNDS } from '@/store/interfaces'
+import { ISOUNDS, ISOUNDSFB } from '@/store/interfaces'
 import * as SQLite from 'expo-sqlite'
 
-export const createDataSounds = async (soundDB: ISOUNDS[]) => {
+export const createDataSounds = async (soundDB: ISOUNDSFB[]) => {
   const db = await SQLite.openDatabaseAsync('stressOff')
   try {
     await db.execAsync(`
@@ -36,7 +36,7 @@ export const createDataSounds = async (soundDB: ISOUNDS[]) => {
   }
 }
 
-export const createDataMusics = async (musicDB: IMUSICS[]) => {
+export const createDataMusics = async (musicDB: ISOUNDSFB[]) => {
   const db = await SQLite.openDatabaseAsync('stressOff')
   try {
     await db.execAsync(`
@@ -74,7 +74,7 @@ export const createDataMusics = async (musicDB: IMUSICS[]) => {
 export const getDataSounds = async () => {
   const db = await SQLite.openDatabaseAsync('stressOff')
   try {
-    return await db.getAllAsync('SELECT * FROM DATA_SOUNDS')
+    return (await db.getAllAsync('SELECT * FROM DATA_SOUNDS')) as ISOUNDS[]
   } catch (e) {
     console.log('getDataSounds error = ', e)
   } finally {
@@ -87,7 +87,7 @@ export const getDataSounds = async () => {
 export const getDataMusics = async () => {
   const db = await SQLite.openDatabaseAsync('stressOff')
   try {
-    return await db.getAllAsync('SELECT * FROM DATA_MUSICS')
+    return (await db.getAllAsync('SELECT * FROM DATA_MUSICS')) as ISOUNDS[]
   } catch (e) {
     console.log('getDataMusics error = ', e)
   } finally {

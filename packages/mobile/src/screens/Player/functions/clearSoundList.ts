@@ -3,24 +3,24 @@ import { ILocalizationOptions } from '@/localization/interfaces'
 import { ChangeCurrentMixPlay } from '@/store/actions/favorites'
 import { ClearSound } from '@/store/actions/sounds'
 import { ChangeStateMusic } from '@/store/actions/music'
-import { modalShow } from '@/store/actions/modal'
+import { showModal } from '@/store/actions/modal'
 
 export const ClearSoundList = () => {
   const language = store.getState().language as ILocalizationOptions
-  ;(store.dispatch(
+  store.dispatch(
     ChangeCurrentMixPlay({
       name: language.Messages.currentMix,
-      id: 0,
+      _id: '',
     }),
-  ),
-    store.dispatch(ClearSound(null)),
-    store.dispatch(
-      ChangeStateMusic({
-        id: 0,
-        playing: false,
-        use: false,
-        startApp: false,
-      }),
-    ),
-    store.dispatch(modalShow({ show: false })))
+  )
+  store.dispatch(ClearSound(null))
+  store.dispatch(
+    ChangeStateMusic({
+      id: 0,
+      playing: false,
+      use: false,
+      startApp: false,
+    }),
+  )
+  store.dispatch(showModal({ show: false }))
 }

@@ -1,17 +1,13 @@
-import { RootState } from '@/store'
 import { StyleSheet, FlatList } from 'react-native'
-import { useSelector } from 'react-redux'
 import { IPlayerContainer } from './interfaces'
 import { ListHeader } from './ListHeader'
 import { ListFooter } from './ListFooter'
-import { ISoundStateItems } from '@/store/interfaces'
 import { View } from '@/components'
 import { SoundItems } from './SoundItems'
+import { usePlay } from '@/hooks'
 
 export const PlayerContainer = ({ navigation }: IPlayerContainer) => {
-  const playingDataSound = useSelector<RootState>(
-    state => state.sound.mixedSound,
-  ) as ISoundStateItems[]
+  const [{ soundsPlay }] = usePlay()
 
   return (
     <View style={styles.pleerContainer}>
@@ -19,17 +15,17 @@ export const PlayerContainer = ({ navigation }: IPlayerContainer) => {
         ListHeaderComponent={
           <ListHeader
             navigation={navigation}
-            playingDataSound={playingDataSound}
+            playingDataSound={soundsPlay.mixedSound}
           />
         }
         ListFooterComponent={<ListFooter />}
         horizontal={false}
         style={{ width: '100%', height: '100%' }}
-        data={playingDataSound}
+        data={soundsPlay.mixedSound}
         renderItem={({ item }) => (
           <SoundItems item={item} booked={item.booked} />
         )}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item._id}
       />
     </View>
   )

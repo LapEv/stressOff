@@ -3,18 +3,16 @@ import { RootState } from 'store'
 import { StyleSheet, useWindowDimensions } from 'react-native'
 import { useSelector } from 'react-redux'
 import { ISoundState } from '@/store/interfaces'
-import { useDispatch } from 'react-redux'
-import { modalShow } from '@/store/actions/modal'
-import { useLanguage } from '@/hooks'
+import { useLanguage, useModal } from '@/hooks'
 
 export const ListFooter = () => {
   const width = useWindowDimensions().width
   const [{ modalMessages, buttons }] = useLanguage()
+  const [, { showModal }] = useModal()
   const StateSound = useSelector<RootState>(state => state.sound) as ISoundState
-  const dispatch = useDispatch()
 
   const ClearSoundList = () => {
-    dispatch(modalShow(modalMessages.clearSoundList))
+    showModal(modalMessages.clearSoundList)
   }
 
   return (

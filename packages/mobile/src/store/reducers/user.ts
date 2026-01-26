@@ -3,6 +3,7 @@ import { ADD_USER_DATA, UPDATE_USER_DATA } from '../types'
 import { IActionUser, IUser } from '../interfaces'
 
 const initialState = {
+  _id: '',
   createdAt: '',
   username: '',
   email: '',

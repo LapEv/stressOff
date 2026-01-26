@@ -63,7 +63,8 @@ export interface IUser {
     storage: string
     location: string
     booked: boolean
-    new: boolean
+    newSound: boolean
+    payment: boolean
   }[]
   DATA_MUSICS: {
     name: string
@@ -72,7 +73,8 @@ export interface IUser {
     storage: string
     location: string
     booked: boolean
-    new: boolean
+    newSound: boolean
+    payment: boolean
   }[]
   favoritesPlay?: IFavorites[]
 }
@@ -145,7 +147,8 @@ const Users = new Schema<IUser, UserModel>({
       storage: { type: String },
       location: { type: String, required: true },
       booked: { type: Boolean, required: true },
-      new: { type: Boolean, default: false },
+      newSound: { type: Boolean, default: false },
+      payment: { type: Boolean, default: false },
     },
   ],
   DATA_MUSICS: [
@@ -156,7 +159,8 @@ const Users = new Schema<IUser, UserModel>({
       storage: { type: String },
       location: { type: String, required: true },
       booked: { type: Boolean, required: true },
-      new: { type: Boolean, default: false },
+      newSound: { type: Boolean, default: false },
+      payment: { type: Boolean, default: false },
     },
   ],
   favoritesPlay: [

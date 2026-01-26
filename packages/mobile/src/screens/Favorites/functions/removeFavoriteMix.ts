@@ -1,7 +1,7 @@
 import { ILocalizationOptions } from '@/localization/interfaces'
 import store from '@/store'
 import { RemoveFavoritesMixes } from '@/store/actions/favorites'
-import { modalShow } from '@/store/actions/modal'
+import { showModal } from '@/store/actions/modal'
 import { ChangeStateMusic } from '@/store/actions/music'
 import { ClearSound } from '@/store/actions/sounds'
 import { IFavorites } from '@/store/interfaces'
@@ -16,7 +16,7 @@ export const RemoveFavoritesMix = (id: number) => {
       emptyMixName: _emptyMixName,
     }),
   )
-  store.dispatch(modalShow({ show: false }))
+  store.dispatch(showModal({ show: false }))
   currentId === id
     ? (store.dispatch(ClearSound(null)),
       store.dispatch(

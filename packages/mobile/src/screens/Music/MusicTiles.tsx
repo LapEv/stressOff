@@ -3,17 +3,20 @@ import { ImageBackground, StyleSheet, useWindowDimensions } from 'react-native'
 import { useSelector } from 'react-redux'
 import { IMuscisTiles } from './interfaces'
 import { RootState } from '@/store'
-import { CheckFile, CheckFileSize, FileSizeToString } from '@/functions'
-import { ChangeStateMusic } from '@/store/actions/music'
-import { ToggleAllSound } from '@/store/actions/sounds'
-import { ChangeCurrentMixPlay } from '@/store/actions/favorites'
-import { UpdateMusicsBookedDB, UpdateMusicsDB } from '@/store/actions/db'
-import { modalShow } from '@/store/actions/modal'
+import { CheckFileSize, FileSizeToString } from '@/functions'
+import { UpdateMusicsBookedDB } from '@/store/actions/db'
 import { dataApp } from '@/data/dataApp'
 import { Shadow, Text, TextTitle, Touchable, View } from '@/components'
 import { icons } from '@/data/contentApp'
 import { BookedSVGNo, BookedSVGYes, Cloud, Mobile } from '@/assets/icons/SVG'
-import { useDB, useLanguage, useModalMeessage, useTheme } from '@/hooks'
+import {
+  useDB,
+  useLanguage,
+  useModal,
+  useModalMeessage,
+  usePlay,
+  useTheme,
+} from '@/hooks'
 
 export const MusicTiles = ({
   id,
@@ -31,74 +34,68 @@ export const MusicTiles = ({
   newSound,
 }: IMuscisTiles) => {
   const [, { UpdateMusicsStatusDB }] = useDB()
-  const [{ modalMessages, newSoundText, Messages }] = useLanguage()
+  // const [{ modalMessages, newSoundText, currentMixLabel }] = useLanguage()
+  const [{ modalMessages, newSoundText }] = useLanguage()
   const [{ bookedColor, CHECK_COLOR }] = useTheme()
   const [, { showModalMessage }] = useModalMeessage()
-  const musicStart = useSelector<RootState>(
-    state => state.music.musicStart,
-  ) as boolean
-  const playAll = useSelector<RootState>(
-    state => state.sound.playAll,
-  ) as boolean
+  const [, { showModal }] = useModal()
+  // const [{ playAll, musicPlay }, { ToggleAllSound, AddSound, RemoveSound }] =
+  //   usePlay()
+  const [{ playAll }] = usePlay()
   const currentPlayingMusicId = useSelector<RootState>(
     state => state.music.id,
   ) as number
   const width = useWindowDimensions().width
-  const [disabled, setDisabled] = useState<boolean>(false)
   const [playing, setPlaying] = useState<boolean>(findUseMusic)
 
-  useEffect(() => {
-    !musicStart ? setDisabled(false) : null
-  }, [musicStart])
-
-  const addMusic = async (id: string) => {
+  // const addMusic = async (id: string) => {
+  const addMusic = async () => {
     // updateStatusNewMusics(false, id, user.uid);
-    UpdateMusicsStatusDB({ _id, newSound: true })
-    console.log('disabled = ', disabled)
-    const check = location === 'device' ? await CheckFile(item) : true
-    check || location !== 'device'
-      ? !playing
-        ? (setPlaying(previousState => !previousState),
-          dispatch(
-            ChangeStateMusic({
-              id: Number(id),
-              playing: true,
-              volume: 1.0,
-              musicStart: true,
-              startApp: false,
-              booked: booked,
-            }),
-          ),
-          dispatch(
-            ToggleAllSound({
-              playAll: true,
-            }),
-          ),
-          dispatch(
-            ChangeCurrentMixPlay({
-              name: Messages.currentMix,
-              id: 0,
-            }),
-          ),
-          setDisabled(true))
-        : (setPlaying(previousState => !previousState),
-          dispatch(
-            ChangeStateMusic({
-              id: 0,
-              playing: false,
-              startApp: false,
-            }),
-          ),
-          dispatch(
-            ChangeCurrentMixPlay({
-              name: Messages.currentMix,
-              id: 0,
-            }),
-          ))
-      : ((modalMessages.error.message = `${Messages.fileNotFound} ${Messages.switchToCloud}`),
-        // await updateMusicsLocation('cloud', id, '', user._id),
-        dispatch(UpdateMusicsDB({ name: name, sound: '', location: 'cloud' })),
-        showModalMessage(modalMessages.error))
+    UpdateMusicsStatusDB({ _id, newSound: false })
+    // const check = location === 'device' ? await CheckFile(item) : true
+    // check || location !== 'device'
+    //   ? !playing
+    //     ? (setPlaying(previousState => !previousState),
+    //       dispatch(
+    //         ChangeStateMusic({
+    //           id: Number(id),
+    //           playing: true,
+    //           volume: 1.0,
+    //           musicStart: true,
+    //           startApp: false,
+    //           booked: booked,
+    //         }),
+    //       ),
+    //       dispatch(
+    //         ToggleAllSound({
+    //           playAll: true,
+    //         }),
+    //       ),
+    //       dispatch(
+    //         ChangeCurrentMixPlay({
+    //           name: currentMixLabel,
+    //           id: 0,
+    //         }),
+    //       ),
+    //       setDisabled(true))
+    //     : (setPlaying(previousState => !previousState),
+    //       dispatch(
+    //         ChangeStateMusic({
+    //           id: 0,
+    //           playing: false,
+    //           startApp: false,
+    //         }),
+    //       ),
+    //       dispatch(
+    //         ChangeCurrentMixPlay({
+    //           name: Messages.currentMix,
+    //           id: 0,
+    //         }),
+    //       ))
+    //   : ((modalMessages.error.message = `${Messages.fileNotFound} ${Messages.switchToCloud}`),
+    //     // await updateMusicsLocation('cloud', id, '', user._id),
+    //     dispatch(UpdateMusicsDB({ name: name, sound: '', location: 'cloud' })),
+    //     showModalMessage(modalMessages.error))
   }
 
   useEffect(() => {
@@ -122,7 +119,7 @@ export const MusicTiles = ({
     modalMessages.downloadFromCloud.name = name
     modalMessages.downloadFromCloud.category = globalCategory
     modalMessages.downloadFromCloud.id = id
-    dispatch(modalShow(modalMessages.downloadFromCloud))
+    showModal(modalMessages.downloadFromCloud)
   }
 
   const deleteFromDevice = async (
@@ -138,7 +135,7 @@ export const MusicTiles = ({
     modalMessages.deleteFromDevice.name = name
     modalMessages.deleteFromDevice.id = id
     modalMessages.deleteFromDevice.category = globalCategory
-    dispatch(modalShow(modalMessages.deleteFromDevice))
+    showModal(modalMessages.deleteFromDevice)
   }
 
   const ToggleBookedMusics = async (id: string, booked: boolean) => {
@@ -148,13 +145,14 @@ export const MusicTiles = ({
 
   return (
     <View
+      type="check"
       style={{
         ...styles.container,
         width: width / dataApp.FLATLIST.numberColumns,
       }}>
       {JSON.parse(newSound) ? (
         <View style={styles.new}>
-          <TextTitle type="title_14" style={styles.newText}>
+          <TextTitle type="title_14" colorType="check" style={styles.newText}>
             {newSoundText}
           </TextTitle>
         </View>
@@ -193,7 +191,7 @@ export const MusicTiles = ({
         <Touchable
           style={styles.booked}
           onPressIn={() => ToggleBookedMusics(id, booked)}>
-          <BookedSVGYes width="60%" height="60%" fill={booked} />
+          <BookedSVGYes width="60%" height="60%" fill={bookedColor} />
         </Touchable>
       ) : (
         <Touchable

@@ -8,72 +8,87 @@ import {
   createNotification,
   createPersonalData,
   createSOUNDS_Categories,
+  getAppData,
   getDataMusics,
   getDataSounds,
+  getMUSICS_Categories,
+  getNotifications,
+  getSOUNDS_Categories,
 } from '@/db'
 import store from '@/store'
 import { addAppData } from '@/store/actions/appData'
 import {
-  LoadMusicCategoriesFromFB,
-  LoadMusicFromDB,
+  LoadMusicCategories,
+  LoadMusic,
   LoadNotificationsFromFB,
-  LoadSoundCategoriesFromFB,
-  LoadSoundFromDB,
+  LoadSoundCategories,
+  LoadSound,
 } from '@/store/actions/db'
 import { addUserData } from '@/store/actions/user'
 import {
-  IMUSICCategories,
-  IMUSICS,
-  IMUSICSDB,
-  ISOUNDCategories,
+  IAppData_,
+  ICategories,
+  ICategoriesFB,
+  INOTIFICATIONS,
   ISOUNDS,
-  ISOUNDSDB,
-  IUserData,
+  ISOUNDSFB,
+  IUserDataFB,
 } from '@/store/interfaces'
 
-export const createDataFromCloud = async (userData: IUserData) => {
+export const createDataFromCloud = async (userData: IUserDataFB) => {
   try {
-    const { username, email, name, type, roles, createdAt } =
-      userData.personalData
-    const _id = userData._id
-    await createPersonalData({
-      _id,
-      username,
-      email,
-      name,
-      type,
-      roles,
-      createdAt,
-    })
+    const { personalData } = userData
+    const personalData_ = { ...personalData, _id: userData._id }
+    await createPersonalData(personalData_)
     store.dispatch(addUserData(userData.personalData))
 
-    const soundCategoriesDB = (await getData(
+    const soundCategoriesFB = (await getData(
       api.GET_DATA_SOUNDCATEGORIES,
-    )) as ISOUNDCategories[]
-    const musicCategoriesDB = (await getData(
+    )) as ICategoriesFB[]
+    const soundCategoriesFB_ = soundCategoriesFB.map((item, index) => {
+      return { ...item, _id: userData.SOUNDS_Categories[index]._id }
+    }) as ICategoriesFB[]
+    await createSOUNDS_Categories(soundCategoriesFB_)
+    const sound_categories = (await getSOUNDS_Categories()) as ICategories[]
+    store.dispatch(LoadSoundCategories(sound_categories))
+
+    const musicCategoriesFB = (await getData(
       api.GET_DATA_MUSICCATEGORIES,
-    )) as IMUSICCategories[]
-    await createSOUNDS_Categories(soundCategoriesDB)
-    store.dispatch(LoadSoundCategoriesFromFB(soundCategoriesDB))
-    await createMUSICS_Categories(musicCategoriesDB)
-    store.dispatch(LoadMusicCategoriesFromFB(musicCategoriesDB))
+    )) as ICategoriesFB[]
+    const musicCategoriesFB_ = musicCategoriesFB.map((item, index) => {
+      return { ...item, _id: userData.MUSICS_Categories[index]._id }
+    }) as ICategoriesFB[]
+    await createMUSICS_Categories(musicCategoriesFB_)
+    const music_categories = (await getMUSICS_Categories()) as ICategories[]
+    store.dispatch(LoadMusicCategories(music_categories))
 
-    const sound = (await getData(api.GET_DATA_SOUNDS)) as ISOUNDS[]
-    const music = (await getData(api.GET_DATA_MUSICS)) as IMUSICS[]
+    const soundsFB = (await getData(api.GET_DATA_SOUNDS)) as ISOUNDSFB[]
+    const soundsFB_ = soundsFB.map((item, index) => {
+      const { _id, payment, booked, newSound, location } =
+        userData.DATA_SOUNDS[index]
+      return { ...item, _id, payment, booked, newSound, location }
+    }) as ISOUNDSFB[]
+    await createDataSounds(soundsFB_)
+    const soundDB = (await getDataSounds()) as ISOUNDS[]
+    store.dispatch(LoadSound(soundDB))
 
-    await createDataSounds(sound)
-    await createDataMusics(music)
-    const soundDB = (await getDataSounds()) as ISOUNDSDB[]
-    const musicDB = (await getDataMusics()) as IMUSICSDB[]
-
-    store.dispatch(LoadSoundFromDB(soundDB))
-    store.dispatch(LoadMusicFromDB(musicDB))
+    const musicsFB = (await getData(api.GET_DATA_MUSICS)) as ISOUNDSFB[]
+    const musicsFB_ = musicsFB.map((item, index) => {
+      const { _id, payment, booked, newSound, location } =
+        userData.DATA_MUSICS[index]
+      return { ...item, _id, payment, booked, newSound, location }
+    }) as ISOUNDSFB[]
+    await createDataMusics(musicsFB_)
+    const musicDB = (await getDataMusics()) as ISOUNDS[]
+    store.dispatch(LoadMusic(musicDB))
 
     await createNotification(userData.Notification[0])
-    store.dispatch(LoadNotificationsFromFB(userData.Notification))
+    const notifications = (await getNotifications()) as INOTIFICATIONS[]
+    store.dispatch(LoadNotificationsFromFB(notifications))
 
     await createAppData(userData.appData)
-    store.dispatch(addAppData(userData.appData))
+    const appData = (await getAppData()) as IAppData_[]
+    store.dispatch(addAppData(appData[0]))
 
     return true
   } catch (e) {

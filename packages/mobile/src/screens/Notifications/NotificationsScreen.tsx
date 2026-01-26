@@ -11,7 +11,7 @@ import { NotificationTiles } from './NotificationTiles'
 import { useLanguage } from '@/hooks'
 
 export const NotificationsScreen = ({ navigation }: INotifications) => {
-  const [{ name, headerTitle, notifications }] = useLanguage()
+  const [{ nameLanguage, headerTitle, notifications }] = useLanguage()
   const notificationsDB = useSelector<RootState>(
     state => state.db.notifications,
   ) as INOTIFICATIONS[]
@@ -28,12 +28,12 @@ export const NotificationsScreen = ({ navigation }: INotifications) => {
         id={item.id}
         // date={formatDate(item.date)}
         date={item.date}
-        title={item.title[name as keyof typeof item.title]}
-        body={item.body[name]}
+        title={item.title[nameLanguage as keyof typeof item.title]}
+        body={item.body[nameLanguage]}
         unread={item.unread}
         screen={item.category}
         section={item.navigation}
-        languageName={name}
+        languageName={nameLanguage}
         navigation={navigation}
       />
     )

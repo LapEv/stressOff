@@ -1,19 +1,10 @@
 import React, { RefObject, useEffect } from 'react'
 import { BackHandler, View } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
-// import { createStackNavigator } from '@react-navigation/stack';
 import { createStackNavigator } from '@react-navigation/stack'
 import {
   NavigationContainer,
   NavigationContainerRef,
 } from '@react-navigation/native'
-// import {SettingsScreen} from '../screens/SettingsScreen';
-// import {TimerScreen} from '../screens/TimerScreen';
-// import {NotificationsScreen} from '../screens/NotificationsScreen';
-// import {SectionsTabNavigation} from './SectionsTabNavigation';
-// import {LoginNavigation} from './LoginNavigation';
-// import { Player } from '../screens/Player/Player'
-import { RootState } from '@/store'
 import {
   FeedBackScreen,
   LanguageScreen,
@@ -25,35 +16,24 @@ import {
   TimerScreen,
 } from '@/screens'
 import { IAppNavigation, RootStackParamList } from './interfaces'
-import { modalShow } from '@/store/actions/modal'
 import { verticalAnimationDownUp } from './data'
 import { SectionsTabNavigation } from './SectionsTabNavigation'
 import { LoginNavigation } from './LoginNavigation'
-import { useLanguage } from '@/hooks'
-// import {FeedBackScreen} from '../screens/FeedBackScreen';
-// import {LanguageScreen} from '../screens/LanguageScreen';
-// import {ModalAlert} from '../components/Modal';
-// import {ModalMessage} from '../components/ModalMessage';
-// import {modalShow} from '../store/actions/modal';
-// import {DownloadFromCloud} from '../components/DownloadFromCloud';
-// import {DeleteAllFromDevice} from '../components/DeleteAllFromDevice';
-
-// const Stack = createNativeStackNavigator();
+import { useLanguage, useModal, useToken } from '@/hooks'
 
 const Stack = createStackNavigator<RootStackParamList>()
 
 export const AppNavigation = ({ login, setToken }: IAppNavigation) => {
   const [{ headerTitle, modalMessages }] = useLanguage()
-  const token = useSelector<RootState>(state => state.token) as string
+  const [, { showModal }] = useModal()
+  const [token] = useToken()
 
   const navigationRef =
     React.createRef<NavigationContainerRef<ReactNavigation.RootParamList>>()
 
-  const dispatch = useDispatch()
-
   const backAction = () => {
     if ((navigationRef.current?.getRootState()?.index as number) <= 0) {
-      dispatch(modalShow(modalMessages.exitApp))
+      showModal(modalMessages.exitApp)
     } else {
       navigationRef.current?.goBack()
     }

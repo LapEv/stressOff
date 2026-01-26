@@ -3,17 +3,11 @@ import { Shadow, Touchable, View } from '@/components'
 import { TimeView } from '@/screens/Timer/TimeView'
 import { StyleSheet } from 'react-native'
 import { IPlayerTimer } from '../interfaces'
-import { RootState } from '@/store'
-import { IMusicState, ISoundState } from '@/store/interfaces'
-import { useSelector } from 'react-redux'
-import { useTheme } from '@/hooks'
+import { usePlay, useTheme } from '@/hooks'
 
 export const PlayerTimer = ({ navigation, disabledControl }: IPlayerTimer) => {
   const [{ ITEM_COLOR }] = useTheme()
-  const StateMusic = useSelector<RootState>(state => state.music) as IMusicState
-  const StateSound = useSelector<RootState>(state => state.music) as ISoundState
-
-  console.log('StateSound.mixedSound = ', StateSound.mixedSound)
+  const [{ soundsPlay, musicPlay }] = usePlay()
 
   return (
     <Shadow style={styles.shadowTimer}>
@@ -28,8 +22,8 @@ export const PlayerTimer = ({ navigation, disabledControl }: IPlayerTimer) => {
           <TimeView
             screen={'Player'}
             on={
-              (StateSound.mixedSound && StateSound.mixedSound.length) ||
-              StateMusic.id > 0
+              (soundsPlay.mixedSound && soundsPlay.mixedSound.length) ||
+              musicPlay._id
                 ? true
                 : false
             }

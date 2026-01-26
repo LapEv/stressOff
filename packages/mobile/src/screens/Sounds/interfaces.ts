@@ -18,9 +18,9 @@ export interface ISoundsTiles {
   location: string
   storage: string
   name: string
-  booked: boolean | string
+  booked: boolean
   globalCategory: string
-  newSound: string
+  newSound: boolean
 }
 
 export interface ISoundsScreenProps {

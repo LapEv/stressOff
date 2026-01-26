@@ -1,12 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/store'
-import { IDBState } from '@/store/interfaces'
+import { IDBState, IUser } from '@/store/interfaces'
 import { UpdateMusicsStatusDB, UpdateSoundsStatusDB } from '@/store/actions/db'
 import { DBActions } from './dbActions'
-import { updateDataSound } from '@/db'
+import { addUnsentData, updateDataMusic, updateDataSound } from '@/db'
+import { updateStatusMusic, updateStatusSound } from '@/api/dataAPI'
 
 export function useDB(): [IDBState, DBActions] {
   const db = useSelector<RootState>(state => state.db) as IDBState
+  const user = useSelector<RootState>(state => state.user) as IUser
   const connect = useSelector<RootState>(state => state.connect) as boolean
   const dispatch = useDispatch()
 
@@ -16,12 +18,18 @@ export function useDB(): [IDBState, DBActions] {
       async UpdateSoundsStatusDB({ _id, newSound }) {
         dispatch(UpdateSoundsStatusDB({ _id, newSound }))
         await updateDataSound('newSound', newSound, '_id', _id)
-        if (connect) {
-          console.log('connect = ', connect)
-        }
+        const data = { _id, newSound, userID: user._id }
+        connect
+          ? updateStatusSound(data)
+          : await addUnsentData({ type: 'updateStatusNewSound', data })
       },
-      UpdateMusicsStatusDB({ _id, newSound }) {
+      async UpdateMusicsStatusDB({ _id, newSound }) {
         dispatch(UpdateMusicsStatusDB({ _id, newSound }))
+        await updateDataMusic('newSound', newSound, '_id', _id)
+        const data = { _id, newSound, userID: user._id }
+        connect
+          ? updateStatusMusic(data)
+          : await addUnsentData({ type: 'updateStatusNewMusic', data })
       },
     },
   ]

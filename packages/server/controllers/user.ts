@@ -84,6 +84,7 @@ const prepareDataForUser = async ({
       location,
       booked,
       newSound,
+      payment,
     }) => {
       return {
         id,
@@ -95,6 +96,7 @@ const prepareDataForUser = async ({
         location,
         booked,
         newSound,
+        payment,
       }
     },
   )
@@ -110,6 +112,7 @@ const prepareDataForUser = async ({
       location,
       booked,
       newSound,
+      payment,
     }) => {
       return {
         id,
@@ -121,6 +124,7 @@ const prepareDataForUser = async ({
         location,
         booked,
         newSound,
+        payment,
       }
     },
   )
@@ -176,10 +180,19 @@ export class userController {
       const newUserData = await prepareDataForUser(req.body)
       const newUser = new User(newUserData)
       const resultUser = await newUser.save()
+      const expiresIn = '720h'
+      const token = generateAccessToken(
+        resultUser.id,
+        resultUser.personalData.roles,
+        resultUser.personalData.username,
+        resultUser.personalData.type,
+        expiresIn,
+      )
 
       return res.json({
         message: serverData.APInotifications.auth.successfulRegistration,
-        resultUser: resultUser,
+        user: resultUser,
+        token,
       })
     } catch (e) {
       console.log(e)
@@ -602,6 +615,44 @@ export class userController {
       },
       unread: true,
       globalCategory: serverData.dataConsts.globalCategoryNotifications,
+    }
+  }
+
+  updateStatusSound = async (req: Request, res: Response) => {
+    try {
+      const { _id, newSound, userID } = req.body
+      const result = await User.updateOne(
+        { _id: userID, 'DATA_SOUNDS._id': _id },
+        { $set: { 'DATA_SOUNDS.$.newSound': newSound } },
+      )
+      return res.json({
+        message: serverData.APInotifications.auth.updateStatusSound,
+        object: result,
+      })
+    } catch (e) {
+      console.log('e = ', e)
+      return res.status(400).json({
+        message: `${serverData.APInotifications.auth.updateStatusSoundError}: ${(e as Error).message}`,
+      })
+    }
+  }
+
+  updateStatusMusic = async (req: Request, res: Response) => {
+    try {
+      const { _id, newSound, userID } = req.body
+      const result = await User.updateOne(
+        { _id: userID, 'DATA_MUSICS._id': _id },
+        { $set: { 'DATA_MUSICS.$.newSound': newSound } },
+      )
+      return res.json({
+        message: serverData.APInotifications.auth.updateStatusSound,
+        object: result,
+      })
+    } catch (e) {
+      console.log('e = ', e)
+      return res.status(400).json({
+        message: `${serverData.APInotifications.auth.updateStatusSoundError}: ${(e as Error).message}`,
+      })
     }
   }
 }

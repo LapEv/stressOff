@@ -7,16 +7,20 @@ import { HeartSVG, HeartSVGYes } from '@/assets/icons/SVG'
 import { useEffect } from 'react'
 import { dataApp } from '@/data/dataApp'
 import {
-  IFavorites,
+  // IFavorites,
   IFavoritesContent,
-  IMusicState,
-  ISoundState,
+  // IMusicState,
+  // ISoundState,
 } from '@/store/interfaces'
 import { CheckForFavoriteContent } from '../../Favorites/functions/checkForFavoriteContent'
-import { useDispatch } from 'react-redux'
-import { modalShow } from '@/store/actions/modal'
 import * as SecureStore from 'expo-secure-store'
-import { useLanguage, useModalMeessage, useTheme } from '@/hooks'
+import {
+  useFavorite,
+  useLanguage,
+  useModal,
+  useModalMeessage,
+  useTheme,
+} from '@/hooks'
 
 export const PlayerFavorites = ({
   disabledControl,
@@ -27,11 +31,8 @@ export const PlayerFavorites = ({
   const [{ modalMessages }] = useLanguage()
   const [{ ITEM_COLOR, CHECK_COLOR, toFavoritesScreen }] = useTheme()
   const [, { showModalMessage }] = useModalMeessage()
-  const StateMusic = useSelector<RootState>(state => state.music) as IMusicState
-  const StateSound = useSelector<RootState>(state => state.music) as ISoundState
-  const favorites = useSelector<RootState>(
-    state => state.favorites,
-  ) as IFavorites
+  const [, { showModal }] = useModal()
+  const [favorites] = useFavorite()
   const playingMusicId = useSelector<RootState>(
     state => state.music.id,
   ) as number
@@ -39,19 +40,17 @@ export const PlayerFavorites = ({
     state => state.sound.mixedSound,
   ) as ISoundsItems[]
 
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
 
   const AddFavoriteMix = () => {
     const result = CheckForFavoriteContent()
     !result
-      ? dispatch(
-          modalShow({
-            ...modalMessages.addFavoriteMix,
-            ...{
-              category: 'mixes',
-            },
-          }),
-        )
+      ? showModal({
+          ...modalMessages.addFavoriteMix,
+          ...{
+            category: 'mixes',
+          },
+        })
       : ((modalMessages.sameMixFound.message = `${
           modalMessages.sameMixFound.message1
         } "${result.trim()}"`),

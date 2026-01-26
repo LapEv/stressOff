@@ -1,27 +1,18 @@
 import { Dispatch } from 'react'
 import {
-  IMUSICCategories,
-  IMUSICS,
-  IMUSICSDB,
+  ICategories,
   INOTIFICATIONS,
-  ISOUNDCategories,
   ISOUNDS,
-  ISOUNDSDB,
-  IUpdateMUSICS,
   IUpdateSOUNDS,
 } from '../interfaces'
 import {
   ADD_SOUND_DB,
   ADD_MUSIC_DB,
   ADD_NOTIFICATIONS_DB,
-  LOAD_SOUND_FB,
-  LOAD_MUSIC_FB,
-  LOAD_SOUND_DB,
-  LOAD_MUSIC_DB,
-  LOAD_SOUND_CATEGORIES_FB,
-  LOAD_MUSIC_CATEGORIES_FB,
-  LOAD_SOUND_CATEGORIES_DB,
-  LOAD_MUSIC_CATEGORIES_DB,
+  LOAD_SOUND,
+  LOAD_MUSIC,
+  LOAD_SOUND_CATEGORIES,
+  LOAD_MUSIC_CATEGORIES,
   LOAD_NOTIFICATIONS_DB,
   UPDATE_SOUND_DB,
   UPDATE_MUSIC_DB,
@@ -37,14 +28,14 @@ import {
   IUpdateSoundsStatusDB,
 } from '@/hooks/interfaces'
 
-export const AddSoundsDB = (data: ISOUNDSDB) => {
+export const AddSoundsDB = (data: ISOUNDS) => {
   return {
     type: ADD_SOUND_DB,
     payload: data,
   }
 }
 
-export const AddMusicsDB = (data: IMUSICSDB) => {
+export const AddMusicsDB = (data: ISOUNDS) => {
   return {
     type: ADD_MUSIC_DB,
     payload: data,
@@ -58,41 +49,19 @@ export const AddNotificationsDB = (data: INOTIFICATIONS) => {
   }
 }
 
-export const LoadSoundFromFB = (soundDB: ISOUNDS[]) => {
+export const LoadSoundCategories = (soundCategoriesDB: ICategories[]) => {
   return async (dispatch: Dispatch<Record<string, unknown>>) => {
     dispatch({
-      type: LOAD_SOUND_FB,
-      payload: soundDB,
-    })
-  }
-}
-
-export const LoadMusicFromFB = (musicDB: IMUSICS[]) => {
-  return async (dispatch: Dispatch<Record<string, unknown>>) => {
-    dispatch({
-      type: LOAD_MUSIC_FB,
-      payload: musicDB,
-    })
-  }
-}
-
-export const LoadSoundCategoriesFromFB = (
-  soundCategoriesDB: ISOUNDCategories[],
-) => {
-  return async (dispatch: Dispatch<Record<string, unknown>>) => {
-    dispatch({
-      type: LOAD_SOUND_CATEGORIES_FB,
+      type: LOAD_SOUND_CATEGORIES,
       payload: soundCategoriesDB,
     })
   }
 }
 
-export const LoadMusicCategoriesFromFB = (
-  musicCategoriesDB: IMUSICCategories[],
-) => {
+export const LoadMusicCategories = (musicCategoriesDB: ICategories[]) => {
   return async (dispatch: Dispatch<Record<string, unknown>>) => {
     dispatch({
-      type: LOAD_MUSIC_CATEGORIES_FB,
+      type: LOAD_MUSIC_CATEGORIES,
       payload: musicCategoriesDB,
     })
   }
@@ -107,42 +76,20 @@ export const LoadNotificationsFromFB = (notificationsDB: INOTIFICATIONS[]) => {
   }
 }
 
-export const LoadSoundFromDB = (soundDB: ISOUNDSDB[]) => {
+export const LoadSound = (soundDB: ISOUNDS[]) => {
   return async (dispatch: Dispatch<Record<string, unknown>>) => {
     dispatch({
-      type: LOAD_SOUND_DB,
+      type: LOAD_SOUND,
       payload: soundDB,
     })
   }
 }
 
-export const LoadMusicFromDB = (musicDB: IMUSICSDB[]) => {
+export const LoadMusic = (musicDB: ISOUNDS[]) => {
   return async (dispatch: Dispatch<Record<string, unknown>>) => {
     dispatch({
-      type: LOAD_MUSIC_DB,
+      type: LOAD_MUSIC,
       payload: musicDB,
-    })
-  }
-}
-
-export const LoadSoundCategoriesFromDB = (
-  soundCategoriesDB: ISOUNDCategories[],
-) => {
-  return async (dispatch: Dispatch<Record<string, unknown>>) => {
-    dispatch({
-      type: LOAD_SOUND_CATEGORIES_DB,
-      payload: soundCategoriesDB,
-    })
-  }
-}
-
-export const LoadMusicCategoriesFromDB = (
-  musicCategoriesDB: IMUSICCategories[],
-) => {
-  return async (dispatch: Dispatch<Record<string, unknown>>) => {
-    dispatch({
-      type: LOAD_MUSIC_CATEGORIES_DB,
-      payload: musicCategoriesDB,
     })
   }
 }
@@ -163,7 +110,7 @@ export const UpdateSoundsDB = (data: IUpdateSOUNDS) => {
   }
 }
 
-export const UpdateMusicsDB = (data: IUpdateMUSICS) => {
+export const UpdateMusicsDB = (data: IUpdateSOUNDS) => {
   return {
     type: UPDATE_MUSIC_DB,
     payload: data,
@@ -198,7 +145,7 @@ export const UpdateSoundsBookedDB = (data: IUpdateSOUNDS) => {
   }
 }
 
-export const UpdateMusicsBookedDB = (data: IUpdateMUSICS) => {
+export const UpdateMusicsBookedDB = (data: IUpdateSOUNDS) => {
   return {
     type: UPDATE_MUSIC_BOOKED,
     payload: data,

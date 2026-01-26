@@ -3,8 +3,7 @@ import { Provider } from 'react-redux'
 import store from '@/store'
 import React, { useEffect, useState } from 'react'
 import { Loading, NoInternet } from 'screens'
-import { bootstrap } from '@/functions/Bootstrap/bootstrap'
-import { checkNetwork } from '@/functions'
+import { checkNetwork, checkUnsentData, bootstrap } from '@/functions'
 import * as SecureStore from 'expo-secure-store'
 import { IBootstrapResult } from '@/functions/interfaces'
 import { changeConnect } from '@/store/actions/connect'
@@ -12,7 +11,7 @@ import { changeConnect } from '@/store/actions/connect'
 export default function App() {
   const [isReady, setIsReady] = useState<boolean>(false)
   const [isBootReady, setIsBootReady] = useState<boolean>(false)
-  const [isConnected, setIsConnected] = useState<boolean>(true)
+  const [isConnected, setIsConnected] = useState<boolean>(false)
   const [token, setToken] = useState<string | null>(null)
 
   if (!isBootReady) {
@@ -38,10 +37,10 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    console.log('посмотреть clearErr useefect')
-    console.log('Изменение в подключении. isConnected = ', isConnected)
+    console.log('Изменение в подключении isConnected = ', isConnected)
     console.log('Поставить 3000 секунд')
     store.dispatch(changeConnect(isConnected))
+    checkUnsentData()
   }, [isConnected])
 
   return (

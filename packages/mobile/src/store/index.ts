@@ -28,6 +28,7 @@ import {
   IModal,
   IModalMessage,
   IMusicState,
+  IPlayState,
   IProgressBar,
   ISoundState,
   ITimerState,
@@ -38,10 +39,12 @@ import { ITheme } from '@/theme/interfaces'
 import { tokenReducer } from './reducers/token'
 import { appDataReducer } from './reducers/appData'
 import { connectReducer } from './reducers/connect'
+import { playReducer } from './reducers/play'
 
 const rootReducer = combineReducers({
   sound: soundReducer,
   music: musicReducer,
+  play: playReducer,
   modal: modalReducer,
   modalMessage: modalMessageReducer,
   favorites: favoritesReducer,
@@ -67,6 +70,8 @@ export type RootState = {
   sound: ISoundState
 } & {
   music: IMusicState
+} & {
+  play: IPlayState
 } & {
   language: ILocalizationOptions
 } & {

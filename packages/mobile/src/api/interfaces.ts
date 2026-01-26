@@ -7,3 +7,9 @@ export interface IRegistration {
   password: string
   email: string
 }
+
+export interface IUpdateStatusSound {
+  _id: string
+  newSound: boolean
+  userID: string
+}

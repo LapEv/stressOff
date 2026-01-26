@@ -1,19 +1,17 @@
 import React, { useRef } from 'react'
 import { FlatList, StyleSheet, View } from 'react-native'
-import { useSelector } from 'react-redux'
 import { IMusicScreenProps } from './interfaces'
-import { RootState } from '@/store'
-import { IMUSICSDB } from '@/store/interfaces'
+import { ISOUNDS } from '@/store/interfaces'
 import { dataApp } from '@/data/dataApp'
 import { LinearGradient } from '@/components'
 import { MusicTiles } from './MusicTiles'
-import { useCategoryFilter, useDB, useLanguage } from '@/hooks'
+import { useCategoryFilter, useDB, useLanguage, usePlay } from '@/hooks'
 import { DATA_MUSIC } from '@/data/contentApp'
 
 export const MusicsScreen = ({ route }: IMusicScreenProps) => {
   const [{ musics }] = useDB()
-  const [{ name }] = useLanguage()
-  const playingMusicId = useSelector<RootState>(state => state.music.id)
+  const [{ nameLanguage }] = useLanguage()
+  const [{ musicPlay }] = usePlay()
   const data = useCategoryFilter({
     data: musics,
     filter: route?.params.category as string,
@@ -29,27 +27,37 @@ export const MusicsScreen = ({ route }: IMusicScreenProps) => {
     }
   }
 
-  const renderItem = ({ id, _id }: IMUSICSDB) => {
-    const description = JSON.parse(musics[Number(id) - 1].description)[name]
-    const title = JSON.parse(musics[Number(id) - 1].title)[name]
-    const img = DATA_MUSIC.find(
-      item => item.name === musics[Number(id) - 1].name,
-    )?.img
+  const renderItem = ({
+    id,
+    _id,
+    sound,
+    title,
+    description,
+    location,
+    storage,
+    name,
+    booked,
+    globalCategory,
+    newSound,
+  }: ISOUNDS) => {
+    const _description = JSON.parse(description)[nameLanguage]
+    const _title = JSON.parse(title)[nameLanguage]
+    const img = DATA_MUSIC.find(item => item.name === name)?.img
     return (
       <MusicTiles
         id={id}
         _id={_id}
-        findUseMusic={playingMusicId === id ? true : false}
-        item={musics[Number(id) - 1].sound}
+        findUseMusic={musicPlay._id === _id ? true : false}
+        item={sound}
         img={img}
-        title={title}
-        description={description}
-        location={musics[Number(id) - 1].location}
-        storage={musics[Number(id) - 1].storage}
-        name={musics[Number(id) - 1].name}
-        booked={musics[Number(id) - 1].booked}
-        globalCategory={musics[Number(id) - 1].globalCategory}
-        newSound={musics[Number(id) - 1].newSound}
+        title={_title}
+        description={_description}
+        location={location}
+        storage={storage}
+        name={name}
+        booked={booked}
+        globalCategory={globalCategory}
+        newSound={newSound}
       />
     )
   }

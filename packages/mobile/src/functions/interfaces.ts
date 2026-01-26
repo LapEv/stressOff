@@ -4,6 +4,7 @@ export interface ICurrentPlay {
   sound: ICurrentPlaySound
   music: ICurrentPlayMusic
   favorites: ICurrentPlayFavorites
+  startApp: boolean
 }
 
 export interface ICurrentPlaySound {
@@ -17,16 +18,16 @@ export interface ICurrentPlaySound {
 }
 
 export interface ICurrentPlayMusic {
+  _id: string
   id: number
   playing: boolean
   volume: number
   musicStart: boolean
-  startApp: boolean
 }
 
 export interface ICurrentPlayFavorites {
   currentMix: string
-  id: number
+  _id: string
 }
 
 export interface IBootstrapResult {

@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import {
   StyleSheet,
   Modal,
   useWindowDimensions,
   BackHandler,
 } from 'react-native'
-import { RootState } from '@/store'
-import { IFavorites, IModal } from '@/store/interfaces'
-import { modalShow } from '@/store/actions/modal'
 import { ClearSoundList } from '@/screens/Player/functions/clearSoundList'
 import { AddFavoriteMix } from 'favorites/functions/addFavoriteMix'
 import { EditFavoriteMix } from 'favorites/functions/editFavoriteMix'
@@ -24,15 +21,14 @@ import {
   View,
 } from '@/components'
 import { typeElevation } from '@/components/Shadow/typeElevaion'
-import { useLanguage, useTheme } from '@/hooks'
+import { useLanguage, useModal, useTheme } from '@/hooks'
+import { useFavorite } from '@/hooks/favorite/useFavorite'
 
 export const ModalAlert = () => {
   const [{ modalMessages }] = useLanguage()
   const [{ BACKGROUNDCOLOR, NO_ACTIVE }] = useTheme()
-  const modal = useSelector<RootState>(state => state.modal) as IModal
-  const favorites = useSelector<RootState>(
-    state => state.favorites,
-  ) as IFavorites
+  const [modal, { showModal }] = useModal()
+  const [{ favorites }] = useFavorite()
   const width = useWindowDimensions().width
   const height = useWindowDimensions().height
   const [modalVisible, setModalVisible] = useState(false)
@@ -41,13 +37,13 @@ export const ModalAlert = () => {
   const dispatch = useDispatch()
   const response = (value: boolean) => {
     !value
-      ? dispatch(modalShow({ show: false }))
+      ? showModal({ show: false })
       : (modal.typeMessage === modalMessages.clearSoundList.typeMessage
           ? ClearSoundList()
           : null,
         modal.typeMessage === modalMessages.addFavoriteMix.typeMessage
           ? AddFavoriteMix(
-              favorites.favorites.length + 1,
+              favorites.length + 1,
               input,
               modal.category as string,
             )
@@ -71,7 +67,7 @@ export const ModalAlert = () => {
                 id: modal.id,
               }),
             ),
-            dispatch(modalShow({ show: false })))
+            showModal({ show: false }))
           : null,
         modal.typeMessage === modalMessages.deleteFromDevice.typeMessage
           ? DeleteFromDevice(modal.sound, modal.id, modal.name, modal.category)
@@ -82,10 +78,10 @@ export const ModalAlert = () => {
                 showDeleteAll: true,
               }),
             ),
-            dispatch(modalShow({ show: false })))
+            showModal({ show: false }))
           : null,
         modal.typeMessage === modalMessages.exitApp.typeMessage
-          ? (BackHandler.exitApp(), dispatch(modalShow({ show: false })))
+          ? (BackHandler.exitApp(), showModal({ show: false }))
           : null)
   }
 

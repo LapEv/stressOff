@@ -22,4 +22,6 @@ export const api = {
   CREATE_FOLDER: '/files/createFolder',
   CHECK_SERVER: '/server/checkServer',
   FIND_USER_DATA: '/users/findUserData',
+  UPDATE_SOUND_STATUS_NEW: '/users/updateStatusSound',
+  UPDATE_MUSIC_STATUS_NEW: '/users/updateStatusMusic',
 }

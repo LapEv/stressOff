@@ -1,12 +1,13 @@
 import {
   ADD_FAVORITES_MIXES,
-  LOAD_FAVORITES_MIXES,
+  // LOAD_FAVORITES_MIXES,
   EDIT_FAVORITES_MIXES,
-  REMOVE_FAVORITES_MIXES,
-  REMOVE_FAVORITES_ALL_MIXES,
+  // REMOVE_FAVORITES_MIXES,
+  // REMOVE_FAVORITES_ALL_MIXES,
   CHANGE_CURRENT_MIX_PLAY,
 } from '../types'
 import { IActionFavorites, IFavorites } from '../interfaces'
+import { Reducer } from 'react'
 
 const initialState = {
   currentId: 0,
@@ -14,9 +15,9 @@ const initialState = {
   favorites: [],
 } as IFavorites
 
-export const favoritesReducer = (
+export const favoritesReducer: Reducer<IFavorites, IActionFavorites> = (
   state = initialState,
-  action: IActionFavorites,
+  action,
 ) => {
   switch (action.type) {
     case ADD_FAVORITES_MIXES:
@@ -24,16 +25,16 @@ export const favoritesReducer = (
         ...state,
         favorites: [...state.favorites, { ...action.payload }],
         currentMix: action.payload.name,
-        currentId: action.payload.id,
+        currentId: action.payload._id,
       }
-    case LOAD_FAVORITES_MIXES:
-      return {
-        ...state,
-        favorites: action.payload,
-      }
+    // case LOAD_FAVORITES_MIXES:
+    //   return {
+    //     ...state,
+    //     favorites: action.payload,
+    //   }
     case EDIT_FAVORITES_MIXES: {
       const favoritesMixes = state.favorites.map(mixes => {
-        if (mixes.id === action.payload.id) {
+        if (mixes._id === action.payload._id) {
           mixes.name = action.payload.name
         }
         return mixes
@@ -42,42 +43,43 @@ export const favoritesReducer = (
         ...state,
         favoritesMixes,
         currentMix:
-          state.currentId === action.payload.id
+          state.currentId === action.payload._id
             ? action.payload.name
             : state.currentMix,
       }
     }
-    case REMOVE_FAVORITES_MIXES: {
-      const favoritesFilter = state.favorites.filter(
-        value => value.id !== action.payload.id,
-      )
-      let i = 1
-      const reindex = favoritesFilter.map(value => {
-        value.id = i
-        i++
-        return value
-      })
-      return {
-        ...state,
-        favorites: reindex,
-        currentMix:
-          state.currentId === action.payload.id
-            ? action.payload.emptyMixName
-            : state.currentMix,
-      }
-    }
-    case REMOVE_FAVORITES_ALL_MIXES:
-      return {
-        ...state,
-        favorites: [],
-        currentMix: action.payload.emptyMixName,
-      }
+    // case REMOVE_FAVORITES_MIXES: {
+    //   const favoritesFilter = state.favorites.filter(
+    //     value => value._id !== action.payload._id,
+    //   )
+    //   let i = 1
+    //   const reindex = favoritesFilter.map(value => {
+    //     value._id = Number(i)
+    //     i++
+    //     return value
+    //   })
+    //   return {
+    //     ...state,
+    //     favorites: reindex,
+    //     currentMix:
+    //       state.currentId === action.payload._id
+    //         ? action.payload.emptyMixName
+    //         : state.currentMix,
+    //   }
+    // }
+    // case REMOVE_FAVORITES_ALL_MIXES:
+    //   return {
+    //     ...state,
+    //     favorites: [],
+    //     currentMix: action.payload.emptyMixName,
+    //   }
 
     case CHANGE_CURRENT_MIX_PLAY:
+      console.log('action = ', action.payload)
       return {
         ...state,
         currentMix: action.payload.name,
-        currentId: action.payload.id,
+        currentId: action.payload._id,
       }
 
     default:

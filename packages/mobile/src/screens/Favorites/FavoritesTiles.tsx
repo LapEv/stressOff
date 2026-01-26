@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, ImageBackground, useWindowDimensions } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
 import { typeElevation } from '@/components/Shadow/typeElevaion'
-import { RootState } from '@/store'
-import { modalShow } from '@/store/actions/modal'
-import { AddFavoritesSound } from '@/store/actions/sounds'
-import { ChangeStateMusic } from '@/store/actions/music'
-import { ChangeCurrentMixPlay } from '@/store/actions/favorites'
 import {
   Shadow,
   Text,
@@ -17,34 +11,35 @@ import {
 } from '@/components'
 import { mixData } from '@/data/contentApp'
 import { CloseItemSVG, EditSVG } from '@/assets/icons/SVG'
-import { useDB, useLanguage, useTheme } from '@/hooks'
+import { useDB, useLanguage, useModal, useTheme } from '@/hooks'
+import { useFavorite } from '@/hooks/favorite/useFavorite'
 
 export const FavoritesTiles = ({ item, use }) => {
-  const [{ name, modalMessages }] = useLanguage()
+  const [{ nameLanguage, modalMessages }] = useLanguage()
   const [{ sounds, musics }] = useDB()
   const [{ borderColorRGBA, borderColorRGBA2, ITEM_COLOR }] = useTheme()
-  const currentMix = useSelector<RootState>(
-    state => state.favorites.currentMix,
-  ) as string
-  const favorites = useSelector<RootState>(
-    state => state.favorites.favorites,
-  ) as IFavorites[]
+  const [, { showModal }] = useModal()
+  // const [{ favorites, currentMix }, { ChangeCurrentMixPlay }] = useFavorite()
+  const [{ currentMix }] = useFavorite()
+
   const width = useWindowDimensions().width
   const [playing, setPlaying] = useState(use)
 
   const _music = musics[item.StateMusic.id - 1]
-    ? `${JSON.parse(musics[item.StateMusic.id - 1]?.title)[name]}`
+    ? `${JSON.parse(musics[item.StateMusic.id - 1]?.title)[nameLanguage]}`
     : ''
   const mixedsounds = item.StateSound.mixedSound
-    .map(sound => ' ' + JSON.parse(sounds[Number(sound.id) - 1].title)[name])
+    .map(
+      sound =>
+        ' ' + JSON.parse(sounds[Number(sound.id) - 1].title)[nameLanguage],
+    )
     .toString()
   const _sounds = mixedsounds ? (_music ? `,${mixedsounds}` : mixedsounds) : ''
   const textMessage = _music + _sounds
 
-  const dispatch = useDispatch()
   const editMix = (id: string) => {
     const modalInfo = Object.assign({ id: id }, modalMessages.editFavoriteMix)
-    dispatch(modalShow(modalInfo))
+    showModal(modalInfo)
   }
 
   const removeMix = (id: string) => {
@@ -55,22 +50,21 @@ export const FavoritesTiles = ({ item, use }) => {
         message: `${modalMessages.removeFavoriteMix.message} "${item.name}"?`,
       },
     )
-    dispatch(modalShow(modalInfo))
+    showModal(modalInfo)
   }
 
-  const PlayFavorite = (id: number) => {
-    favorites[id - 1].StateSound
-      ? dispatch(AddFavoritesSound(favorites[id - 1].StateSound))
-      : null
-    favorites[id - 1].StateMusic
-      ? dispatch(ChangeStateMusic(favorites[id - 1].StateMusic))
-      : null
-    dispatch(
-      ChangeCurrentMixPlay({
-        name: favorites[id - 1].name,
-        id: favorites[id - 1].id,
-      }),
-    )
+  // const PlayFavorite = (id: number) => {
+  const PlayFavorite = () => {
+    // favorites[id - 1].StateSound
+    //   ? dispatch(AddFavoritesSound(favorites[id - 1].StateSound))
+    //   : null
+    // favorites[id - 1].StateMusic
+    //   ? dispatch(ChangeStateMusic(favorites[id - 1].StateMusic))
+    //   : null
+    // ChangeCurrentMixPlay({
+    //   name: favorites[id - 1].name,
+    //   _id: favorites[id - 1]._id,
+    // })
   }
 
   useEffect(() => {

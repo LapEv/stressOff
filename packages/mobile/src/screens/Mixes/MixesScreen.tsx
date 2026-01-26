@@ -5,33 +5,25 @@ import {
   Touchable,
   View,
 } from '@/components'
-import { RootState } from '@/store'
-import { modalShow } from '@/store/actions/modal'
-import { IFavorites } from '@/store/interfaces'
 import React, { useEffect } from 'react'
 import { StyleSheet, FlatList, useWindowDimensions } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
 import { FavoritesTiles } from '../Favorites/FavoritesTiles'
-import { useLanguage } from '@/hooks'
+import { useFavorite, useLanguage, useModal } from '@/hooks'
 
 export const MixesScreen = () => {
   const [{ modalMessages, buttons, Messages }] = useLanguage()
-  const favorites = useSelector<RootState>(
-    state => state.favorites,
-  ) as IFavorites
+  const [, { showModal }] = useModal()
+  const [{ favorites, currentMix }] = useFavorite()
   const width = useWindowDimensions().width
 
   useEffect(() => {}, [favorites])
 
-  const data = favorites.favorites
-
-  const dispatch = useDispatch()
   const ClearMixesList = () => {
-    dispatch(modalShow(modalMessages.removeFavoriteAllMix))
+    showModal(modalMessages.removeFavoriteAllMix)
   }
 
   const renderItem = ({ item }) => (
-    <FavoritesTiles item={item} use={item.name === favorites.currentMix} />
+    <FavoritesTiles item={item} use={item.name === currentMix} />
   )
 
   const shadow = {
@@ -53,12 +45,12 @@ export const MixesScreen = () => {
     <View style={styles.container}>
       <LinearGradient style={{ height: '100%' }}>
         <View style={styles.screen}>
-          {favorites.favorites.length > 0 ? (
+          {favorites.length > 0 ? (
             <FlatList
               contentContainerStyle={styles.flatContainer}
               horizontal={false}
               style={styles.flat}
-              data={data}
+              data={favorites}
               renderItem={({ item }) => renderItem(item)}
               keyExtractor={item => item.id.toString()}
               ListFooterComponent={

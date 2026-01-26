@@ -85,6 +85,14 @@ export const serverData = {
         ENG: 'The password has been changed! The new password has been sent to the email address specified in the profile.',
         RUS: 'Пароль изменен! Новый пароль отправлен на почту, которая указана в профиле.',
       },
+      updateStatusSound: {
+        ENG: 'The audio status has been changed as read.',
+        RUS: 'Изменен статус звука как прочитанный.',
+      },
+      updateStatusSoundError: {
+        ENG: 'Error when changing the audio status as read.',
+        RUS: 'Ошибка при изменении статуса звука как прочитанный.',
+      },
     },
     notification: {
       addNotification: {

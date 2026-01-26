@@ -56,5 +56,17 @@ export const userRouter = (apiRouter: Router) => {
     roleMiddleware(['SUPERADMIN']),
     service.deleteRole,
   )
+  router.post(
+    '/updateStatusSound',
+    roleMiddleware(['ADMIN', 'SUPERADMIN', 'USER']),
+    service.updateStatusSound,
+  )
+
+  router.post(
+    '/updateStatusMusic',
+    roleMiddleware(['ADMIN', 'SUPERADMIN', 'USER']),
+    service.updateStatusMusic,
+  )
+
   apiRouter.use('/users', router)
 }

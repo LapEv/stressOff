@@ -2,24 +2,18 @@ import { Reducer } from 'react'
 import {
   IActionDB,
   IDBState,
-  IMUSICCategories,
-  IMUSICSDB,
+  ICategories,
   INOTIFICATIONS,
-  ISOUNDCategories,
-  ISOUNDSDB,
+  ISOUNDS,
 } from '../interfaces'
 import {
   ADD_SOUND_DB,
   ADD_MUSIC_DB,
   ADD_NOTIFICATIONS_DB,
-  LOAD_SOUND_FB,
-  LOAD_MUSIC_FB,
-  LOAD_SOUND_CATEGORIES_FB,
-  LOAD_MUSIC_CATEGORIES_FB,
-  LOAD_SOUND_DB,
-  LOAD_MUSIC_DB,
-  LOAD_SOUND_CATEGORIES_DB,
-  LOAD_MUSIC_CATEGORIES_DB,
+  LOAD_SOUND,
+  LOAD_MUSIC,
+  LOAD_SOUND_CATEGORIES,
+  LOAD_MUSIC_CATEGORIES,
   LOAD_NOTIFICATIONS_DB,
   UPDATE_SOUND_DB,
   UPDATE_MUSIC_DB,
@@ -47,12 +41,12 @@ export const DBReducer: Reducer<IDBState, IActionDB> = (
     case ADD_SOUND_DB:
       return {
         ...state,
-        sounds: [...state.sounds, { ...(action.payload as ISOUNDSDB) }],
+        sounds: [...state.sounds, { ...(action.payload as ISOUNDS) }],
       }
     case ADD_MUSIC_DB:
       return {
         ...state,
-        musics: [...state.musics, { ...(action.payload as IMUSICSDB) }],
+        musics: [...state.musics, { ...(action.payload as ISOUNDS) }],
       }
     case ADD_NOTIFICATIONS_DB:
       return {
@@ -62,50 +56,30 @@ export const DBReducer: Reducer<IDBState, IActionDB> = (
           { ...(action.payload as INOTIFICATIONS) },
         ],
       }
-    case LOAD_SOUND_FB:
+    case LOAD_SOUND_CATEGORIES:
       return {
         ...state,
-        sounds: action.payload as ISOUNDSDB[],
+        soundCategories: action.payload as ICategories[],
       }
-    case LOAD_MUSIC_FB:
+    case LOAD_MUSIC_CATEGORIES:
       return {
         ...state,
-        musics: action.payload as IMUSICSDB[],
-      }
-    case LOAD_SOUND_CATEGORIES_FB:
-      return {
-        ...state,
-        soundCategories: action.payload as ISOUNDCategories[],
-      }
-    case LOAD_MUSIC_CATEGORIES_FB:
-      return {
-        ...state,
-        musicCategories: action.payload as IMUSICCategories[],
+        musicCategories: action.payload as ICategories[],
       }
     case LOAD_NOTIFICATIONS_FB:
       return {
         ...state,
         notifications: action.payload as INOTIFICATIONS[],
       }
-    case LOAD_SOUND_DB:
+    case LOAD_SOUND:
       return {
         ...state,
-        sounds: action.payload as ISOUNDSDB[],
+        sounds: action.payload as ISOUNDS[],
       }
-    case LOAD_MUSIC_DB:
+    case LOAD_MUSIC:
       return {
         ...state,
-        musics: action.payload as IMUSICSDB[],
-      }
-    case LOAD_SOUND_CATEGORIES_DB:
-      return {
-        ...state,
-        soundCategories: action.payload as ISOUNDCategories[],
-      }
-    case LOAD_MUSIC_CATEGORIES_DB:
-      return {
-        ...state,
-        musicCategories: action.payload as IMUSICCategories[],
+        musics: action.payload as ISOUNDS[],
       }
     case LOAD_NOTIFICATIONS_DB:
       return {
@@ -114,7 +88,7 @@ export const DBReducer: Reducer<IDBState, IActionDB> = (
       }
     case UPDATE_SOUND_DB: {
       const dbSound = state.sounds.map(value => {
-        const newValue = action.payload as ISOUNDSDB
+        const newValue = action.payload as ISOUNDS
         if (value.name === newValue.name) {
           value.sound = newValue.sound
           value.location = newValue.location
@@ -128,7 +102,7 @@ export const DBReducer: Reducer<IDBState, IActionDB> = (
     }
     case UPDATE_MUSIC_DB: {
       const dbMusic = state.musics.map(value => {
-        const newValue = action.payload as IMUSICSDB
+        const newValue = action.payload as ISOUNDS
         if (value.name === newValue.name) {
           value.sound = newValue.sound
           value.location = newValue.location
@@ -144,7 +118,7 @@ export const DBReducer: Reducer<IDBState, IActionDB> = (
       const dbNotifications = state.notifications.map(value => {
         const newValue = action.payload as INOTIFICATIONS
         if (value.id === newValue.id) {
-          value.unread = false
+          value.unread = JSON.stringify(false)
         }
         return value
       })
@@ -154,7 +128,7 @@ export const DBReducer: Reducer<IDBState, IActionDB> = (
       }
     }
     case UPDATE_SOUND_STATUS_NEW: {
-      const { _id, newSound } = action.payload as ISOUNDSDB
+      const { _id, newSound } = action.payload as ISOUNDS
       return {
         ...state,
         sounds: state.sounds.map(item =>
@@ -163,7 +137,7 @@ export const DBReducer: Reducer<IDBState, IActionDB> = (
       }
     }
     case UPDATE_MUSIC_STATUS_NEW: {
-      const { _id, newSound } = action.payload as IMUSICSDB
+      const { _id, newSound } = action.payload as ISOUNDS
       return {
         ...state,
         sounds: state.musics.map(item =>
@@ -173,7 +147,7 @@ export const DBReducer: Reducer<IDBState, IActionDB> = (
     }
     case UPDATE_SOUND_BOOKED: {
       const dbStatusSoundsBooked = state.sounds.map(value => {
-        const newValue = action.payload as ISOUNDSDB
+        const newValue = action.payload as ISOUNDS
         if (value.id === newValue.id) {
           value.booked = newValue.booked
         }
@@ -186,7 +160,7 @@ export const DBReducer: Reducer<IDBState, IActionDB> = (
     }
     case UPDATE_MUSIC_BOOKED: {
       const dbStatusMusicsBooked = state.musics.map(value => {
-        const newValue = action.payload as IMUSICSDB
+        const newValue = action.payload as ISOUNDS
         if (value.id === newValue.id) {
           value.booked = newValue.booked
         }

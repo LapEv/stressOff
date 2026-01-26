@@ -4,7 +4,7 @@ import { authhost, host } from '.'
 import * as SecureStore from 'expo-secure-store'
 import store from '@/store'
 import { addToken } from '@/store/actions/token'
-import { IUser, IUserData } from '@/store/interfaces'
+import { IUser, IUserDataFB } from '@/store/interfaces'
 import { IRegistration } from './interfaces'
 
 export const registration = async (userData: IRegistration) => {
@@ -17,7 +17,7 @@ export const setAnonymousUser = async () => {
   const { data } = await host.post(api.SetAnonymousUser)
   await SecureStore.setItemAsync('token', data.token)
   store.dispatch(addToken(data.token))
-  return { user: data.user as IUserData, token: data.token }
+  return { user: data.user as IUserDataFB, token: data.token }
 }
 
 export const resetPassword = async (email: string) => {

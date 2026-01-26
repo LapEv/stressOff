@@ -4,10 +4,8 @@ import { ILocalizationOptions } from 'localization/interfaces'
 import { IActionLanguage } from '../interfaces'
 import { Reducer } from 'react'
 
-const initialState = LANGUAGE.RUS
-
 export const languageReducer: Reducer<ILocalizationOptions, IActionLanguage> = (
-  state = initialState,
+  state = LANGUAGE.RUS,
   action,
 ) => {
   switch (action.type) {

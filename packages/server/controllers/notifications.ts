@@ -11,6 +11,7 @@ export class notificatiosController {
       const newNotification = new Notification({ ...req.body, date, id })
       const result = await newNotification.save()
       const service = new userController()
+      // eslint-disable-next-line
       const addResult = await service.addNotificationForUsers(result as any)
       return res.json({
         message: serverData.APInotifications.notification.addNotification,
@@ -30,7 +31,6 @@ export class notificatiosController {
       const result = await Notification.updateOne({ id: id }, req.body)
       const service = new userController()
       const updateResult = await service.updateNotificationForUsers(req.body)
-      console.log('updateResult = ', updateResult)
       return res.json({
         message: serverData.APInotifications.notification.updateNotification,
         object: result,

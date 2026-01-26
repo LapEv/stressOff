@@ -1,11 +1,11 @@
-import { IAppData_ } from '@/store/interfaces'
+import { IAppData_, IAppDataFB_ } from '@/store/interfaces'
 import * as SQLite from 'expo-sqlite'
 
 export const createAppData = async ({
   language,
   theme,
   notificationsByEmail,
-}: IAppData_) => {
+}: IAppDataFB_) => {
   const db = await SQLite.openDatabaseAsync('stressOff')
   try {
     return await db.execAsync(`
@@ -25,7 +25,7 @@ export const createAppData = async ({
 export const getAppData = async () => {
   const db = await SQLite.openDatabaseAsync('stressOff')
   try {
-    return await db.getAllAsync('SELECT * FROM AppData')
+    return (await db.getAllAsync('SELECT * FROM AppData')) as IAppData_[]
   } catch (e) {
     console.log('getAppData error = ', e)
   } finally {

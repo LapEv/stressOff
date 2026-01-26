@@ -1,5 +1,5 @@
-import { IUpdateTheme } from '../interfaces'
+import { IChangeTheme } from '../interfaces'
 
 export interface themeActions {
-  UpdateTheme: (data: IUpdateTheme) => void
+  ChangeTheme: (data: IChangeTheme) => void
 }

@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { StyleSheet, Switch, useWindowDimensions } from 'react-native'
 import { ISettingsItems } from './interfaces'
 import Theme from '@/theme/Theme'
-import { RootState } from '@/store'
-import { IUser } from '@/store/interfaces'
-import { ChangeTheme } from '@/store/actions/theme'
 import { FileSizeToString, MusicsSizes, SoundSizes } from '@/functions'
-import { modalShow } from '@/store/actions/modal'
 import { Shadow, Text, Touchable, View } from '@/components'
 import { ArrowRightSVG } from '@/assets/icons/SVG'
-import { useLanguage, useModalMeessage, useTheme } from '@/hooks'
+import {
+  useLanguage,
+  useModal,
+  useModalMeessage,
+  useTheme,
+  useUser,
+} from '@/hooks'
 
 export const SettingItems = ({
   name,
@@ -19,15 +20,14 @@ export const SettingItems = ({
   settingItemsData,
 }: ISettingsItems) => {
   const [{ modalMessages }] = useLanguage()
-  const [theme, { UpdateTheme }] = useTheme()
+  const [theme, { ChangeTheme }] = useTheme()
   const [, { showModalMessage }] = useModalMeessage()
-  const user = useSelector<RootState>(state => state.user) as IUser
+  const [, { showModal }] = useModal()
+  const [{ _id }] = useUser()
   const width = useWindowDimensions().width
   const [isEnabled, setIsEnabled] = useState<boolean>(
     theme.nameTheme !== Theme.dark.nameTheme ? true : false,
   )
-
-  const dispatch = useDispatch()
 
   const toggleSwitch = () => {
     _key === 'Theme' ? changeThemeHandler() : null
@@ -37,8 +37,7 @@ export const SettingItems = ({
   const changeThemeHandler = async () => {
     const newTheme = isEnabled ? Theme.dark : Theme.light
     if (theme.nameTheme !== newTheme.nameTheme) {
-      dispatch(ChangeTheme(newTheme.nameTheme))
-      UpdateTheme({ newTheme, _id: user._id })
+      ChangeTheme({ newTheme, _id: _id })
     }
   }
 
@@ -57,7 +56,7 @@ export const SettingItems = ({
       showModalMessage(modalMessages.TotalSize)
     }
     if (_key === settingItemsData[1].data[1]._key) {
-      dispatch(modalShow(modalMessages.deleteAllFromDevice))
+      showModal(modalMessages.deleteAllFromDevice)
     }
     if (_key === settingItemsData[1].data[2]._key) {
       navigation.navigate('FeedBackScreen', { screen: 'FeedBackScreen' })

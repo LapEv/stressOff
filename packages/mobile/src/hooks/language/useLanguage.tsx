@@ -17,6 +17,9 @@ export function useLanguage(): [ILocalizationOptions, languageActions] {
         console.log('data = ', data)
         // dispatch(UpdateMusicsStatusDB({ _id, newSound }))
       },
+      ChangeLanguage() {
+        // dispatch(ChangeLanguage({ _id, newSound }))
+      },
     },
   ]
 }

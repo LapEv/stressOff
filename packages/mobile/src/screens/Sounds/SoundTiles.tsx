@@ -1,17 +1,21 @@
 import { dataApp } from '@/data/dataApp'
-import { RootState } from '@/store'
 import { UpdateSoundsBookedDB } from '@/store/actions/db'
-import { ISoundStateItems } from '@/store/interfaces'
 import React, { useEffect, useState } from 'react'
 import { ImageBackground, StyleSheet, useWindowDimensions } from 'react-native'
-import { useSelector } from 'react-redux'
 import { ISoundsTiles } from './interfaces'
 import { CheckFileSize, FileSizeToString } from '@/functions'
-import { modalShow } from '@/store/actions/modal'
 import { Shadow, Text, TextTitle, Touchable, View } from '@/components'
 import { icons } from '@/data/contentApp'
 import { BookedSVGNo, BookedSVGYes, Cloud, Mobile } from '@/assets/icons/SVG'
-import { useDB, useLanguage, useModalMeessage, useTheme } from '@/hooks'
+import {
+  useDB,
+  useLanguage,
+  useModal,
+  useModalMeessage,
+  usePlay,
+  useTheme,
+} from '@/hooks'
+import { useFavorite } from '@/hooks/favorite/useFavorite'
 
 export const SoundsTiles = ({
   id,
@@ -29,83 +33,55 @@ export const SoundsTiles = ({
   newSound,
 }: ISoundsTiles) => {
   const [, { UpdateSoundsStatusDB }] = useDB()
-  const [{ newSoundText, modalMessages }] = useLanguage()
+  const [{ playAll, soundsPlay }, { ToggleAllSound, AddSound, RemoveSound }] =
+    usePlay()
+  const [, { ChangeCurrentMixPlay }] = useFavorite()
+  const [{ newSoundText, modalMessages, currentMixLabel }] = useLanguage()
   const [{ bookedColor, CHECK_COLOR }] = useTheme()
   const [, { showModalMessage }] = useModalMeessage()
-  const soundStart = useSelector<RootState>(
-    state => state.sound.soundStart,
-  ) as boolean
-  const playAll = useSelector<RootState>(
-    state => state.sound.playAll,
-  ) as boolean
-  const playingDataSound = useSelector<RootState>(
-    state => state.sound.mixedSound,
-  ) as ISoundStateItems[]
+  const [, { showModal }] = useModal()
   const [playing, setPlaying] = useState(findUseSound)
-  const [disabled, setDisabled] = useState<boolean>(false)
   const width = useWindowDimensions().width
-  console.log('disabled = ', disabled)
 
   useEffect(() => {
     setPlaying(findUseSound)
-  }, [playingDataSound])
+  }, [soundsPlay.mixedSound])
 
-  useEffect(() => {
-    !soundStart ? setDisabled(false) : null
-    // console.log('Sound Tiles disabled = ', disabled)
-  }, [soundStart])
-
-  const addSound = async (id: string, _id: string, findUseSound: boolean) => {
-    if (playingDataSound.length + 1 >= dataApp.maxSounds) {
-      // dispatch(modalShowMessage(language.modalMessages.maxSounds))
+  const addSound = async () => {
+    if (soundsPlay.mixedSound.length + 1 >= dataApp.maxSounds) {
+      showModalMessage(modalMessages.maxSounds)
       return
     }
-    // updateStatusNewSounds(false, id, user.uid)
-    console.log('here findUseSound = ', findUseSound)
     UpdateSoundsStatusDB({ _id, newSound: false })
     // const check = location === 'device' ? await CheckFile(item) : true
     // check || location !== 'device'
-    //   ? !findUseSound
-    //     ? (setPlaying(previousState => !previousState),
-    //       dispatch(
-    //         ToggleAllSound({
-    //           playAll: true,
-    //         }),
-    //       ),
-    //       dispatch(
-    //         AddSound({
-    //           id: id,
-    //           playing: true,
-    //           volume: 1.0,
-    //           booked,
-    //         }),
-    //       ),
-    //       dispatch(
-    //         ChangeCurrentMixPlay({
-    //           name: language.Messages.currentMix,
-    //           id: 0,
-    //         }),
-    //       ),
-    //       setDisabled(true))
-    //     : (setPlaying(previousState => !previousState),
-    //       dispatch(
-    //         RemoveSound({
-    //           id: Number(id),
-    //         }),
-    //       ),
-    //       dispatch(
-    //         ChangeCurrentMixPlay({
-    //           name: language.Messages.currentMix,
-    //           id: 0,
-    //         }),
-    //       ))
+    //   ?
+    !findUseSound
+      ? (setPlaying(previousState => !previousState),
+        ToggleAllSound({ playAll: true }),
+        AddSound({
+          _id: _id,
+          playing: true,
+          volume: 1.0,
+          booked,
+        }),
+        ChangeCurrentMixPlay({
+          name: currentMixLabel,
+          _id,
+        }))
+      : (setPlaying(previousState => !previousState),
+        RemoveSound({ _id: _id }),
+        ChangeCurrentMixPlay({
+          name: currentMixLabel,
+          _id: '',
+        }))
     //   : ((language.modalMessages.error.message = `${language.Messages.fileNotFound} ${language.Messages.switchToCloud}`),
     //     // await updateSoundsLocation('cloud', id, '', user._id),
     //     dispatch(UpdateSoundsDB({ name: name, sound: '', location: 'cloud' })),
-    //     dispatch(modalShowMessage(language.modalMessages.error)))
+    //     showModal(language.modalMessages.error))
   }
 
-  const findPlaySound = playingDataSound.find(value => value.id === Number(id))
+  const findPlaySound = soundsPlay.mixedSound.find(value => value._id === _id)
   const playSound = findPlaySound ? findPlaySound.playing : undefined
 
   const OpenDescription = (description: string, title: string) => {
@@ -125,7 +101,7 @@ export const SoundsTiles = ({
     modalMessages.downloadFromCloud.name = name
     modalMessages.downloadFromCloud.category = globalCategory
     modalMessages.downloadFromCloud.id = id
-    dispatch(modalShow(modalMessages.downloadFromCloud))
+    showModal(modalMessages.downloadFromCloud)
   }
 
   const deleteFromDevice = async (
@@ -141,7 +117,7 @@ export const SoundsTiles = ({
     modalMessages.deleteFromDevice.name = name
     modalMessages.deleteFromDevice.id = id
     modalMessages.deleteFromDevice.category = globalCategory
-    dispatch(modalShow(modalMessages.deleteFromDevice))
+    showModal(modalMessages.deleteFromDevice)
   }
 
   const ToggleBookedSounds = async (id: string, booked: boolean) => {
@@ -156,7 +132,7 @@ export const SoundsTiles = ({
         ...styles.container,
         width: width / dataApp.FLATLIST.numberColumns,
       }}>
-      {JSON.parse(newSound) ? (
+      {newSound ? (
         <View style={styles.new}>
           <TextTitle type="title_14" colorType="check" style={styles.newText}>
             {newSoundText}
@@ -232,13 +208,11 @@ export const SoundsTiles = ({
       {playing && (
         <Touchable
           style={styles.touchContainer}
-          onPress={() => addSound(id, _id, findUseSound)}
+          onPress={addSound}
           onLongPress={() =>
             description.length > 0 ? OpenDescription(description, title) : null
           }>
-          <Shadow
-            style={{ ...styles.shadow, color: CHECK_COLOR }}
-            distance={55}>
+          <Shadow style={styles.shadow} startColor={CHECK_COLOR} distance={5}>
             <ImageBackground
               source={img}
               imageStyle={{
@@ -246,7 +220,7 @@ export const SoundsTiles = ({
                 resizeMode: 'stretch',
                 overflow: 'visible',
               }}
-              style={{ width: 55, height: 55 }}
+              style={{ width: 55, height: 55, zIndex: 3 }}
             />
           </Shadow>
         </Touchable>
@@ -254,7 +228,7 @@ export const SoundsTiles = ({
       {!playing && (
         <Touchable
           style={styles.touchContainer}
-          onPress={() => addSound(id, _id, findUseSound)}
+          onPress={addSound}
           onLongPress={() =>
             description.length > 0 ? OpenDescription(description, title) : null
           }>
@@ -289,11 +263,9 @@ const styles = StyleSheet.create({
   shadow: {
     width: 55,
     height: 55,
-    opacity: 0.8,
+    opacity: 1,
     borderRadius: 7,
-    zIndex: 2,
-    borderColor: 'red',
-    borderWidth: 1,
+    zIndex: 4,
   },
   touchContainer: {
     justifyContent: 'flex-start',

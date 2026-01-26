@@ -1,5 +1,5 @@
 import * as Network from 'expo-network'
-import { ICheckNetwork } from './interfaces'
+import { ICheckNetwork } from '../interfaces'
 
 export const checkNetwork = async ({ setIsConnected }: ICheckNetwork) => {
   const networkState = await Network.getNetworkStateAsync()
