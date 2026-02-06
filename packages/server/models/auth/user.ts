@@ -60,7 +60,9 @@ export interface IUser {
     name: string
     id: string
     imgStorage: string
+    img: string
     storage: string
+    sound: string
     location: string
     booked: boolean
     newSound: boolean
@@ -70,7 +72,9 @@ export interface IUser {
     name: string
     id: string
     imgStorage: string
+    img: string
     storage: string
+    sound: string
     location: string
     booked: boolean
     newSound: boolean
@@ -144,7 +148,9 @@ const Users = new Schema<IUser, UserModel>({
       name: { type: String, required: true },
       id: { type: String, required: true },
       imgStorage: { type: String },
+      img: { type: String },
       storage: { type: String },
+      sound: { type: String },
       location: { type: String, required: true },
       booked: { type: Boolean, required: true },
       newSound: { type: Boolean, default: false },
@@ -156,7 +162,9 @@ const Users = new Schema<IUser, UserModel>({
       name: { type: String, required: true },
       id: { type: String, required: true },
       imgStorage: { type: String },
+      img: { type: String },
       storage: { type: String },
+      sound: { type: String },
       location: { type: String, required: true },
       booked: { type: Boolean, required: true },
       newSound: { type: Boolean, default: false },

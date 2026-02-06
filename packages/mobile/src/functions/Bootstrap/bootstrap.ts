@@ -23,12 +23,6 @@ import { IntervalFeedback } from '@/store/actions/intervalFeedback'
 import { getPesonalData } from '@/db/personalData'
 import { createDataFromCloud } from './createDataFromCloud'
 import {
-  // delAppData,
-  // delDataMusics,
-  // delDataSounds,
-  // delMUSICS_Categories,
-  // delNotifications,
-  // delSOUNDS_Categories,
   getAppData,
   getDataMusics,
   getDataSounds,
@@ -69,12 +63,18 @@ export const bootstrap = async ({ isConnected, token, user }: IBootstrap) => {
     // Notifications.addNotificationResponseReceivedListener(
     //   _handleNotificationResponse,
     // )
+
     if (!isConnected && !token) {
       return {
         status: true,
-        newError: 'No Connected, no token',
+        newError: 'No Connected, no token!',
       }
     }
+
+    // await FileSystem.deleteAsync(
+    //   `${FileSystem.cacheDirectory}${dataApp.paths.main}`,
+    // )
+
     // await delDataSounds()
     // await delDataMusics()
     // await delSOUNDS_Categories()
@@ -89,6 +89,7 @@ export const bootstrap = async ({ isConnected, token, user }: IBootstrap) => {
 
     const personal = (await getPesonalData()) as IUser[]
     const appData = (await getAppData()) as IAppData_[]
+    console.log('personal = ', personal)
 
     // const update = await updateDataSound(
     //   'newSound',
@@ -142,10 +143,12 @@ export const bootstrap = async ({ isConnected, token, user }: IBootstrap) => {
       const musicCategoriesDB = (await getMUSICS_Categories()) as ICategories[]
       store.dispatch(LoadSoundCategories(soundCategoriesDB))
       store.dispatch(LoadMusicCategories(musicCategoriesDB))
+
       const soundDB = (await getDataSounds()) as ISOUNDS[]
       const musicDB = (await getDataMusics()) as ISOUNDS[]
       store.dispatch(LoadSound(soundDB))
       store.dispatch(LoadMusic(musicDB))
+
       const notifications = (await getNotifications()) as INOTIFICATIONS[]
       store.dispatch(LoadNotificationsFromFB(notifications))
       store.dispatch(addAppData(appData[0]))
@@ -165,16 +168,17 @@ export const bootstrap = async ({ isConnected, token, user }: IBootstrap) => {
         dataApp.STORAGE_KEYS.currentPlay,
       )) as string,
     ) as ICurrentPlay
+    console.log('currentPlay = ', currentPlay)
 
     if (currentPlay) {
-      currentPlay.sound.playAll = false
+      currentPlay.soundsPlay.playAll = false
       currentPlay.startApp = true
       currentPlay.startApp = true
-      currentPlay.sound
-        ? store.dispatch(AddFavoritesSound(currentPlay.sound))
+      currentPlay.soundsPlay
+        ? store.dispatch(AddFavoritesSound(currentPlay.soundsPlay))
         : null
-      currentPlay.music
-        ? store.dispatch(ChangeStateMusic(currentPlay.music))
+      currentPlay.musicPlay
+        ? store.dispatch(ChangeStateMusic(currentPlay.musicPlay))
         : null
       currentPlay.favorites
         ? store.dispatch(
@@ -204,7 +208,7 @@ export const bootstrap = async ({ isConnected, token, user }: IBootstrap) => {
       newError: '',
     }
   } catch (err) {
-    console.log('err = ', err)
+    console.log('Bootstrap err = ', err)
     const error = errorHandler(err as AxiosError)
     const language = 'RUS'
     return {

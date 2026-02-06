@@ -24,6 +24,7 @@ const initialState = {
     playing: false,
     volume: 1.0,
     musicStart: false,
+    img: '',
   },
   soundsPlay: {
     mixedSound: [],
@@ -31,6 +32,8 @@ const initialState = {
     playing: false,
     soundStart: false,
     volume: 0,
+    location: '',
+    storage: '',
   },
   playAll: true,
   startApp: true,
@@ -42,14 +45,6 @@ export const playReducer: Reducer<IPlayState, IPlayStateAction> = (
 ) => {
   switch (action.type) {
     case ADD_SOUND:
-      // const temp = {
-      //   ...state,
-      //   soundsPlay: {
-      //     ...state.soundsPlay,
-      //     mixedSound: [{ ...action.payload }, ...state.soundsPlay.mixedSound],
-      //   },
-      // }
-      // console.log('temp = ', temp)
       return {
         ...state,
         soundsPlay: {

@@ -75,7 +75,6 @@ export const favoritesReducer: Reducer<IFavorites, IActionFavorites> = (
     //   }
 
     case CHANGE_CURRENT_MIX_PLAY:
-      console.log('action = ', action.payload)
       return {
         ...state,
         currentMix: action.payload.name,

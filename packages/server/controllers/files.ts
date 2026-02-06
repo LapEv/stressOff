@@ -38,6 +38,27 @@ type FileValue = {
   file: string
 }
 
+export const downloadFile = async (_req: Request, res: Response) => {
+  try {
+    const filePath = `Files/${_req.path}`
+    if (fs.existsSync(filePath)) {
+      return res.download(filePath)
+    }
+    console.log('filePath  = ', filePath)
+    return res.status(400).json({
+      message: 'Error get File 400',
+    })
+  } catch (e) {
+    console.log('e = ', e)
+    const filePath = `Files/${_req.path}`
+    console.log('filePath  = ', filePath)
+
+    return res.status(400).json({
+      message: `Error get File': ${(e as Error).message}`,
+    })
+  }
+}
+
 export class fileController {
   uploadFile = async (_req: Request, res: Response) => {
     try {
@@ -87,9 +108,90 @@ export class fileController {
       const filePath = allFiles.find((value: FileValue) =>
         value.file.includes(name),
       ).file
-
       if (fs.existsSync(filePath)) {
         return res.download(filePath, name)
+      }
+      return res.status(400).json({
+        message: `${serverData.APInotifications.file.getFileError}`,
+      })
+    } catch (e) {
+      return res.status(400).json({
+        message: `${serverData.APInotifications.file.getFileError}: ${(e as Error).message}`,
+      })
+    }
+  }
+
+  getSoundImages = async (_req: Request, res: Response) => {
+    try {
+      const { fileName } = _req.body
+      const allFiles = await checkFiles(`${process.env.FILE_PATH}/img/Sounds`)
+      const filePath = allFiles.filter((value: FileValue) =>
+        value.file.includes(fileName),
+      )[0].file
+      if (fs.existsSync(filePath)) {
+        return res.download(filePath)
+      }
+      return res.status(400).json({
+        message: `${serverData.APInotifications.file.getFileError}`,
+      })
+    } catch (e) {
+      return res.status(400).json({
+        message: `${serverData.APInotifications.file.getFileError}: ${(e as Error).message}`,
+      })
+    }
+  }
+
+  getMusicImages = async (_req: Request, res: Response) => {
+    try {
+      const { fileName } = _req.body
+      const allFiles = await checkFiles(`${process.env.FILE_PATH}/img/Musics`)
+      const filePath = allFiles.filter((value: FileValue) =>
+        value.file.includes(fileName),
+      )[0].file
+      if (fs.existsSync(filePath)) {
+        return res.download(filePath)
+      }
+      return res.status(400).json({
+        message: `${serverData.APInotifications.file.getFileError}`,
+      })
+    } catch (e) {
+      return res.status(400).json({
+        message: `${serverData.APInotifications.file.getFileError}: ${(e as Error).message}`,
+      })
+    }
+  }
+
+  getSoundFile = async (_req: Request, res: Response) => {
+    try {
+      const { fileName } = _req.body
+      const allFiles = await checkFiles(
+        `${process.env.FILE_PATH}/sounds/Sounds`,
+      )
+      const filePath = allFiles.filter((value: FileValue) =>
+        value.file.includes(fileName),
+      )[0].file
+      if (fs.existsSync(filePath)) {
+        return res.download(filePath)
+      }
+      return res.status(400).json({
+        message: `${serverData.APInotifications.file.getFileError}`,
+      })
+    } catch (e) {
+      return res.status(400).json({
+        message: `${serverData.APInotifications.file.getFileError}: ${(e as Error).message}`,
+      })
+    }
+  }
+
+  getMusicFile = async (_req: Request, res: Response) => {
+    try {
+      const { fileName } = _req.body
+      const allFiles = await checkFiles(`${process.env.FILE_PATH}/sounds/Music`)
+      const filePath = allFiles.filter((value: FileValue) =>
+        value.file.includes(fileName),
+      )[0].file
+      if (fs.existsSync(filePath)) {
+        return res.download(filePath)
       }
       return res.status(400).json({
         message: `${serverData.APInotifications.file.getFileError}`,

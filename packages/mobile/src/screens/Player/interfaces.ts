@@ -53,8 +53,6 @@ export interface IMusicItems {
 
 export interface ISoundsItems {
   item: ISoundStateItems
-  booked?: boolean
-  id?: number
 }
 
 export interface URI {

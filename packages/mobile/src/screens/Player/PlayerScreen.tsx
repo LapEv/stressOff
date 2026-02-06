@@ -8,14 +8,13 @@ import { IFavorites } from '@/store/interfaces'
 import { CustomHeader } from '../components'
 import { Library } from './Library'
 import { PlayerContainer } from './PlayerContainer'
-import { ISoundsItems } from './interfaces'
 import { ToggleAllSound } from '@/store/actions/sounds'
 import { useDispatch } from 'react-redux'
 import { PlayerControlContainer } from './PlayerControl/PlayerControlContainer'
 import { CheckForFavoriteContent } from '../Favorites/functions/checkForFavoriteContent'
 import { MaterialTopTabNavigationEventMap } from '@react-navigation/material-top-tabs'
 import { NavigationHelpers, ParamListBase } from '@react-navigation/native'
-import { useLanguage, useTheme } from '@/hooks'
+import { useLanguage, usePlay, useTheme } from '@/hooks'
 
 type Props = {
   navigation: NavigationHelpers<ParamListBase, MaterialTopTabNavigationEventMap>
@@ -25,20 +24,12 @@ export const PlayerScreen = ({ navigation }: Props) => {
   const width = useWindowDimensions().width
   const [{ headerTitle }] = useLanguage()
   const [{ ITEM_COLOR }] = useTheme()
-  const playingMusicId = useSelector<RootState>(
-    state => state.music.id,
-  ) as number
+  const [{ playAll, soundsPlay, musicPlay }] = usePlay()
   const faves = useSelector<RootState>(state => state.favorites) as IFavorites
-  const playingDataSound = useSelector<RootState>(
-    state => state.sound.mixedSound,
-  ) as ISoundsItems[]
-  const playSoundsAll = useSelector<RootState>(
-    state => state.sound.playAll,
-  ) as boolean
   const needStopPlay = useSelector<RootState>(
     state => state.timer.needStopPlay,
   ) as boolean
-  const [play, setPlay] = useState<boolean>(playSoundsAll)
+  const [play, setPlay] = useState<boolean>(playAll)
   const [disabledControl, setDisabledControl] = useState<boolean>(true)
   const [favorite, setFavorite] = useState<boolean>(
     CheckForFavoriteContent() ? true : false,
@@ -58,13 +49,13 @@ export const PlayerScreen = ({ navigation }: Props) => {
   useEffect(() => {
     const result = CheckForFavoriteContent()
     result ? setFavorite(true) : setFavorite(false)
-    playingDataSound.length
-      ? (playSoundsAll ? setStatusPlay(true) : setPlay(false),
+    soundsPlay.mixedSound.length
+      ? (playAll ? setStatusPlay(true) : setPlay(false),
         setDisabledControl(false))
-      : playingMusicId > 0
+      : musicPlay._id
         ? setDisabledControl(false)
         : (setDisabledControl(true), setStatusPlay(false))
-  }, [playingDataSound])
+  }, [soundsPlay.mixedSound])
 
   useEffect(() => {
     if (needStopPlay) {

@@ -19,11 +19,12 @@ export const SoundsScreen = ({ route }: ISoundsScreenProps) => {
   })
 
   const scroll = () => {
-    // if (route.params && route.params.scrollToEnd) {
-    if (route?.params) {
+    if (route?.params && route.params.scrollToEnd) {
+      // if (route?.params) {
       setTimeout(() => {
         flatlistRef.current?.scrollToEnd({ animated: true })
-        // route.params?.scrollToEnd = false
+        // route.params.scrollToEnd = false
+        // Object.defineProperty(route.params, 'scrollToEnd', false)
       }, 1000)
     }
   }
@@ -31,7 +32,6 @@ export const SoundsScreen = ({ route }: ISoundsScreenProps) => {
   const renderItem = ({
     id,
     _id,
-    sound,
     title,
     description,
     location,
@@ -40,21 +40,23 @@ export const SoundsScreen = ({ route }: ISoundsScreenProps) => {
     booked,
     globalCategory,
     newSound,
+    img,
   }: ISOUNDS) => {
     const findUseSound = play.soundsPlay.mixedSound.findIndex(
       value => value._id === _id,
     )
     const _description = JSON.parse(description)[nameLanguage]
-    const _title = JSON.parse(title)[nameLanguage]
-    const img = DATA_SOUNDS.find(item => item.name === name)?.img
+    const data = DATA_SOUNDS.find(item => item.name === name)
+    // const img = data?.img
+    const _sound = data?.sound
     return (
       <SoundsTiles
         id={id}
         _id={_id}
         findUseSound={findUseSound < 0 ? false : true}
-        item={sound}
+        item={_sound}
         img={img}
-        title={_title}
+        title={JSON.parse(title)}
         description={_description}
         location={location}
         storage={storage}

@@ -1,8 +1,6 @@
 import { Shadow, Touchable, ViewStyle } from '@/components'
 import { ImageBackground, StyleSheet } from 'react-native'
-import { IPlayerFavorites, ISoundsItems } from '../interfaces'
-import { RootState } from '@/store'
-import { useSelector } from 'react-redux'
+import { IPlayerFavorites } from '../interfaces'
 import { HeartSVG, HeartSVGYes } from '@/assets/icons/SVG'
 import { useEffect } from 'react'
 import { dataApp } from '@/data/dataApp'
@@ -19,6 +17,7 @@ import {
   useLanguage,
   useModal,
   useModalMeessage,
+  usePlay,
   useTheme,
 } from '@/hooks'
 
@@ -33,14 +32,7 @@ export const PlayerFavorites = ({
   const [, { showModalMessage }] = useModalMeessage()
   const [, { showModal }] = useModal()
   const [favorites] = useFavorite()
-  const playingMusicId = useSelector<RootState>(
-    state => state.music.id,
-  ) as number
-  const playingDataSound = useSelector<RootState>(
-    state => state.sound.mixedSound,
-  ) as ISoundsItems[]
-
-  // const dispatch = useDispatch()
+  const [{ soundsPlay, musicPlay }] = usePlay()
 
   const AddFavoriteMix = () => {
     const result = CheckForFavoriteContent()
@@ -66,8 +58,8 @@ export const PlayerFavorites = ({
       return
     }
     if (
-      (playingMusicId > 0 && playingDataSound.length >= 1) ||
-      playingDataSound.length > 1
+      (musicPlay._id && soundsPlay.mixedSound.length >= 1) ||
+      soundsPlay.mixedSound.length > 1
     ) {
       !favorite
         ? AddFavoriteMix()
@@ -83,8 +75,8 @@ export const PlayerFavorites = ({
 
   const setAsyncStorageCurrentPlay = () => {
     const value = {
-      sound: StateSound,
-      music: StateMusic,
+      soundsPlay,
+      musicPlay,
       favorites: {
         currentMix: favorites.currentMix,
         currentId: favorites.currentId,
@@ -133,8 +125,8 @@ export const PlayerFavorites = ({
               style={styles.imgStyle}
             />
           </ViewStyle>
-        ) : (playingMusicId > 0 && playingDataSound.length >= 1) ||
-          playingDataSound.length > 1 ? (
+        ) : (musicPlay._id && soundsPlay.mixedSound.length >= 1) ||
+          soundsPlay.mixedSound.length > 1 ? (
           !favorite ? (
             <ViewStyle style={styles.viewSVG}>
               <HeartSVG width="100%" height="100%" fill={ITEM_COLOR} />

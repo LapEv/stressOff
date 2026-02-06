@@ -1,12 +1,12 @@
-import Constants from 'expo-constants'
 import axios, { InternalAxiosRequestConfig } from 'axios'
 import * as SecureStore from 'expo-secure-store'
 import store from '@/store'
 import { addError } from '@/store/actions/error'
+import Constants from 'expo-constants'
 
 const dev = Constants.expoGoConfig.packagerOpts.dev
 const url = dev
-  ? `http://192.168.1.77:${process.env.EXPO_PUBLIC_SERVER_PORT}/api`
+  ? `http://192.168.1.67:${process.env.EXPO_PUBLIC_SERVER_PORT}/api`
   : `https://${process.env.EXPO_PUBLIC_SERVER_HOST}:${process.env.EXPO_PUBLIC_SERVER_PORT}/api`
 
 const authhost = axios.create({

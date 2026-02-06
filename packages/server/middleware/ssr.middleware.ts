@@ -7,7 +7,7 @@ import createEmotionServer from '@emotion/server/create-instance'
 import createCache from '@emotion/cache'
 
 async function ssrMiddleware(req: Request, res: Response, next: NextFunction) {
-  if (req.url.startsWith('/api')) {
+  if (req.url.startsWith('/api') || req.url.startsWith('/Files')) {
     next()
     return
   }

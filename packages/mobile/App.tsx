@@ -6,7 +6,8 @@ import { Loading, NoInternet } from 'screens'
 import { checkNetwork, checkUnsentData, bootstrap } from '@/functions'
 import * as SecureStore from 'expo-secure-store'
 import { IBootstrapResult } from '@/functions/interfaces'
-import { changeConnect } from '@/store/actions/connect'
+import { changeConnect, changePathServer } from '@/store/actions/connect'
+import Constants from 'expo-constants'
 
 export default function App() {
   const [isReady, setIsReady] = useState<boolean>(false)
@@ -34,6 +35,12 @@ export default function App() {
 
   useEffect(() => {
     checkInternet()
+    const dev = Constants.expoGoConfig.packagerOpts.dev
+    const url = dev
+      ? `http://192.168.1.67:${process.env.EXPO_PUBLIC_SERVER_PORT}`
+      : `https://${process.env.EXPO_PUBLIC_SERVER_HOST}:${process.env.EXPO_PUBLIC_SERVER_PORT}`
+    console.log('url = ', url)
+    store.dispatch(changePathServer(url))
   }, [])
 
   useEffect(() => {

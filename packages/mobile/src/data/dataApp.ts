@@ -15,6 +15,21 @@ export const dataApp = {
     'ua',
   ],
   maxSounds: 10,
+  paths: {
+    main: 'stressOff',
+    imgs: 'img',
+    sounds: 'sounds',
+    img: {
+      categoriesSounds: 'img/soundsCategory',
+      categoriesMusics: 'img/musicsCategory',
+      sounds: 'img/sounds',
+      musics: 'img/musics',
+    },
+    sound: {
+      sounds: 'sounds/sounds',
+      musics: 'sounds/musics',
+    },
+  },
   db: {
     sounds: 'DATA_SOUNDS',
     musics: 'DATA_MUSICS',

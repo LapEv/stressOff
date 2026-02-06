@@ -22,9 +22,7 @@ export const PlayerContainer = ({ navigation }: IPlayerContainer) => {
         horizontal={false}
         style={{ width: '100%', height: '100%' }}
         data={soundsPlay.mixedSound}
-        renderItem={({ item }) => (
-          <SoundItems item={item} booked={item.booked} />
-        )}
+        renderItem={({ item }) => <SoundItems item={item} />}
         keyExtractor={item => item._id}
       />
     </View>

@@ -21,6 +21,7 @@ import { languageReducer } from './reducers/language'
 import { errorReducer } from './reducers/error'
 import {
   IAppData_,
+  IConnect,
   IDBState,
   IError,
   IFavorites,
@@ -99,6 +100,6 @@ export type RootState = {
 } & {
   appData: IAppData_
 } & {
-  connect: boolean
+  connect: IConnect
 }
 export default createStore(rootReducer, applyMiddleware(thunk))

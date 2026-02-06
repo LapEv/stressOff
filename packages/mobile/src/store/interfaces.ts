@@ -1,6 +1,11 @@
 import { ICategoryFavorites } from 'localization/interfaces'
+import { ImageSourcePropType } from 'react-native'
 import { IConstantsTheme } from 'theme/interfaces'
 
+export interface ILanguageObject {
+  RUS: string
+  ENG: string
+}
 export interface IActionFavorites {
   type: string
   payload: IFavoritesContent
@@ -57,6 +62,7 @@ export interface IMusicState {
   playing: boolean
   volume: number
   musicStart: boolean
+  img: ImageSourcePropType
 }
 
 // export interface IActionMusicState {
@@ -92,6 +98,10 @@ export interface ISoundStateItems {
   volume: number
   booked: boolean
   soundStart?: boolean
+  img: ImageSourcePropType
+  location: string
+  storage: string
+  title: ILanguageObject
 }
 
 export interface ISoundStateItemsAction {
@@ -101,6 +111,10 @@ export interface ISoundStateItemsAction {
   volume?: number
   booked?: boolean
   soundStart?: boolean
+  img?: ImageSourcePropType
+  location?: string
+  storage?: string
+  title?: ILanguageObject
 }
 
 export interface IPlayAll {
@@ -141,14 +155,8 @@ export interface ISOUNDSFB {
   imgStorage: string
   location: string
   payment: boolean
-  category: {
-    RUS: string
-    ENG: string
-  }
-  title: {
-    RUS: string
-    ENG: string
-  }
+  category: ILanguageObject
+  title: ILanguageObject
   description: string
   newSound: boolean
 }
@@ -165,18 +173,9 @@ export interface IUpdateSOUNDS {
   imgStorage?: string
   location?: string
   payment?: boolean
-  category?: {
-    RUS: string
-    ENG: string
-  }
-  title?: {
-    RUS: string
-    ENG: string
-  }
-  description?: {
-    RUS: string
-    ENG: string
-  }
+  category?: ILanguageObject
+  title?: ILanguageObject
+  description?: ILanguageObject
   new?: boolean
 }
 
@@ -197,10 +196,7 @@ export interface ICategoriesFB {
   _id: string
   id: string
   globalCategory: string
-  title: {
-    RUS: string
-    ENG: string
-  }
+  title: ILanguageObject
   img: string
   imgStorage: string
   img_lt: string
@@ -211,19 +207,13 @@ export interface ICategoriesFB {
 export interface INOTIFICATIONSFB {
   _id: string
   anonymousUsers: boolean
-  body: {
-    RUS: string
-    ENG: string
-  }
+  body: ILanguageObject
   date: Date
   id: string
   img: string
   name: string
   push: boolean
-  title: {
-    RUS: string
-    ENG: string
-  }
+  title: ILanguageObject
   unread: boolean
   premiumUsers: boolean
   globalCategory: string
@@ -337,7 +327,7 @@ export interface IAppDataFB_ {
 export interface IAppData_ {
   language: string
   theme: string
-  notificationsByEmail: string
+  notificationsByEmail: INotificationsByEmail
 }
 
 export interface INotificationsByEmail {
@@ -491,12 +481,13 @@ export interface IActionToken {
 }
 
 export interface IConnect {
-  connect: boolean
+  isConnected: boolean
+  pathServer: string
 }
 
 export interface IActionConnect {
   type: string
-  payload: boolean
+  payload: boolean & string
 }
 
 export interface IUnsentData {

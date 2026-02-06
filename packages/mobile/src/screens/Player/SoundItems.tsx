@@ -35,19 +35,20 @@ import {
 } from '@/hooks'
 // import { SlideButton, SlideDirection } from 'react-native-slide-button';
 
-export const SoundItems = ({ item, booked }: ISoundsItems) => {
+export const SoundItems = ({ item }: ISoundsItems) => {
   const [{ modalMessages, Messages, nameLanguage }] = useLanguage()
   const [{ sounds }] = useDB()
   const [theme] = useTheme()
   const [, { showModalMessage }] = useModalMeessage()
-  const width = useWindowDimensions().width
   const [{ playAll, soundsPlay }] = usePlay()
 
   const [volume, setVolumeState] = useState<number>(item.volume)
   // eslint-disable-next-line
   const [sound, setSound] = useState<any>()
+  const width = useWindowDimensions().width
 
   const dispatch = useDispatch()
+
   const playSound = async (item: URI) => {
     await Audio.setAudioModeAsync({
       playsInSilentModeIOS: true,
@@ -73,20 +74,20 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
     status ? await sound.playAsync() : await sound.pauseAsync()
   }
 
-  const setVolume = async (id: number, value: number) => {
+  const setVolume = async (id: string, value: number) => {
     await sound.setVolumeAsync(value)
     dispatch(
       ToggleSoundVolume({
-        id: id,
+        _id: _id,
         volume: value,
       }),
     )
   }
 
-  const changePlayStatusSound = (id: number) => {
+  const changePlayStatusSound = (_id: string) => {
     dispatch(
       TogglePlaySound({
-        id: id,
+        _id: _id,
       }),
     )
     playAll && sound
@@ -96,10 +97,10 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
       : null
   }
 
-  const removeSound = (id: number) => {
+  const removeSound = (_id: string) => {
     dispatch(
       RemoveSound({
-        id: id,
+        _id: _id,
       }),
     )
     dispatch(
@@ -122,16 +123,17 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
       : null
   }, [playAll])
 
+  console.log('item = ', item)
+
   useEffect(() => {
-    sounds[item.id - 1].location === 'device' ||
-    sounds[item.id - 1].location === 'app'
-      ? playSound({ uri: sounds[item.id - 1].sound })
-      : GetImage(sounds[item.id - 1].storage)
+    item.location === 'device' || item.location === 'app'
+      ? playSound({ uri: item.storage })
+      : GetImage(item.storage)
           .then(url => {
             playSound({ uri: url as string })
           })
           .catch(error => {
-            removeSound(item.id)
+            removeSound(item._id)
             modalMessages.error.message = `${error.code}\n${error}`
             showModalMessage(modalMessages.error)
           })
@@ -198,13 +200,15 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
     },
   }
 
-  const ToggleBookedSounds = async (id: number, booked: boolean) => {
-    console.log('id = ', id)
+  const ToggleBookedSounds = async (_id: string, booked: boolean) => {
+    console.log('_id = ', _id)
     console.log('booked = ', booked)
     // await updateStatusSoundsBooked(!booked, id, user.uid)
     // dispatch(UpdateSoundsBookedDB({ id: id, booked: !booked }))
     // dispatch(ToggleBookedSound({ id: id, booked: !booked }))
   }
+
+  console.log('sounds = ', sounds[0])
 
   return (
     <View style={styles.containerItem}>
@@ -232,13 +236,13 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
                   : theme.borderColorRGBA,
               }}>
               <ImageBackground
-                source={{ uri: sounds[item.id - 1].img }}
+                source={item.img}
                 imageStyle={{ borderRadius: 5 }}
                 style={[styles.image, { opacity: playAll ? 1 : 0.5 }]}
               />
               <View style={{ ...styles.viewImage, width: width * 0.5 }}>
                 <Text type="text_14" style={styles.textMessages}>
-                  {JSON.parse(sounds[item.id - 1].title)[nameLanguage]}
+                  {item.title[nameLanguage as keyof typeof item.title]}
                 </Text>
                 <Slider
                   style={{ width: '100%', height: 30 }}
@@ -250,14 +254,14 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
                   value={volume}
                   onValueChange={setVolumeState}
                   onSlidingComplete={value => {
-                    setVolume(item.id, value)
+                    setVolume(item._id, value)
                   }}
                 />
               </View>
               <View style={{ opacity: item.playing ? 1 : 0.5 }}>
                 <Touchable
                   style={styles.touchablePlaying}
-                  onPress={() => changePlayStatusSound(item.id)}>
+                  onPress={() => changePlayStatusSound(item._id)}>
                   <CheckSVG
                     width="100%"
                     height="100%"
@@ -266,8 +270,10 @@ export const SoundItems = ({ item, booked }: ISoundsItems) => {
                 </Touchable>
               </View>
               <Touchable
-                onPress={() => ToggleBookedSounds(item.id, booked as boolean)}>
-                {booked ? (
+                onPress={() =>
+                  ToggleBookedSounds(item._id, item.booked as boolean)
+                }>
+                {item.booked ? (
                   <View style={styles.viewBooked}>
                     <BookedSVGYes
                       width="100%"

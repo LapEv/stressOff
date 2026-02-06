@@ -1,8 +1,9 @@
 import { ISoundStateItems, IUser } from '@/store/interfaces'
+import { ImageSourcePropType } from 'react-native'
 
 export interface ICurrentPlay {
-  sound: ICurrentPlaySound
-  music: ICurrentPlayMusic
+  soundsPlay: ICurrentPlaySound
+  musicPlay: ICurrentPlayMusic
   favorites: ICurrentPlayFavorites
   startApp: boolean
 }
@@ -23,6 +24,7 @@ export interface ICurrentPlayMusic {
   playing: boolean
   volume: number
   musicStart: boolean
+  img: ImageSourcePropType
 }
 
 export interface ICurrentPlayFavorites {
@@ -39,4 +41,10 @@ export interface IBootstrap {
   isConnected?: boolean
   token?: string | null
   user?: IUser | undefined
+}
+
+export interface IDownLoadFiles {
+  type: string
+  category: string
+  storage: string
 }

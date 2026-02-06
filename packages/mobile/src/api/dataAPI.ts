@@ -1,20 +1,54 @@
-import { authhost } from '.'
+import { authFileHost, authhost } from '.'
 import { api } from './api'
-import { IObject, IUpdateStatusSound } from './interfaces'
+import { IUpdateStatusSound } from './interfaces'
 
 export const getData = async (API: string) => {
   const { data } = await authhost.get(API)
   return data
 }
 
-export const getFile = async (object: IObject) => {
-  const response = await authhost.post(api.GET_FILE, object, {
-    responseType: 'blob',
-  })
-  return {
-    data: window.URL.createObjectURL(new Blob([response.data])),
-    info: response.data,
-  }
+export const getSoundImages = async (fileName: string) => {
+  const response = await authFileHost.post(
+    api.GET_SOUNDIMAGE_FILE,
+    { fileName },
+    {
+      responseType: 'blob',
+    },
+  )
+  return response
+}
+
+export const getMusicImages = async (fileName: string) => {
+  const response = await authFileHost.post(
+    api.GET_MUSICIMAGE_FILE,
+    { fileName },
+    {
+      responseType: 'blob',
+    },
+  )
+  return response
+}
+
+export const getSoundFile = async (fileName: string) => {
+  const response = await authFileHost.post(
+    api.GET_SOUND_FILE,
+    { fileName },
+    {
+      responseType: 'blob',
+    },
+  )
+  return response
+}
+
+export const getMusicFile = async (fileName: string) => {
+  const response = await authFileHost.post(
+    api.GET_MUSIC_FILE,
+    { fileName },
+    {
+      responseType: 'blob',
+    },
+  )
+  return response
 }
 
 export const updateStatusSound = async ({

@@ -34,6 +34,7 @@ import {
   ISOUNDSFB,
   IUserDataFB,
 } from '@/store/interfaces'
+import { downLoadImages, downLoadSounds } from '../Files/downloadFiles'
 
 export const createDataFromCloud = async (userData: IUserDataFB) => {
   try {
@@ -63,21 +64,50 @@ export const createDataFromCloud = async (userData: IUserDataFB) => {
     store.dispatch(LoadMusicCategories(music_categories))
 
     const soundsFB = (await getData(api.GET_DATA_SOUNDS)) as ISOUNDSFB[]
-    const soundsFB_ = soundsFB.map((item, index) => {
-      const { _id, payment, booked, newSound, location } =
-        userData.DATA_SOUNDS[index]
-      return { ...item, _id, payment, booked, newSound, location }
-    }) as ISOUNDSFB[]
+    const soundsFB_ = await Promise.all(
+      soundsFB.map(async (item, index) => {
+        const { _id, payment, booked, newSound, location } =
+          userData.DATA_SOUNDS[index]
+        const img = (await downLoadImages({
+          type: 'Sounds',
+          category: item.category.ENG,
+          storage: item.imgStorage,
+        })) as string
+        const sound = (await downLoadSounds({
+          type: 'Sounds',
+          category: item.category.ENG,
+          storage: item.storage,
+        })) as string
+        return { ...item, _id, payment, booked, newSound, location, img, sound }
+      }),
+    )
+    console.log('soundsFB_ = ', soundsFB_)
+    soundsFB_.sort((a, b) => parseFloat(a.id) - parseFloat(b.id))
     await createDataSounds(soundsFB_)
     const soundDB = (await getDataSounds()) as ISOUNDS[]
     store.dispatch(LoadSound(soundDB))
 
     const musicsFB = (await getData(api.GET_DATA_MUSICS)) as ISOUNDSFB[]
-    const musicsFB_ = musicsFB.map((item, index) => {
-      const { _id, payment, booked, newSound, location } =
-        userData.DATA_MUSICS[index]
-      return { ...item, _id, payment, booked, newSound, location }
-    }) as ISOUNDSFB[]
+    const musicsFB_ = (await Promise.all(
+      musicsFB.map(async (item, index) => {
+        const { _id, payment, booked, newSound, location } =
+          userData.DATA_MUSICS[index]
+        const img = (await downLoadImages({
+          type: 'Musics',
+          category: item.category.ENG,
+          storage: item.imgStorage,
+        })) as string
+        const sound = (await downLoadSounds({
+          type: 'Musics',
+          category: item.category.ENG,
+          storage: item.storage,
+        })) as string
+        return { ...item, _id, payment, booked, newSound, location, img, sound }
+      }),
+    )) as ISOUNDSFB[]
+    console.log('musicsFB_ = ', musicsFB_)
+    musicsFB_.sort((a, b) => parseFloat(a.id) - parseFloat(b.id))
+
     await createDataMusics(musicsFB_)
     const musicDB = (await getDataMusics()) as ISOUNDS[]
     store.dispatch(LoadMusic(musicDB))

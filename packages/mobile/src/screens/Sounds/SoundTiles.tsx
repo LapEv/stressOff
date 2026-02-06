@@ -3,7 +3,7 @@ import { UpdateSoundsBookedDB } from '@/store/actions/db'
 import React, { useEffect, useState } from 'react'
 import { ImageBackground, StyleSheet, useWindowDimensions } from 'react-native'
 import { ISoundsTiles } from './interfaces'
-import { CheckFileSize, FileSizeToString } from '@/functions'
+import { CheckFile, CheckFileSize, FileSizeToString } from '@/functions'
 import { Shadow, Text, TextTitle, Touchable, View } from '@/components'
 import { icons } from '@/data/contentApp'
 import { BookedSVGNo, BookedSVGYes, Cloud, Mobile } from '@/assets/icons/SVG'
@@ -36,7 +36,9 @@ export const SoundsTiles = ({
   const [{ playAll, soundsPlay }, { ToggleAllSound, AddSound, RemoveSound }] =
     usePlay()
   const [, { ChangeCurrentMixPlay }] = useFavorite()
-  const [{ newSoundText, modalMessages, currentMixLabel }] = useLanguage()
+  const [
+    { newSoundText, modalMessages, Messages, currentMixLabel, nameLanguage },
+  ] = useLanguage()
   const [{ bookedColor, CHECK_COLOR }] = useTheme()
   const [, { showModalMessage }] = useModalMeessage()
   const [, { showModal }] = useModal()
@@ -53,9 +55,23 @@ export const SoundsTiles = ({
       return
     }
     UpdateSoundsStatusDB({ _id, newSound: false })
-    // const check = location === 'device' ? await CheckFile(item) : true
-    // check || location !== 'device'
-    //   ?
+    const check =
+      location === 'device' || location === 'app' ? await CheckFile(item) : true
+    console.log('check = ', check)
+    console.log('findUseSound = ', findUseSound)
+    console.log('img = ', img)
+    console.log('storage = ', storage)
+    console.log('item  = ', item)
+    console.log('location = ', location)
+
+    if (!check) {
+      modalMessages.error.message = `${Messages.fileNotFound} ${Messages.switchToCloud}`
+      // await updateSoundsLocation('cloud', id, '', user._id),
+      dispatch(UpdateSoundsDB({ name: name, sound: '', location: 'cloud' }))
+      showModal(modalMessages.error)
+      return
+    }
+
     !findUseSound
       ? (setPlaying(previousState => !previousState),
         ToggleAllSound({ playAll: true }),
@@ -64,21 +80,23 @@ export const SoundsTiles = ({
           playing: true,
           volume: 1.0,
           booked,
+          img,
+          location,
+          storage,
+          title,
         }),
+        console.log('Не понимаю зачем здесь ChangeCurrentMixPlay'),
         ChangeCurrentMixPlay({
           name: currentMixLabel,
           _id,
         }))
       : (setPlaying(previousState => !previousState),
         RemoveSound({ _id: _id }),
+        console.log('Не понимаю зачем здесь ChangeCurrentMixPlay'),
         ChangeCurrentMixPlay({
           name: currentMixLabel,
           _id: '',
         }))
-    //   : ((language.modalMessages.error.message = `${language.Messages.fileNotFound} ${language.Messages.switchToCloud}`),
-    //     // await updateSoundsLocation('cloud', id, '', user._id),
-    //     dispatch(UpdateSoundsDB({ name: name, sound: '', location: 'cloud' })),
-    //     showModal(language.modalMessages.error))
   }
 
   const findPlaySound = soundsPlay.mixedSound.find(value => value._id === _id)
@@ -210,11 +228,16 @@ export const SoundsTiles = ({
           style={styles.touchContainer}
           onPress={addSound}
           onLongPress={() =>
-            description.length > 0 ? OpenDescription(description, title) : null
+            description.length > 0
+              ? OpenDescription(
+                  description,
+                  title[nameLanguage as keyof typeof title],
+                )
+              : null
           }>
           <Shadow style={styles.shadow} startColor={CHECK_COLOR} distance={5}>
             <ImageBackground
-              source={img}
+              source={{ uri: img }}
               imageStyle={{
                 borderRadius: 5,
                 resizeMode: 'stretch',
@@ -230,10 +253,15 @@ export const SoundsTiles = ({
           style={styles.touchContainer}
           onPress={addSound}
           onLongPress={() =>
-            description.length > 0 ? OpenDescription(description, title) : null
+            description.length > 0
+              ? OpenDescription(
+                  description,
+                  title[nameLanguage as keyof typeof title],
+                )
+              : null
           }>
           <ImageBackground
-            source={img}
+            source={{ uri: img }}
             imageStyle={{
               borderRadius: 5,
               resizeMode: 'stretch',
@@ -244,7 +272,7 @@ export const SoundsTiles = ({
         </Touchable>
       )}
       <Text type="text_14" style={styles.title}>
-        {title}
+        {title[nameLanguage as keyof typeof title]}
       </Text>
     </View>
   )

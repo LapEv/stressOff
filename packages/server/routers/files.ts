@@ -31,5 +31,27 @@ export const fileRouter = (apiRouter: Router) => {
     service.createFolder,
   )
 
+  router.post(
+    '/getSoundImages',
+    roleMiddleware(['ADMIN', 'SUPERADMIN', 'USER']),
+    service.getSoundImages,
+  )
+  router.post(
+    '/getMusicImages',
+    roleMiddleware(['ADMIN', 'SUPERADMIN', 'USER']),
+    service.getMusicImages,
+  )
+
+  router.post(
+    '/getSoundFile',
+    roleMiddleware(['ADMIN', 'SUPERADMIN', 'USER']),
+    service.getSoundFile,
+  )
+  router.post(
+    '/getMusicFile',
+    roleMiddleware(['ADMIN', 'SUPERADMIN', 'USER']),
+    service.getMusicFile,
+  )
+
   apiRouter.use('/files', router)
 }

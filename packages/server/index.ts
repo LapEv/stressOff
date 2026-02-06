@@ -7,6 +7,8 @@ import { apiRouter } from './routers/index.router'
 import { isDev, srcPath } from './data/app'
 import staticMiddleware from './middleware/static.middleware'
 import ssrMiddleware from './middleware/ssr.middleware'
+import { downloadFile } from './controllers/files'
+import { authMiddleware } from './middleware/authMiddleware'
 const fileUpload = require('express-fileupload')
 const socket = require('./utils/socket')
 
@@ -47,7 +49,6 @@ async function init() {
     optionSuccessStatus: 200,
   }
   app.use(cors(corsOptions))
-  app.use(express.json())
 
   app.use('/api', apiRouter)
 
@@ -63,6 +64,7 @@ async function init() {
 
   app.use('/assets', staticMiddleware())
   app.use(ssrMiddleware)
+  app.use('/Files', authMiddleware, downloadFile)
 
   app.get('/', (_, res) => {
     res.json('👋 Server ready ')

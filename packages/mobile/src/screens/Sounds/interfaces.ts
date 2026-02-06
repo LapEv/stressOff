@@ -1,6 +1,6 @@
 import { RootStackParamList } from '@/navigations/interfaces'
+import { ILanguageObject } from '@/store/interfaces'
 import { RouteProp } from '@react-navigation/native'
-import { ImageSourcePropType } from 'react-native'
 
 export interface ISoundsScreenData {
   id: number
@@ -12,8 +12,8 @@ export interface ISoundsTiles {
   _id: string
   findUseSound: boolean
   item: string
-  img: ImageSourcePropType
-  title: string
+  img: string
+  title: ILanguageObject
   description: string
   location: string
   storage: string
